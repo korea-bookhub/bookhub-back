@@ -1,0 +1,60 @@
+plugins {
+    id 'java'
+    id 'org.springframework.boot' version '3.4.5'
+    id 'io.spring.dependency-management' version '1.1.7'
+}
+
+group = 'com.bookhub'
+version = '0.0.1-SNAPSHOT'
+
+java {
+    toolchain {
+        languageVersion = JavaLanguageVersion.of(17)
+    }
+}
+
+repositories {
+    mavenCentral()
+}
+
+dependencies {
+    // 프로젝트 개발에 필요한 의존성 기능을 입력
+
+    // 웹 애플리케이션 새발 시 반드시 필요: 내장 톰캣 서버를 실행, 스프링 어노테이션 사용을 가능하게 해줌
+    implementation 'org.springframework.boot:spring-boot-starter-web'
+
+    // 스프링 시큐리티 사용 스타터
+    implementation 'org.springframework.boot:spring-boot-starter-security'
+    testImplementation 'org.springframework.security:spring-security-test'
+
+    // JWT 의존성 추가
+    implementation 'io.jsonwebtoken:jjwt-api:0.11.5' // JWT 생성을 위한 기본 API
+    runtimeOnly 'io.jsonwebtoken:jjwt-impl:0.11.5' // JWT 처리에 필요한 구현체
+    runtimeOnly 'io.jsonwebtoken:jjwt-jackson:0.11.5' // JWT Payload를 JSON 형식으로 변환하는 라이브러리
+
+    // 프로젝트 유효성 검사를 위한 의존성 입력
+    implementation 'jakarta.validation:jakarta.validation-api:3.1.0'
+    // Validation API가 인터페이스 정의만 포함 (실제 구현체 X)
+    // : Hibernate Validator 추가 실제 @Valid 애너테이션에 대한 동작을 명시
+    implementation 'org.hibernate.validator:hibernate-validator:8.0.0.Final'
+
+    // H2 데이터베이스를 runtime 환경에서만 사용: 개발, 테스트용으로 쓰이는 메모리 | 로컬 파일 기반의 임시 DB
+    runtimeOnly 'com.h2database:h2'
+    // MySQL Driver
+    runtimeOnly 'com.mysql:mysql-connector-j'
+    // DB 연동할 때 JPA(Hibernate 기반) 사용
+    // : Repository 인터페이스만 만들어도 기본 CRUD 기능을 제공
+    implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
+
+    // Lombok (코드 줄이기용)
+    compileOnly 'org.projectlombok:lombok'
+    annotationProcessor 'org.projectlombok:lombok'
+
+    // 단위 테스트, 통합 테스트를 쉽게 만들 수 있게 도와주는 라이브러리 모음
+    testImplementation 'org.springframework.boot:spring-boot-starter-test'
+    testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
+}
+
+tasks.named('test') {
+    useJUnitPlatform()
+}
