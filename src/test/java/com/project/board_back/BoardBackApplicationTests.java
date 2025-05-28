@@ -1,13 +1,13 @@
-package com.bookhub.bookhub_back;
+package com.project.board_back;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
 
 @SpringBootTest
-class BookhubBackApplicationTests {
+class BoardBackApplicationTests {
 
-    @Test
-    void contextLoads() {
-    }
+	@Test
+	void contextLoads() {
+	}
 
 }
