@@ -1,10 +1,10 @@
 package com.bookhub.bookhub_back.entity;
 
-import com.bookhub.bookhub_back.common.enums.DisplayTypeEnum;
+import com.bookhub.bookhub_back.common.enums.DisplayType;
 import jakarta.persistence.*;
 import lombok.*;
 
-import java.awt.print.Book;
+
 import java.time.LocalDateTime;
 
 
@@ -47,7 +47,7 @@ public class BookDisplayLocation {
 
     @Enumerated(EnumType.STRING)
     @Column(name = "display_type ", nullable = false) //진열방식(책장, 평대)
-    private DisplayTypeEnum displayType;
+    private DisplayType displayType;
 
     @Column(name = "created_at", nullable = false)
     private LocalDateTime createdAt; // SQL이 datetime이 JAVA의 DateTime과 호환

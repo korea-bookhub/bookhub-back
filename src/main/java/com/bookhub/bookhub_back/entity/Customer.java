@@ -2,9 +2,15 @@ package com.bookhub.bookhub_back.entity;
 
 import jakarta.persistence.*;
 import lombok.*;
+import org.springframework.boot.web.embedded.netty.NettyWebServer;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 
+//307
+//customer_createdat 추가 이외 완료
 @Entity
 @Table(name = "customer")
 @Getter
@@ -15,6 +21,7 @@ import java.time.LocalDate;
 public class Customer {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "customer_id")
     private Long customerId;
     
     @Column(name = "customer_name", nullable = false)
@@ -30,5 +37,8 @@ public class Customer {
     private String customerAdderess;
 
     @Column(name = "customer_created_at", nullable = false)
-    private LocalDate customerCreatedAt;
+    private LocalDateTime customerCreatedAt;
+
+    @OneToMany(mappedBy = "customerOrderId")
+    private List<CustomerOrder> customerOrders = new ArrayList<>();
 }
