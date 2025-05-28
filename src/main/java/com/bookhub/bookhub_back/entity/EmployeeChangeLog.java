@@ -44,5 +44,7 @@ public class EmployeeChangeLog {
     private Branch previousBranch;
 
     @Column(name = "changed_at", nullable = false)
-    private LocalDateTime changedAt = LocalDateTime.now();
+    private LocalDateTime changedAt;
+
+
 }
