@@ -36,6 +36,12 @@ out/
 ### VS Code ###
 .vscode/
 
+### macOS ###
+# General
+.DS_Store
+.AppleDouble
+.LSOverride
+
 ### properties ###
 /src/main/resources/application.properties
 /src/main/resources/application-secret.properties
