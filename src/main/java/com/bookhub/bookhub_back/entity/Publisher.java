@@ -2,7 +2,14 @@ package com.bookhub.bookhub_back.entity;
 
 import jakarta.persistence.*;
 import lombok.*;
+import org.apache.catalina.LifecycleState;
 
+import javax.naming.Name;
+import java.util.ArrayList;
+import java.util.List;
+
+//180
+//완료
 @Entity
 @Table(name = "publishers")
 @Getter
@@ -17,5 +24,8 @@ public class Publisher {
 
     @Column (name = "publisher_name", nullable = false)
     private String publisherName;
+
+    @OneToMany(mappedBy = "publisherId")
+    private List<Book> books = new ArrayList<>();
 
 }

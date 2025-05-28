@@ -4,7 +4,11 @@ import jakarta.persistence.*;
 import lombok.*;
 
 import java.awt.print.Book;
+import java.time.LocalDateTime;
 
+//316
+//dateat 결제할때 시간 생성하는거
+//완료
 @Entity
 @Table(name = "customer_orders")
 @Getter
@@ -14,27 +18,30 @@ import java.awt.print.Book;
 public class CustomerOrder {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "customer_order_id")
     private Long customerOrderId;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "customer_id", nullable = false)
+    @Column(name = "customer_id")
     private Customer customer;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "book_isbn",  nullable = false)
-    private Book bookIsbn;
+    @Column(name = "customer_order_total_amount", nullable = false)
+    private Long totalAmount;
+
+    @Column(name = "customer_order_total_price", nullable = false)
+    private Long totalPrice;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "branch_id", nullable = false)
-    private Branch branch;
+    @JoinColumn(name = "applied_policy_id")
+    private DiscountPolicy appliedPolicyId;
 
-    @Column(name = "amount", nullable = false)
-    private Long amount;
+    @Column(name = "customer_order_date_at")
+    private LocalDateTime customerOrderDateAt;
 
-    @Column(name = "price", nullable = false)
-    private Long price;
 
-    @JoinColumn(name =  )
+
+
 
 
 
