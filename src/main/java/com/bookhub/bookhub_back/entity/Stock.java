@@ -25,5 +25,4 @@ public class Stock {
 
     @Column(name = "book_amount", nullable = false)
     private int bookAmount;
-
 }

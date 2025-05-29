@@ -1,5 +1,6 @@
 package com.bookhub.bookhub_back.entity;
 
+import com.bookhub.bookhub_back.common.enums.CategoryType;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -14,7 +15,8 @@ import java.util.List;
 @AllArgsConstructor
 @Builder
 public class BookCategory {
-    @Id @GeneratedValue (strategy = GenerationType.IDENTITY)
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "category_id")
     private Long categoryId;
 
@@ -28,8 +30,12 @@ public class BookCategory {
     @Column(name = "category_name", nullable = false)
     private String categoryName;
 
-    @Column(name = "category_level",  nullable = false)
+    @Column(name = "category_level", nullable = false)
     private int categoryLevel = 1;
+
+    @Enumerated(EnumType.STRING)
+    @Column(name = "category_type", nullable = false)
+    private CategoryType categoryType;
 
     @Column(name = "category_order")
     private int categoryOrder = 0;
@@ -37,6 +43,7 @@ public class BookCategory {
     @Column(name = "is_active")
     private Boolean isActive = true;
 
-
-
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "discount_policy_id")
+    private DiscountPolicy discountPolicyId;
 }

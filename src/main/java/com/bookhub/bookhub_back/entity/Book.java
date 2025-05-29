@@ -1,10 +1,10 @@
 package com.bookhub.bookhub_back.entity;
 
+import com.bookhub.bookhub_back.entity.datetime.BaseTimeEntity;
 import jakarta.persistence.*;
 import lombok.*;
 
 import java.time.LocalDateTime;
-import java.util.Date;
 
 @Entity
 @Table(name = "books")
@@ -13,32 +13,31 @@ import java.util.Date;
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor
 @Builder
-public class Book {
+public class Book extends BaseTimeEntity {
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "book_isbn")
     private String isbn;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "category_id")
+    @JoinColumn(name = "category_id", nullable = false)
     private BookCategory categoryId;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "author_id")
+    @JoinColumn(name = "author_id", nullable = false)
     private Author authorId;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "publisher_id")
+    @JoinColumn(name = "publisher_id", nullable = false)
     private Publisher publisherId;
 
     @Column(name = "book_title", nullable = false)
     private String bookTitle;
 
     @Column(name = "book_price", nullable = false)
-    private Integer bookPrice;
+    private Long bookPrice;
 
     @Column(name = "published_date", nullable = false)
-    @Temporal(TemporalType.DATE)
-    private Date publishedDate;
+    private LocalDateTime publishedDate;
 
     @Column(name = "cover_url", nullable = false)
     private String coverUrl;
@@ -54,12 +53,6 @@ public class Book {
     private String description;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "policy_id")
+    @JoinColumn(name = "discount_policy_id")
     private DiscountPolicy policyId;
-
-    @Column(name = "created_at")
-    private LocalDateTime createdAt;
-
-    @Column(name = "updated_at")
-    private LocalDateTime updatedAt;
 }
