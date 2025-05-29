@@ -3,6 +3,8 @@ package com.bookhub.bookhub_back.entity;
 import com.bookhub.bookhub_back.common.enums.Status;
 import jakarta.persistence.*;
 import lombok.*;
+import org.springframework.data.annotation.CreatedDate;
+import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 import java.time.LocalDateTime;
 
@@ -13,6 +15,7 @@ import java.time.LocalDateTime;
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor
 @Builder
+@EntityListeners(AuditingEntityListener.class)
 public class EmployeeSignupApproval {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -21,11 +24,11 @@ public class EmployeeSignupApproval {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "employee_id", nullable = false)
-    private Employee employee;
+    private Employee employeeId;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @Column(name = "status", nullable = false)
-    private Employee authorizer;
+    @Column(name = "authorizer_id", nullable = false)
+    private Employee authorizerId;
 
     @Column(name = "status", nullable = false)
     @Enumerated(EnumType.STRING)
@@ -35,7 +38,8 @@ public class EmployeeSignupApproval {
     private LocalDateTime appliedAt;
 
     @Column(name = "approved_denied_at", nullable = false)
-    private LocalDateTime approvedDeniedAt = LocalDateTime.now();
+    @CreatedDate
+    private LocalDateTime approvedDeniedAt;
 
     @Column(name = "denied_reason")
     private String deniedReason;
