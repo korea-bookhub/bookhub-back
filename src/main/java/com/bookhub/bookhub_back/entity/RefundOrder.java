@@ -3,6 +3,8 @@ package com.bookhub.bookhub_back.entity;
 import com.bookhub.bookhub_back.common.enums.RefundReason;
 import jakarta.persistence.*;
 import lombok.*;
+import org.springframework.data.annotation.CreatedDate;
+import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 import java.time.LocalDateTime;
 
@@ -13,21 +15,23 @@ import java.time.LocalDateTime;
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor
 @Builder
+@EntityListeners(AuditingEntityListener.class)
 public class RefundOrder {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "refund_order_id")
     private Long refundOrderId;
 
-    @Column(name = "refund_date_at", nullable = false)
-    private LocalDateTime refundDateAt = LocalDateTime.now();
+    @Column(name = "refund_date_at")
+    @CreatedDate
+    private LocalDateTime refundDateAt;
 
     @Enumerated(EnumType.STRING)
     @Column(name = "refund_reason", nullable = false)
     private RefundReason refundReason;
 
     // 참조
-    @ManyToOne(fetch = FetchType.LAZY)
+    @OneToOne
     @JoinColumn(name = "order_id")
-    private CustomerOrder customerOrder;
+    private CustomerOrder orderId;
 }

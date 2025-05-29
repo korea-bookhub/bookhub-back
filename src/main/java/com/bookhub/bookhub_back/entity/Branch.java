@@ -14,7 +14,7 @@ import java.util.List;
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor
 @Builder
-public class Branch {
+public class Branch extends BaseTimeEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "branch_id")
@@ -25,48 +25,28 @@ public class Branch {
     @Column(name = "branch_location", nullable = false)
     private String branchLocation;
 
-    @Column(name = "created_at", nullable = false)
-    private LocalDateTime createdAt;
-    @Column(name = "updated_at")
-    private LocalDateTime updatedAt;
-
-    @PrePersist
-    public void prePersist() {
-        this.createdAt = LocalDateTime.now();
-    }
-
-    @PreUpdate
-    public void preUpdate() {
-        this.updatedAt = LocalDateTime.now();
-    }
+//    @Column(name = "created_at", nullable = false)
+//    private LocalDateTime createdAt;
+//    @Column(name = "updated_at")
+//    private LocalDateTime updatedAt;
+//
+//    @PrePersist
+//    public void prePersist() {
+//        this.createdAt = LocalDateTime.now();
+//    }
+//
+//    @PreUpdate
+//    public void preUpdate() {
+//        this.updatedAt = LocalDateTime.now();
+//    }
 
     // 참조관계
-    @OneToMany(mappedBy = "branch", fetch = FetchType.LAZY)
+    @OneToMany(mappedBy = "branchId", fetch = FetchType.LAZY)
     // orphanRemoval = true
     private List<Employee> employees = new ArrayList<>();
 
-    @OneToMany(mappedBy = "branch", fetch = FetchType.LAZY)
-    private List<EmployeeChangeLog> employeeChangeLogs = new ArrayList<>();
 
-    @OneToMany(mappedBy = "branch", fetch = FetchType.LAZY)
-    private List<BookDisplayLocation> bookDisplayLocations = new ArrayList<>();
 
-    @OneToMany(mappedBy = "branch", fetch = FetchType.LAZY)
-    private List<Stock> stocks = new ArrayList<>();
-
-    @OneToMany(mappedBy = "branch", fetch = FetchType.LAZY)
-    private List<StockLog> stockLogs = new ArrayList<>();
-
-    @OneToMany(mappedBy = "branch", fetch = FetchType.LAZY)
-    private List<PurchaseOrder> purchaseOrders = new ArrayList<>();
-
-    @OneToMany(mappedBy = "branch", fetch = FetchType.LAZY)
-    private List<BookReceptionApproval> bookReceptionApprovals = new ArrayList<>();
-
-    @OneToMany(mappedBy = "branch", fetch = FetchType.LAZY)
-    private List<BookLog> bookLogs = new ArrayList<>();
-
-    // stock_logs와의 참조관계는 명시 x
 
 
 
