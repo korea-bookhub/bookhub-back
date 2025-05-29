@@ -1,13 +1,10 @@
+//BookDisplayLocation
 package com.bookhub.bookhub_back.entity;
 
 import com.bookhub.bookhub_back.common.enums.DisplayType;
+import com.bookhub.bookhub_back.entity.datetime.BaseTimeEntity;
 import jakarta.persistence.*;
 import lombok.*;
-
-
-import java.time.LocalDateTime;
-
-
 /*
 * publishers 서윤
 *book_display_locations 서윤
@@ -22,7 +19,7 @@ customer_orders_detail 서윤
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor
 @Builder
-public class BookDisplayLocation {
+public class BookDisplayLocation extends BaseTimeEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long locationId;
@@ -49,10 +46,5 @@ public class BookDisplayLocation {
     @Column(name = "display_type ", nullable = false) //진열방식(책장, 평대)
     private DisplayType displayType;
 
-    @Column(name = "created_at", nullable = false)
-    private LocalDateTime createdAt; // SQL이 datetime이 JAVA의 DateTime과 호환
-
-    @Column(name = "updated_at")
-    private LocalDateTime updatedAt;
 
 }

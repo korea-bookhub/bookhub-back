@@ -1,37 +1,35 @@
+//CustomerOrderDetail
 package com.bookhub.bookhub_back.entity;
 
 import jakarta.persistence.*;
 import lombok.*;
 
 
-//db에서 branch 옮기기 amount는 int로 바꾸기
+
 @Entity
 @Table(name = "customer_orders_detail")
 @Getter
+@Setter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor
 @Builder
 public class CustomerOrderDetail {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "customer_orders_detail_id")
-    private Long customerOrdersDetailId;
+    private Long customerOrderDetailId;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "customer_order_id")
-    private CustomerOrder customerOrder;
+    @JoinColumn(name = "customer_order_id", nullable = false)
+    private CustomerOrder customerOrderId;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "book_isbn")
-    private Book bookIsbn;
+    @JoinColumn(name = "book_isbn", nullable = false)
+    private Book book;
 
     @Column(name = "amount", nullable = false)
     private Long amount;
 
     @Column(name = "price", nullable = false)
     private Long price;
-
-
-
 
 }

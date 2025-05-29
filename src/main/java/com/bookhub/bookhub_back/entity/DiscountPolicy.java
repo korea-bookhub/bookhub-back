@@ -1,16 +1,11 @@
+//DiscountPolicy
 package com.bookhub.bookhub_back.entity;
 
 import com.bookhub.bookhub_back.common.enums.PolicyType;
 import jakarta.persistence.*;
 import lombok.*;
-
 import java.time.LocalDate;
-import java.util.ArrayList;
-import java.util.List;
 
-
-//135
-//완료
 @Entity
 @Table(name = "discount_policies")
 @Getter
@@ -27,14 +22,14 @@ public class DiscountPolicy {
     private String policyTitle;
 
     @Lob
-    @Column(name = "policy_description")
+    @Column(name = "policy_description", nullable = false)
     private String policyDescription;
 
     @Enumerated(EnumType.STRING)
-    @Column(name = "policy_type", nullable = false) //할인방법 (책, 카테고리, 총 금액)
+    @Column(name = "policy_type", nullable = false)
     private PolicyType policyType;
 
-    @Column(name = "total_price_achieve") //총 금액 할인시 기준가격
+    @Column(name = "total_price_achieve")
     private int totalPriceAchieve;
 
     @Column(name = "discount_percent", nullable = false)
@@ -45,16 +40,6 @@ public class DiscountPolicy {
 
     @Column(name = "end_date")
     private LocalDate endDate;
-
-    @OneToMany(mappedBy = "policyId")
-    private List<Book> books = new ArrayList<>();
-
-    @OneToMany(mappedBy = "policyId")
-    private List<BookCategory> categories = new ArrayList<>();
-
-    @OneToMany(mappedBy = "appliedPolicyId")
-    private List<CustomerOrder> customerOrders = new ArrayList<>();
-
 
 
 }

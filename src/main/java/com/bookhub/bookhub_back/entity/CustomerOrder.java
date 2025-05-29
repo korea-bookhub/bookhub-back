@@ -1,30 +1,36 @@
+//CustomerOrder
 package com.bookhub.bookhub_back.entity;
 
 import jakarta.persistence.*;
 import lombok.*;
+import org.springframework.data.annotation.CreatedDate;
+import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
-import java.awt.print.Book;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 
-//316
-//dateat 결제할때 시간 생성하는거
-//완료
+
 @Entity
 @Table(name = "customer_orders")
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor
 @Builder
+@EntityListeners(AuditingEntityListener.class)
 public class CustomerOrder {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "customer_order_id")
     private Long customerOrderId;
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "customer_id", nullable = false)
-    @Column(name = "customer_id")
-    private Customer customer;
+    private Customer customerId;
+
+    @ManyToOne(fetch = FetchType.EAGER)
+    @JoinColumn(name = "branch_id", nullable = false)
+    private Branch branchId;
 
     @Column(name = "customer_order_total_amount", nullable = false)
     private Long totalAmount;
@@ -32,17 +38,18 @@ public class CustomerOrder {
     @Column(name = "customer_order_total_price", nullable = false)
     private Long totalPrice;
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "applied_policy_id")
     private DiscountPolicy appliedPolicyId;
 
+    @CreatedDate
     @Column(name = "customer_order_date_at")
-    private LocalDateTime customerOrderDateAt;
+    private LocalDateTime createdAt;
 
+    @OneToMany(mappedBy = "customerOrderId")
+    private List<CustomerOrderDetail> customerOrderDetails = new ArrayList<>();
 
-
-
-
-
+    @OneToOne(mappedBy = "orderId", cascade = CascadeType.ALL)
+    private RefundOrder refundOrderId;
 
 }

@@ -1,18 +1,16 @@
+//Publisher
 package com.bookhub.bookhub_back.entity;
 
 import jakarta.persistence.*;
 import lombok.*;
-import org.apache.catalina.LifecycleState;
 
-import javax.naming.Name;
 import java.util.ArrayList;
 import java.util.List;
 
-//180
-//완료
 @Entity
 @Table(name = "publishers")
 @Getter
+@Setter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor
 @Builder

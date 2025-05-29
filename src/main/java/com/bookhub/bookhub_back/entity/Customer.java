@@ -1,16 +1,15 @@
+//Customer
 package com.bookhub.bookhub_back.entity;
 
 import jakarta.persistence.*;
 import lombok.*;
-import org.springframework.boot.web.embedded.netty.NettyWebServer;
+import org.springframework.data.annotation.CreatedDate;
+import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 import java.time.LocalDate;
-import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
-//307
-//customer_createdat 추가 이외 완료
 @Entity
 @Table(name = "customer")
 @Getter
@@ -18,6 +17,7 @@ import java.util.List;
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor
 @Builder
+@EntityListeners(AuditingEntityListener.class)
 public class Customer {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -36,9 +36,10 @@ public class Customer {
     @Column(name = "customer_address", nullable = false)
     private String customerAdderess;
 
-    @Column(name = "customer_created_at", nullable = false)
-    private LocalDateTime customerCreatedAt;
+    @CreatedDate
+    @Column(name = "customer_created_at", nullable = false, updatable = false)
+    private LocalDate customerCreatedAt;
 
-    @OneToMany(mappedBy = "customerOrderId")
+    @OneToMany(mappedBy = "customerId")
     private List<CustomerOrder> customerOrders = new ArrayList<>();
 }
