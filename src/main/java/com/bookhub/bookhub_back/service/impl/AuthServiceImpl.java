@@ -1,10 +1,10 @@
 package com.bookhub.bookhub_back.service.impl;
 
 import com.bookhub.bookhub_back.dto.ResponseDto;
-import com.bookhub.bookhub_back.dto.auth.request.UserSignInRequestDto;
-import com.bookhub.bookhub_back.dto.auth.request.UserSignUpRequestDto;
-import com.bookhub.bookhub_back.dto.auth.response.UserSignInResponseDto;
-import com.bookhub.bookhub_back.dto.auth.response.UserSignUpResponseDto;
+import com.bookhub.bookhub_back.dto.employee.request.SignInRequestDto;
+import com.bookhub.bookhub_back.dto.employee.request.SignUpRequestDto;
+import com.bookhub.bookhub_back.dto.employee.response.SignInResponseDto;
+import com.bookhub.bookhub_back.dto.employee.response.SignUpResponseDto;
 import com.bookhub.bookhub_back.service.AuthService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -14,12 +14,12 @@ import org.springframework.stereotype.Service;
 public class AuthServiceImpl implements AuthService {
 
     @Override
-    public ResponseDto<UserSignUpResponseDto> signup(UserSignUpRequestDto dto) {
+    public ResponseDto<SignUpResponseDto> signup(SignUpRequestDto dto) {
         return null;
     }
 
     @Override
-    public ResponseDto<UserSignInResponseDto> login(UserSignInRequestDto dto) {
+    public ResponseDto<SignInResponseDto> login(SignInRequestDto dto) {
         return null;
     }
 }
