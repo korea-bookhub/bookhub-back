@@ -20,7 +20,7 @@ public class Publisher {
     @Column(name = "publisher_id")
     private Long publisherId;
 
-    @Column (name = "publisher_name", nullable = false)
+    @Column (name = "publisher_name", nullable = false, unique = true)
     private String publisherName;
 
     @OneToMany(mappedBy = "publisherId")
