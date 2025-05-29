@@ -3,11 +3,11 @@ package com.bookhub.bookhub_back.entity;
 
 import com.bookhub.bookhub_back.common.enums.IsApproved;
 import com.bookhub.bookhub_back.common.enums.Status;
+import com.bookhub.bookhub_back.entity.datetime.BaseTimeEntity;
 import jakarta.persistence.*;
 import lombok.*;
 
 import java.time.LocalDate;
-import java.time.LocalDateTime;
 
 @Entity
 @Table(name = "employees")
@@ -16,7 +16,7 @@ import java.time.LocalDateTime;
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor
 @Builder
-public class Employee {
+public class Employee extends BaseTimeEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "employee_id")
@@ -24,15 +24,15 @@ public class Employee {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "branch_id", nullable = false)
-    private Branch branch;
+    private Branch branchId;
 
     @ManyToOne
     @JoinColumn(name = "position_id", nullable = false)
-    private Position position;
+    private Position positionId;
 
     @ManyToOne
     @JoinColumn(name = "authority_id", nullable = false)
-    private Authority authority;
+    private Authority authorityId;
 
     @Column(name = "employee_number", nullable = false, unique = true)
     private String employeeNumber;
@@ -58,12 +58,6 @@ public class Employee {
     @Column(name = "is_approved", nullable = false)
     @Enumerated(EnumType.STRING)
     private IsApproved isApproved = IsApproved.PENDING;
-
-    @Column(name = "created_At", nullable = false)
-    private LocalDateTime createdAt;
-
-    @Column(name = "updated_at")
-    private LocalDateTime updatedAt;
 
     @Column(name = "status", nullable = false)
     @Enumerated(EnumType.STRING)

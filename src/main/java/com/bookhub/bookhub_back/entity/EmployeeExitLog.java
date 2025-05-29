@@ -3,6 +3,8 @@ package com.bookhub.bookhub_back.entity;
 import com.bookhub.bookhub_back.common.enums.ExitReason;
 import jakarta.persistence.*;
 import lombok.*;
+import org.springframework.data.annotation.CreatedDate;
+import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 import java.time.LocalDateTime;
 
@@ -13,6 +15,7 @@ import java.time.LocalDateTime;
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor
 @Builder
+@EntityListeners(AuditingEntityListener.class)
 public class EmployeeExitLog {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -21,10 +24,11 @@ public class EmployeeExitLog {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "employee_id", nullable = false)
-    private Employee employee;
+    private Employee employeeId;
 
-    @Column(name = "exit_at", nullable = false)
-    private LocalDateTime exitAt = LocalDateTime.now();
+    @Column(name = "exit_at")
+    @CreatedDate
+    private LocalDateTime exitAt;
 
     @Enumerated(EnumType.STRING)
     @Column(name = "exit_reason", nullable = false)

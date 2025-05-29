@@ -21,11 +21,11 @@ public class EmployeeChangeLog {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "employee_id", nullable = false)
-    private Employee employee;
+    private Employee employeeId;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "authorizer_id", nullable = false)
-    private Employee authorizer;
+    private Employee authorizerId;
 
     @Column(name = "change_type", nullable = false)
     @Enumerated(EnumType.STRING)
@@ -33,18 +33,16 @@ public class EmployeeChangeLog {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "previous_authority_id")
-    private Authority previousAuthority;
+    private Authority previousAuthorityId;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "previous_position_id")
-    private Position previousPosition;
+    private Position previousPositionId;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "previous_branch_id")
-    private Branch previousBranch;
+    private Branch previousBranchId;
 
-    @Column(name = "changed_at", nullable = false)
+    @Column(name = "changed_at")
     private LocalDateTime changedAt;
-
-
 }
