@@ -2,6 +2,8 @@ package com.bookhub.bookhub_back.entity;
 
 import jakarta.persistence.*;
 import lombok.*;
+import org.springframework.data.annotation.CreatedDate;
+import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 import java.time.LocalDateTime;
 
@@ -12,6 +14,7 @@ import java.time.LocalDateTime;
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor
 @Builder
+@EntityListeners(AuditingEntityListener.class)
 public class PurchaseOrderApproval {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -20,16 +23,18 @@ public class PurchaseOrderApproval {
 
     @Column(name = "is_approved", nullable = false)
     private boolean isApproved;
-    @Column(name = "approved_date_at", nullable = false)
-    private LocalDateTime approvedDateAt = LocalDateTime.now();
+
+    @Column(name = "approved_date_at")
+    @CreatedDate
+    private LocalDateTime approvedDateAt;
 
     // 참조
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "employee_id")
     private Employee employee;
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @OneToOne
     @JoinColumn(name = "purchase_order_id")
-    private PurchaseOrder purchaseOrder;
+    private PurchaseOrder purchaseOrderId;
 
 }
