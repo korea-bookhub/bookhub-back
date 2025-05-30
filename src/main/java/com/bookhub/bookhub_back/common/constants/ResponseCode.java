@@ -29,6 +29,7 @@ public interface ResponseCode {
     String NO_EXIST_USER_ID = "NI"; // 존재하지 않는 사용자
     String USER_NOT_FOUND = "UNF";
     String USER_ALREADY_EXISTS = "UAE";
+    String NOT_MATCH_PASSWORD = "NMPW";
 
     // 리소스 관련
     String NO_EXIST_TOOL = "NT"; // 존재하지 않는 도구

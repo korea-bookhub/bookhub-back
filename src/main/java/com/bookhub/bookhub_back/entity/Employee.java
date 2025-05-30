@@ -35,7 +35,7 @@ public class Employee extends BaseTimeEntity {
     private Authority authorityId;
 
     @Column(name = "employee_number", nullable = false, unique = true)
-    private String employeeNumber;
+    private Long employeeNumber;
 
     @Column(name = "login_id", nullable = false, unique = true)
     private String loginId;
@@ -61,5 +61,5 @@ public class Employee extends BaseTimeEntity {
 
     @Column(name = "status", nullable = false)
     @Enumerated(EnumType.STRING)
-    private Status status;
+    private Status status = Status.EMPLOYED;
 }

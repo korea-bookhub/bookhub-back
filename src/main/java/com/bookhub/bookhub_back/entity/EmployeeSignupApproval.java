@@ -27,7 +27,7 @@ public class EmployeeSignupApproval {
     private Employee employeeId;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @Column(name = "authorizer_id", nullable = false)
+    @JoinColumn(name = "authorizer_id", nullable = false)
     private Employee authorizerId;
 
     @Column(name = "status", nullable = false)

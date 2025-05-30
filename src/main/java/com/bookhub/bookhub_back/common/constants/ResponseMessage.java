@@ -15,6 +15,7 @@ public interface ResponseMessage {
     String TOKEN_CREATE_FAIL = "Token creation failed.";
     String TOKEN_EXPIRED = "Token has expired.";
     String INVALID_TOKEN = "Invalid token.";
+    String NOT_MATCH_PASSWORD = "Password does not Match";
 
     // 유효성 검사 관련
     String VALIDATION_FAIL = "Validation failed.";

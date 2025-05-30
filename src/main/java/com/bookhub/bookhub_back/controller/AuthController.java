@@ -26,10 +26,10 @@ public class AuthController {
     // 1) 회원가입
     @PostMapping(POST_SIGN_UP)
     public ResponseEntity<ResponseDto<EmployeeSignUpResponseDto>> signup(@Valid @RequestBody EmployeeSignUpRequestDto dto) {
-        System.out.println("=== 회원가입 요청 도착 ===");
         ResponseDto<EmployeeSignUpResponseDto> response = authService.signup(dto);
         return ResponseEntity.status(HttpStatus.CREATED).body(response);
     }
+
 
     // 2) 로그인
     @PostMapping(POST_SIGN_IN)

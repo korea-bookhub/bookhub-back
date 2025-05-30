@@ -1,13 +1,15 @@
 package com.bookhub.bookhub_back.dto.employee.response;
 
+import com.bookhub.bookhub_back.entity.Employee;
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 
 @Getter
+@NoArgsConstructor
 @AllArgsConstructor
+@Builder
 public class EmployeeSignUpResponseDto {
-
-    private String userId;     // 가입된 사용자 ID
-    private String email;      // 이메일
-    private String nickname;   // 닉네임
+    private Employee employee;
 }
