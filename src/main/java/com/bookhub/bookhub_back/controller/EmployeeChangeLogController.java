@@ -1,4 +1,4 @@
 package com.bookhub.bookhub_back.controller;
 
-public class EmployeController {
+public class EmployeeChangeLogController {
 }
