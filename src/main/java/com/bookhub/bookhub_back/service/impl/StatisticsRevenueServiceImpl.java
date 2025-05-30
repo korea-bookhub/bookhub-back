@@ -1,10 +1,9 @@
 package com.bookhub.bookhub_back.service.impl;
 
-import com.bookhub.bookhub_back.service.BookLocationService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 @Service
 @RequiredArgsConstructor
-public class BookLocationServiceImpl implements BookLocationService {
+public class StatisticsRevenueServiceImpl {
 }
