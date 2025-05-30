@@ -5,7 +5,7 @@ import lombok.Getter;
 
 @Getter
 @AllArgsConstructor
-public class SignUpResponseDto {
+public class EmployeeSignUpResponseDto {
 
     private String userId;     // 가입된 사용자 ID
     private String email;      // 이메일

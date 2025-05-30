@@ -2,10 +2,10 @@ package com.bookhub.bookhub_back.controller;
 
 import com.bookhub.bookhub_back.common.constants.ApiMappingPattern;
 import com.bookhub.bookhub_back.dto.ResponseDto;
-import com.bookhub.bookhub_back.dto.employee.request.SignInRequestDto;
-import com.bookhub.bookhub_back.dto.employee.request.SignUpRequestDto;
-import com.bookhub.bookhub_back.dto.employee.response.SignInResponseDto;
-import com.bookhub.bookhub_back.dto.employee.response.SignUpResponseDto;
+import com.bookhub.bookhub_back.dto.employee.request.EmployeeSignInRequestDto;
+import com.bookhub.bookhub_back.dto.employee.request.EmployeeSignUpRequestDto;
+import com.bookhub.bookhub_back.dto.employee.response.EmployeeSignInResponseDto;
+import com.bookhub.bookhub_back.dto.employee.response.EmployeeSignUpResponseDto;
 import com.bookhub.bookhub_back.service.AuthService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -25,16 +25,16 @@ public class AuthController {
 
     // 1) 회원가입
     @PostMapping(POST_SIGN_UP)
-    public ResponseEntity<ResponseDto<SignUpResponseDto>> signup(@Valid @RequestBody SignUpRequestDto dto) {
+    public ResponseEntity<ResponseDto<EmployeeSignUpResponseDto>> signup(@Valid @RequestBody EmployeeSignUpRequestDto dto) {
         System.out.println("=== 회원가입 요청 도착 ===");
-        ResponseDto<SignUpResponseDto> response = authService.signup(dto);
+        ResponseDto<EmployeeSignUpResponseDto> response = authService.signup(dto);
         return ResponseEntity.status(HttpStatus.CREATED).body(response);
     }
 
     // 2) 로그인
     @PostMapping(POST_SIGN_IN)
-    public ResponseEntity<ResponseDto<SignInResponseDto>> login(@Valid @RequestBody SignInRequestDto dto) {
-        ResponseDto<SignInResponseDto> response = authService.login(dto);
+    public ResponseEntity<ResponseDto<EmployeeSignInResponseDto>> login(@Valid @RequestBody EmployeeSignInRequestDto dto) {
+        ResponseDto<EmployeeSignInResponseDto> response = authService.login(dto);
         return ResponseEntity.status(HttpStatus.OK).body(response);
     }
 }
