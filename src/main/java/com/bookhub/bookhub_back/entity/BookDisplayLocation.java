@@ -32,11 +32,10 @@ public class BookDisplayLocation extends BaseTimeEntity {
     @JoinColumn(name = "book_isbn",  nullable = false)
     private Book bookIsbn;
 
-    @Column(name = "display_type ", nullable = false)
-
+    @Column(name = "floor ", nullable = false)
     private String floor; //책이 위치한 층
 
-    @Column(name = "display_type ", nullable = false)
+    @Column(name = "hall ", nullable = false)
     private String hall; //책이 위치한 홀(A홀, B홀)
 
     @Column(name = "section", nullable = false)
