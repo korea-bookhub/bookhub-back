@@ -1,5 +1,6 @@
 package com.bookhub.bookhub_back.entity;
 
+import com.bookhub.bookhub_back.entity.datetime.BaseTimeEntity;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -24,21 +25,6 @@ public class Branch extends BaseTimeEntity {
     private String branchName;
     @Column(name = "branch_location", nullable = false)
     private String branchLocation;
-
-//    @Column(name = "created_at", nullable = false)
-//    private LocalDateTime createdAt;
-//    @Column(name = "updated_at")
-//    private LocalDateTime updatedAt;
-//
-//    @PrePersist
-//    public void prePersist() {
-//        this.createdAt = LocalDateTime.now();
-//    }
-//
-//    @PreUpdate
-//    public void preUpdate() {
-//        this.updatedAt = LocalDateTime.now();
-//    }
 
     // 참조관계
     @OneToMany(mappedBy = "branchId", fetch = FetchType.LAZY)
