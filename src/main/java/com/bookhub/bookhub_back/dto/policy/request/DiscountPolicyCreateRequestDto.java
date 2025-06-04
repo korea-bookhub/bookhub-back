@@ -17,9 +17,9 @@ public class DiscountPolicyCreateRequestDto {
     private String policyDescription;
     @NotBlank
     private PolicyType policyType;
-    private int totalPriceAchieve;
+    private Integer totalPriceAchieve;
     @NotNull
-    private int discountPercent;
+    private Integer discountPercent;
     private LocalDate startDate;
     private LocalDate endDate;
 }
