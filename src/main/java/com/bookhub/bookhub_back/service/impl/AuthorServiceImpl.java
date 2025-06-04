@@ -24,7 +24,7 @@ public class AuthorServiceImpl implements AuthorService {
 
     // 작가 등록 (여러건 동시 등록)
     @Override
-    public ResponseEntity<ResponseDto<List<AuthorResponseDto>>> createAuthor(AuthorCreateRequestDto dto) {
+    public ResponseDto<List<AuthorResponseDto>> createAuthor(AuthorCreateRequestDto dto) {
         List<AuthorResponseDto> responseDtos = null;
 
         List<AuthorRequestDto> requestDtos = dto.getAuthors();
@@ -51,7 +51,7 @@ public class AuthorServiceImpl implements AuthorService {
 
     // 작가 전체 조회
     @Override
-    public ResponseEntity<ResponseDto<List<AuthorResponseDto>>> getAllAuthors() {
+    public ResponseDto<List<AuthorResponseDto>> getAllAuthors() {
         List<AuthorResponseDto> responseDtos = null;
 
         List<Author> authors = authorRepository.findAll();
@@ -69,10 +69,9 @@ public class AuthorServiceImpl implements AuthorService {
 
     // 작가 단건 조회
     @Override
-    public ResponseEntity<ResponseDto<AuthorResponseDto>> getAuthorById(Long authorId) {
+    public ResponseDto<AuthorResponseDto> getAuthorById(Long authorId) {
         AuthorResponseDto responseDto = null;
 
-//        Author author = authorRepository.getAuthorByAuthorId(authorId);
         Author author = authorRepository.findById(authorId)
                 .orElseThrow(() -> new EntityNotFoundException(ResponseMessage.FAILED + authorId));
 
@@ -87,7 +86,7 @@ public class AuthorServiceImpl implements AuthorService {
 
     // 작가 이름으로 조회 (동명이인까지 조회)
     @Override
-    public ResponseEntity<ResponseDto<List<AuthorResponseDto>>> getAllAuthorsByName(String authorName) {
+    public ResponseDto<List<AuthorResponseDto>> getAllAuthorsByName(String authorName) {
         List<AuthorResponseDto> responseDtos = null;
 
         List<Author> authors = authorRepository.findAllByAuthorName(authorName);
@@ -105,7 +104,7 @@ public class AuthorServiceImpl implements AuthorService {
 
     // 작가 수정
     @Override
-    public ResponseEntity<ResponseDto<AuthorResponseDto>> updateAuthor(Long authorId, AuthorRequestDto dto) {
+    public ResponseDto<AuthorResponseDto> updateAuthor(Long authorId, AuthorRequestDto dto) {
         AuthorResponseDto responseDto = null;
 
         Author author = authorRepository.findById(authorId)
@@ -127,7 +126,7 @@ public class AuthorServiceImpl implements AuthorService {
 
     // 작가 삭제
     @Override
-    public ResponseEntity<ResponseDto<Void>> deleteAuthor(Long authorId) {
+    public ResponseDto<Void> deleteAuthor(Long authorId) {
         Author author = authorRepository.findById(authorId)
                 .orElseThrow(() -> new EntityNotFoundException(ResponseMessage.FAILED + authorId));
 

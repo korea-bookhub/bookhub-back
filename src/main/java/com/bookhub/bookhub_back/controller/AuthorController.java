@@ -4,9 +4,11 @@ import com.bookhub.bookhub_back.dto.ResponseDto;
 import com.bookhub.bookhub_back.dto.author.request.AuthorCreateRequestDto;
 import com.bookhub.bookhub_back.dto.author.request.AuthorRequestDto;
 import com.bookhub.bookhub_back.dto.author.response.AuthorResponseDto;
+import com.bookhub.bookhub_back.dto.publisher.response.PublisherResponseDto;
 import com.bookhub.bookhub_back.service.AuthorService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -23,13 +25,15 @@ public class AuthorController {
     public ResponseEntity<ResponseDto<List<AuthorResponseDto>>> createAuthor(
             @Valid @RequestBody AuthorCreateRequestDto dto
     ) {
-        return authorService.createAuthor(dto);
+        ResponseDto<List<AuthorResponseDto>> response = authorService.createAuthor(dto);
+        return ResponseEntity.status(HttpStatus.CREATED).body(response);
     }
 
     // 작가 전체 조회
     @GetMapping
     public ResponseEntity<ResponseDto<List<AuthorResponseDto>>> getAllAuthors() {
-        return authorService.getAllAuthors();
+        ResponseDto<List<AuthorResponseDto>> response = authorService.getAllAuthors();
+        return ResponseEntity.status(HttpStatus.OK).body(response);
     }
 
     // 작가 단건 조회
@@ -37,7 +41,8 @@ public class AuthorController {
     public ResponseEntity<ResponseDto<AuthorResponseDto>> getAuthorById(
             @PathVariable Long authorId
     ) {
-        return authorService.getAuthorById(authorId);
+        ResponseDto<AuthorResponseDto> response = authorService.getAuthorById(authorId);
+        return ResponseEntity.status(HttpStatus.OK).body(response);
     }
 
     // 작가 이름으로 조회 (동명이인까지 조회)
@@ -45,7 +50,8 @@ public class AuthorController {
     public ResponseEntity<ResponseDto<List<AuthorResponseDto>>> getAllAuthorsByName(
             @PathVariable String authorName
     ) {
-        return authorService.getAllAuthorsByName(authorName);
+        ResponseDto<List<AuthorResponseDto>> response = authorService.getAllAuthorsByName(authorName);
+        return ResponseEntity.status(HttpStatus.OK).body(response);
     }
 
     // 작가 수정
@@ -54,7 +60,8 @@ public class AuthorController {
             @PathVariable Long authorId,
             @Valid @RequestBody AuthorRequestDto dto
     ) {
-        return authorService.updateAuthor(authorId, dto);
+        ResponseDto<AuthorResponseDto> response = authorService.updateAuthor(authorId, dto);
+        return ResponseEntity.status(HttpStatus.OK).body(response);
     }
 
     // 작가 삭제
@@ -62,6 +69,7 @@ public class AuthorController {
     public ResponseEntity<ResponseDto<Void>> deleteAuthor(
             @PathVariable Long authorId
     ) {
-        return authorService.deleteAuthor(authorId);
+        authorService.deleteAuthor(authorId);
+        return ResponseEntity.noContent().build();
     }
 }

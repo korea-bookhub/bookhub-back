@@ -10,15 +10,15 @@ import org.springframework.http.ResponseEntity;
 import java.util.List;
 
 public interface AuthorService {
-    ResponseEntity<ResponseDto<List<AuthorResponseDto>>> createAuthor(@Valid AuthorCreateRequestDto dto);
+    ResponseDto<List<AuthorResponseDto>> createAuthor(@Valid AuthorCreateRequestDto dto);
 
-    ResponseEntity<ResponseDto<List<AuthorResponseDto>>> getAllAuthors();
+    ResponseDto<List<AuthorResponseDto>> getAllAuthors();
 
-    ResponseEntity<ResponseDto<AuthorResponseDto>> updateAuthor(Long authorId, AuthorRequestDto dto);
+    ResponseDto<AuthorResponseDto> updateAuthor(Long authorId, AuthorRequestDto dto);
 
-    ResponseEntity<ResponseDto<Void>> deleteAuthor(Long authorId);
+    ResponseDto<Void> deleteAuthor(Long authorId);
 
-    ResponseEntity<ResponseDto<List<AuthorResponseDto>>> getAllAuthorsByName(String authorName);
+    ResponseDto<List<AuthorResponseDto>> getAllAuthorsByName(String authorName);
 
-    ResponseEntity<ResponseDto<AuthorResponseDto>> getAuthorById(Long authorId);
+    ResponseDto<AuthorResponseDto> getAuthorById(Long authorId);
 }
