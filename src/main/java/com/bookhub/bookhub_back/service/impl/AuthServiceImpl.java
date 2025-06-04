@@ -132,6 +132,10 @@ public class AuthServiceImpl implements AuthService {
             return ResponseDto.fail(ResponseCode.NOT_MATCH_PASSWORD, ResponseMessageKorean.NOT_MATCH_PASSWORD);
         }
 
+        if (employee.getIsApproved().equals(IsApproved.PENDING) || employee.getIsApproved().equals(IsApproved.DENIED)) {
+            return ResponseDto.fail(ResponseCode.NO_PERMISSION, ResponseMessageKorean.NO_PERMISSION);
+        }
+
         String token = jwtProvider.generateJwtToken(loginId, employee.getAuthorityId());
 
         responseDto = EmployeeSignInResponseDto.builder()
