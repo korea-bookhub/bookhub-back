@@ -38,7 +38,7 @@ public class PublisherServiceImpl implements PublisherService {
                 .publisherName(saved.getPublisherName())
                 .build();
 
-        return ResponseDto.success(ResponseCode.SUCCESS, ResponseMessage.SUCCESS, responseDto).getBody();
+        return ResponseDto.success(ResponseCode.SUCCESS, ResponseMessage.SUCCESS, responseDto);
     }
 
     //2)출판사 수정
@@ -47,7 +47,7 @@ public class PublisherServiceImpl implements PublisherService {
     public ResponseDto<PublisherResponseDto> updatePublisher(Long publisherId, PublisherRequestDto dto) {
         PublisherResponseDto responseDto = null;
         Publisher publisher = publisherRepository.findById(publisherId)
-                .orElseThrow(() -> new EntityNotFoundException(ResponseCode.USER_NOT_FOUND + publisherId));
+                .orElseThrow(() -> new EntityNotFoundException(ResponseCode.NO_EXIST_ID + publisherId));
 
         publisher.setPublisherName(dto.getPublisherName());
 
@@ -58,7 +58,7 @@ public class PublisherServiceImpl implements PublisherService {
                 .publisherName(updatedPublisher.getPublisherName())
                 .build();
 
-        return ResponseDto.success(ResponseCode.SUCCESS, ResponseMessage.SUCCESS, responseDto).getBody();
+        return ResponseDto.success(ResponseCode.SUCCESS, ResponseMessage.SUCCESS, responseDto);
     }
 
     //3)출판사 전체 조회
@@ -76,7 +76,7 @@ public class PublisherServiceImpl implements PublisherService {
                         .build())
                 .collect(Collectors.toList());
 
-        return ResponseDto.success(ResponseCode.SUCCESS, ResponseMessage.SUCCESS, responseDtos).getBody();
+        return ResponseDto.success(ResponseCode.SUCCESS, ResponseMessage.SUCCESS, responseDtos);
     }
 
     //4)출판사 단건 조회
@@ -85,7 +85,7 @@ public class PublisherServiceImpl implements PublisherService {
     public ResponseDto<PublisherResponseDto> getPublisherById(Long publisherId) {
         PublisherResponseDto responseDto = null;
         Publisher publisher = publisherRepository.findById(publisherId)
-                .orElseThrow(() -> new EntityNotFoundException(ResponseCode.NO_EXIST_CUSTOMER + publisherId));
+                .orElseThrow(() -> new EntityNotFoundException(ResponseCode.NO_EXIST_ID + publisherId));
 
         responseDto = PublisherResponseDto.builder()
                 .publisherId(publisher.getPublisherId())
@@ -93,16 +93,16 @@ public class PublisherServiceImpl implements PublisherService {
                 .build();
 
 
-        return ResponseDto.success(ResponseCode.SUCCESS, ResponseMessage.SUCCESS, responseDto).getBody();
+        return ResponseDto.success(ResponseCode.SUCCESS, ResponseMessage.SUCCESS, responseDto);
     }
 
     //5)출판사 삭제
     @Override
     public ResponseDto<Void> deletePublisher(Long publisherId) {
         Publisher publisher = publisherRepository.findById(publisherId)
-                .orElseThrow(() -> new EntityNotFoundException(ResponseCode.NO_EXIST_CUSTOMER + publisherId));
+                .orElseThrow(() -> new EntityNotFoundException(ResponseCode.NO_EXIST_ID + publisherId));
 
         publisherRepository.deleteById(publisherId);
-        return ResponseDto.<Void>success(ResponseCode.SUCCESS, ResponseMessage.SUCCESS).getBody();
+        return ResponseDto.success(ResponseCode.SUCCESS, ResponseMessage.SUCCESS);
     }
 }
