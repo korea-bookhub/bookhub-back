@@ -113,6 +113,38 @@ public class AuthServiceImpl implements AuthService {
 
     @Override
     public ResponseDto<EmployeeSignInResponseDto> login(EmployeeSignInRequestDto dto) {
-        return null;
+        String loginId = dto.getLoginId();
+        String password = dto.getPassword();
+
+        EmployeeSignInResponseDto responseDto = null;
+        Employee employee = null;
+
+        int expirTime = jwtProvider.getExpiration();
+
+        employee = employeeRepository.findByLoginId(loginId)
+            .orElseThrow(null);
+
+        if (employee == null) {
+            return ResponseDto.fail(ResponseCode.NO_EXIST_USER_ID, ResponseMessageKorean.NO_EXIST_USER_ID);
+        }
+
+        if (!bCryptPasswordEncoder.matches(password, employee.getPassword())) {
+            return ResponseDto.fail(ResponseCode.NOT_MATCH_PASSWORD, ResponseMessageKorean.NOT_MATCH_PASSWORD);
+        }
+
+        String token = jwtProvider.generateJwtToken(loginId, employee.getAuthorityId());
+
+        responseDto = EmployeeSignInResponseDto.builder()
+            .token(token)
+            .loginId(loginId)
+            .email(employee.getEmail())
+            .name(employee.getName())
+            .BranchName(employee.getBranchId().getBranchName())
+            .PositionName(employee.getPositionId().getPositionName())
+            .AuthorityName(employee.getAuthorityId().getAuthorityName())
+            .expirTime(expirTime)
+            .build();
+
+        return ResponseDto.success(ResponseCode.SUCCESS, ResponseMessageKorean.SUCCESS, responseDto);
     }
 }

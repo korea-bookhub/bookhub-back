@@ -1,5 +1,6 @@
 package com.bookhub.bookhub_back.provider;
 
+import com.bookhub.bookhub_back.entity.Authority;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.JwtParser;
 import io.jsonwebtoken.Jwts;
@@ -35,7 +36,7 @@ public class JwtProvider {
         this.jwtEmailExpirationMs = jwtEmailExpirationMs;
     }
 
-    public String generateJwtToken(String username, Set<String> roles) {
+    public String generateJwtToken(String username, Authority roles) {
         return Jwts.builder()
                 .claim("username", username)
                 .claim("roles", roles)

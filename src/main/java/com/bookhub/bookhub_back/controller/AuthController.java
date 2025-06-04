@@ -27,7 +27,7 @@ public class AuthController {
     @PostMapping(POST_SIGN_UP)
     public ResponseEntity<ResponseDto<EmployeeSignUpResponseDto>> signup(@Valid @RequestBody EmployeeSignUpRequestDto dto) {
         ResponseDto<EmployeeSignUpResponseDto> response = authService.signup(dto);
-        return ResponseEntity.status(HttpStatus.CREATED).body(response);
+        return ResponseDto.toResponseEntity(HttpStatus.OK, response);
     }
 
 
@@ -35,6 +35,6 @@ public class AuthController {
     @PostMapping(POST_SIGN_IN)
     public ResponseEntity<ResponseDto<EmployeeSignInResponseDto>> login(@Valid @RequestBody EmployeeSignInRequestDto dto) {
         ResponseDto<EmployeeSignInResponseDto> response = authService.login(dto);
-        return ResponseEntity.status(HttpStatus.OK).body(response);
+        return ResponseDto.toResponseEntity(HttpStatus.OK, response);
     }
 }
