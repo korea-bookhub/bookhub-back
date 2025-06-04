@@ -24,8 +24,8 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(MethodArgumentNotValidException.class)
     public ResponseEntity<ResponseDto<?>> handleValidationException(MethodArgumentNotValidException e) {
         String errorMessage = e.getBindingResult().getFieldError() != null
-                ? e.getBindingResult().getFieldError().getDefaultMessage()
-                : ResponseMessage.VALIDATION_FAIL;
+            ? e.getBindingResult().getFieldError().getDefaultMessage()
+            : ResponseMessage.VALIDATION_FAIL;
         return logAndRespond(ResponseCode.VALIDATION_FAIL, errorMessage, HttpStatus.BAD_REQUEST, e);
     }
 
@@ -51,6 +51,7 @@ public class GlobalExceptionHandler {
 
     private ResponseEntity<ResponseDto<?>> logAndRespond(String code, String message, HttpStatus status, Exception e) {
         e.printStackTrace();
-        return ResponseDto.fail(code, message, status);
+        return ResponseDto.failWithStatus(code, message, status);
+
     }
 }

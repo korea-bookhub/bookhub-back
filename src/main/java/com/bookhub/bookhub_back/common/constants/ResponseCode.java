@@ -57,4 +57,6 @@ public interface ResponseCode {
     String CONSTRAINT_VIOLATION = "CV";
     String DUPLICATE_ENTRY = "DUP";
 
+    // 존재 유무
+    String NO_EXIST_ID = "NEI";
 }

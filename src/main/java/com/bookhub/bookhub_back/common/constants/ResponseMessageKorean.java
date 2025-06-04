@@ -56,4 +56,7 @@ public interface ResponseMessageKorean {
     // 파일 관련
     String FILE_UPLOAD_FAIL = "파일 업로드에 실패했습니다.";
     String FILE_NOT_FOUND = "파일을 찾을 수 없습니다.";
+
+    // 존재 유무
+    String NO_EXIST_ID = "아이디가 존재하지 않습니다.";
 }
