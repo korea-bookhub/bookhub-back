@@ -56,5 +56,8 @@ public interface ResponseMessage {
     // 파일 관련
     String FILE_UPLOAD_FAIL = "File upload failed.";
     String FILE_NOT_FOUND = "File not found.";
+
+    // 존재 유무
+    String NO_EXIST_ID = "ID does not exist";
 }
 
