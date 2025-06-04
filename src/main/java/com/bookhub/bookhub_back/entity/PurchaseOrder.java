@@ -27,7 +27,7 @@ public class PurchaseOrder {
 
     @Enumerated(EnumType.STRING)
     @Column(name = "purchase_order_status", nullable = false)
-    private PurchaseOrderStatus purchaseOrderStatus;
+    private PurchaseOrderStatus purchaseOrderStatus = PurchaseOrderStatus.REQUESTED;
 
     @Column(name = "purchase_order_date_at")
     @CreatedDate
