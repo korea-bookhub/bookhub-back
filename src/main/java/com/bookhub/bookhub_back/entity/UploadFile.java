@@ -19,7 +19,7 @@ public class UploadFile {
     private String fileName;
     private String filePath;
     private String fileType;
-    private long fileSize;
+    private Long fileSize;
 
     private Long targetId;
     private FileTargetType fileTargetType;
