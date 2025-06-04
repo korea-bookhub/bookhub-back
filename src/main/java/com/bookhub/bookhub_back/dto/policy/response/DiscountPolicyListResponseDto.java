@@ -1,17 +1,13 @@
 package com.bookhub.bookhub_back.dto.policy.response;
 
 import com.bookhub.bookhub_back.common.enums.PolicyType;
-import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.NotNull;
 
 import java.time.LocalDate;
 
-public class DiscountPolicyDetailResponseDto {
+public class DiscountPolicyListResponseDto {
+    private Long publisherid;
     private String policyTitle;
-    private String policyDescription;
     private PolicyType policyType;
-    private int totalPriceAchieve;
-    private int discountPercent;
     private LocalDate startDate;
     private LocalDate endDate;
 }
