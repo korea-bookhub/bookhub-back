@@ -25,6 +25,6 @@ public class Author {
     @Column(name = "author_email", nullable = false, unique = true)
     private String authorEmail;
 
-    @OneToMany(mappedBy = "authorId", fetch = FetchType.LAZY)
-    private List<Book> books = new ArrayList<>();
+//    @OneToMany(mappedBy = "authorId", fetch = FetchType.LAZY)
+//    private List<Book> books = new ArrayList<>();
 }
