@@ -9,6 +9,7 @@ import java.time.LocalDate;
 @Entity
 @Table(name = "discount_policies")
 @Getter
+@Setter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor
 @Builder
@@ -30,10 +31,10 @@ public class DiscountPolicy {
     private PolicyType policyType;
 
     @Column(name = "total_price_achieve")
-    private int totalPriceAchieve;
+    private Integer totalPriceAchieve;
 
     @Column(name = "discount_percent", nullable = false)
-    private int discountPercent;
+    private Integer discountPercent;
 
     @Column(name = "start_date")
     private LocalDate startDate;

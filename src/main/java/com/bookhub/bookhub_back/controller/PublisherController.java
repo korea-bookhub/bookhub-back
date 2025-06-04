@@ -52,7 +52,16 @@ public class PublisherController {
         return ResponseEntity.status(HttpStatus.OK).body(publisher);
     }
 
-    //4)출판사 삭제하기
+    //5)출판사 제목으로 검색
+    @GetMapping("/search")
+    public ResponseEntity<ResponseDto<List<PublisherResponseDto>>> searchPublisherByName(
+            @RequestParam String keyword
+    ){
+        ResponseDto<List<PublisherResponseDto>> publisher = publisherService.getPublisherByName(keyword);
+        return ResponseEntity.status(HttpStatus.OK).body(publisher);
+    }
+
+    //6)출판사 삭제하기
     @DeleteMapping("/publisherId")
     public ResponseEntity<ResponseDto<Void>> deletePublisher(@PathVariable Long publisherId){
         ResponseDto<Void> responseDto = publisherService.deletePublisher(publisherId);

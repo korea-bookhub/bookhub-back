@@ -18,5 +18,8 @@ public interface PublisherService {
 
     ResponseDto<PublisherResponseDto> getPublisherById(Long publisherId);
 
+    ResponseDto<List<PublisherResponseDto>> getPublisherByName(String keyword);
+
     ResponseDto<Void> deletePublisher(Long publisherId);
+
 }
