@@ -14,8 +14,8 @@ import java.time.LocalDateTime;
 @AllArgsConstructor
 @Builder
 public class Book extends BaseTimeEntity {
-    @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "book_isbn")
+    @Id
+    @Column(name = "book_isbn", nullable = false, unique = true)
     private String isbn;
 
     @ManyToOne(fetch = FetchType.LAZY)
