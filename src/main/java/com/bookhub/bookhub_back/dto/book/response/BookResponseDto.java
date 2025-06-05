@@ -1,8 +1,6 @@
-package com.bookhub.bookhub_back.dto.book.request;
+package com.bookhub.bookhub_back.dto.book.response;
 
-import com.bookhub.bookhub_back.entity.DiscountPolicy;
 import lombok.*;
-
 import java.time.LocalDateTime;
 
 @Getter
@@ -10,12 +8,12 @@ import java.time.LocalDateTime;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public class BookCreateRequestDto {
+public class BookResponseDto {
     private String isbn;
-    private Long categoryId;
-    private Long authorId;
-    private Long publisherId;
     private String bookTitle;
+    private String categoryName;
+    private String authorName;
+    private String publisherName;
     private Long bookPrice;
     private LocalDateTime publishedDate;
     private String coverUrl;
