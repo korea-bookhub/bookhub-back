@@ -5,11 +5,13 @@ import jakarta.validation.constraints.NotNull;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
-import java.util.Optional;
+import java.util.List;
 
 @Repository
 public interface BranchRepository extends JpaRepository<Branch, Long> {
-    Optional<Branch> findByBranchName(String branchName);
+   List<Branch> findByBranchName(String branchName);
 
     boolean existsByBranchName(@NotNull String branchName);
+
+    List<Branch> findByBranchLocationContaining(String branchLocation);
 }

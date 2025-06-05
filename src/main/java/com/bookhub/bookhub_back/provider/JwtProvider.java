@@ -88,16 +88,13 @@ public class JwtProvider {
         Object rolesObj = claims.get("roles");
 
         if (rolesObj instanceof String rolesStr) {
-            // "USER,ADMIN" → Set("USER", "ADMIN")
             return Set.of(rolesStr.split(","));
         }
 
-        // 예외적으로 List<String> 형태가 올 경우 대비
         if (rolesObj instanceof List<?> list) {
             return list.stream().map(Object::toString).collect(Collectors.toSet());
         }
 
-        // 그 외 예외 상황 처리
         return Set.of();
     }
 }

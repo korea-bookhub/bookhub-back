@@ -5,8 +5,6 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
-import java.time.LocalDateTime;
-
 @Getter
 @NoArgsConstructor
 @AllArgsConstructor
@@ -14,6 +12,6 @@ import java.time.LocalDateTime;
 public class BranchResponseDto {
     private String branchName;
     private String branchLocation;
-    private LocalDateTime createdAt;
-    private LocalDateTime updatedAt;
+    private String createdAt;
+    private String updatedAt;
 }
