@@ -14,8 +14,10 @@ import com.bookhub.bookhub_back.repository.BookCategoryRepository;
 import com.bookhub.bookhub_back.service.BookCategoryService;
 import jakarta.persistence.EntityNotFoundException;
 import jakarta.transaction.Transactional;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.web.bind.annotation.RequestBody;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -35,7 +37,7 @@ public class BookCategoryServiceImpl implements BookCategoryService {
 
         // 부모 카테고리가 있는 경우 조회
         if (dto.getParentCategoryId() != null) {
-            parent = bookCategoryRepository.findById(dto.getParentCategoryId().getCategoryId())
+            parent = bookCategoryRepository.findById(dto.getParentCategoryId())
                     .orElseThrow(() -> new IllegalArgumentException("상위 카테고리가 존재하지 않습니다."));
         }
 
@@ -148,7 +150,7 @@ public class BookCategoryServiceImpl implements BookCategoryService {
     public ResponseDto<CategoryTreeResponseDto> getActiveByName(String name) {
         BookCategory category = bookCategoryRepository.findActiveByName(name)
                 .orElseThrow(() -> new IllegalArgumentException("해당 이름의 카테고리가 존재하지 않습니다."));
-        return ResponseDto.success(ResponseCode.SUCCESS, ResponseMessage.SUCCESS, toDto(category));
+        return ResponseDto.success(ResponseCode.SUCCESS, ResponseMessage.SUCCESS, buildTree(category));
     }
     
     // (활성/비활성 포함) 이름으로 카테고리 조회
@@ -156,7 +158,7 @@ public class BookCategoryServiceImpl implements BookCategoryService {
     public ResponseDto<CategoryTreeResponseDto> getCategoryByName(String name) {
         BookCategory category = bookCategoryRepository.findByCategoryName(name)
                 .orElseThrow(() -> new IllegalArgumentException("해당 이름의 카테고리가 존재하지 않습니다."));
-        return ResponseDto.success(ResponseCode.SUCCESS, ResponseMessage.SUCCESS, toDto(category));
+        return ResponseDto.success(ResponseCode.SUCCESS, ResponseMessage.SUCCESS, buildTree(category));
     }
 
 
@@ -169,11 +171,16 @@ public class BookCategoryServiceImpl implements BookCategoryService {
                 .categoryType(bc.getCategoryType())
                 .categoryOrder(bc.getCategoryOrder())
                 .isActive(bc.getIsActive())
-                .parentCategoryId(bc.getParentCategoryId())
+                .parentCategoryId(
+                        bc.getParentCategoryId() != null
+                                ? bc.getParentCategoryId().getCategoryId()
+                                : null
+                )
                 .discountPolicyId(bc.getDiscountPolicyId())
                 .subCategories(new ArrayList<>())
                 .build();
     }
+
 
     // 재귀적으로 하위 카테고리를 포함한 트리 구조로 변환
     private CategoryTreeResponseDto buildTree(BookCategory parent) {

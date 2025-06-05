@@ -17,7 +17,7 @@ public class CategoryTreeResponseDto {
     private CategoryType categoryType;
     private int categoryOrder;
     private Boolean isActive;
-    private BookCategory parentCategoryId;
+    private Long parentCategoryId;
     private DiscountPolicy discountPolicyId;
     private List<CategoryTreeResponseDto> subCategories;
 }
