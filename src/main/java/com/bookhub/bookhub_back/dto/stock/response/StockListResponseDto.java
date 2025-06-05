@@ -1,4 +1,4 @@
-package com.bookhub.bookhub_back.dto.branch.request;
+package com.bookhub.bookhub_back.dto.stock.response;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -6,9 +6,11 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 @Getter
-@NoArgsConstructor
 @AllArgsConstructor
+@NoArgsConstructor
 @Builder
-public class BranchSearchRequestDto {
+public class StockListResponseDto {
     private String branchName;
+    private String bookTitle;
+    private Long amount;
 }

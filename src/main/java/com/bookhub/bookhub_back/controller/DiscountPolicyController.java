@@ -75,7 +75,6 @@ public class DiscountPolicyController {
     @DeleteMapping("/{policyId}")
     public ResponseEntity<ResponseDto<Void>> deletePolicy(@PathVariable Long policyId){
         ResponseDto<Void> responseDto = discountPolicyService.deletePolicy(policyId);
-        return ResponseEntity.noContent().build();
+        return ResponseEntity.status(HttpStatus.OK).body(responseDto);
     }
-
 }

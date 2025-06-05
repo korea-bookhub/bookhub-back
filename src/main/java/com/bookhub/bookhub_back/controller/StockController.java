@@ -1,11 +1,58 @@
 package com.bookhub.bookhub_back.controller;
 
+import com.bookhub.bookhub_back.dto.ResponseDto;
+import com.bookhub.bookhub_back.dto.stock.request.StockUpdateRequestDto;
+import com.bookhub.bookhub_back.dto.stock.response.StockListResponseDto;
+import com.bookhub.bookhub_back.dto.stock.response.StockUpdateResponseDto;
+import com.bookhub.bookhub_back.service.StockService;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @RestController
 @RequestMapping
 @RequiredArgsConstructor
 public class StockController {
+
+    //서비스랑 연결
+    private final StockService stockService;
+
+    //책 재고 손실 시 수량 변경(Update)
+    @PutMapping("/{stockId}")
+    public ResponseEntity<ResponseDto<StockUpdateResponseDto>> lossStock(
+            @PathVariable Long stockId,
+            @Valid @RequestBody StockUpdateRequestDto dto){
+        ResponseDto<StockUpdateResponseDto> responseDto = stockService.lossStock(stockId,dto);
+        return ResponseEntity.status(HttpStatus.OK).body(responseDto);
+    }
+
+
+    //책 기준 전체 조회(bookIsbn 으로 검색)
+    @GetMapping("/search/{bookIsbn}")
+    public ResponseEntity<ResponseDto<List<StockListResponseDto>>> searchByBookIsbn(
+            @PathVariable String bookIsbn){
+        ResponseDto<List<StockListResponseDto>> responseDtos = stockService.searchByBookIsbn(bookIsbn);
+        return ResponseEntity.status(HttpStatus.OK).body(responseDtos);
+    }
+
+    //책 기준 전체 조회(bookTitle 으로 검색)
+    @GetMapping("/search/title")
+    public ResponseEntity<ResponseDto<List<StockListResponseDto>>> searchByTitle(
+            @RequestParam String bookTitle){
+        ResponseDto<List<StockListResponseDto>> responseDtos = stockService.searchByBookTitle(bookTitle);
+        return ResponseEntity.status(HttpStatus.OK).body(responseDtos);
+    }
+
+    //지점 기준 전체 조회
+    @GetMapping("/search/branch")
+    public ResponseEntity<ResponseDto<List<StockListResponseDto>>> searchByBranch(
+            @RequestParam String branchName){
+        ResponseDto<List<StockListResponseDto>> responseDtos = stockService.searchByBranch(branchName);
+        return ResponseEntity.status(HttpStatus.OK).body(responseDtos);
+    }
+
 }
