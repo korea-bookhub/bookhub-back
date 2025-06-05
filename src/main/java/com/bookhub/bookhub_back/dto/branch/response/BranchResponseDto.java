@@ -1,4 +1,4 @@
-package com.bookhub.bookhub_back.dto.branch.request;
+package com.bookhub.bookhub_back.dto.branch.response;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -9,6 +9,9 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public class BranchSearchRequestDto {
+public class BranchResponseDto {
     private String branchName;
+    private String branchLocation;
+    private String createdAt;
+    private String updatedAt;
 }

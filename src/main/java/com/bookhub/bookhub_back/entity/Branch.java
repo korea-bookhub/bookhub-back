@@ -4,7 +4,6 @@ import com.bookhub.bookhub_back.entity.datetime.BaseTimeEntity;
 import jakarta.persistence.*;
 import lombok.*;
 
-import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -23,6 +22,7 @@ public class Branch extends BaseTimeEntity {
 
     @Column(name = "branch_name", nullable = false, unique = true)
     private String branchName;
+
     @Column(name = "branch_location", nullable = false)
     private String branchLocation;
 
