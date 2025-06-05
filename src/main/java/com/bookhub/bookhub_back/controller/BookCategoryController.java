@@ -74,7 +74,7 @@ public class BookCategoryController {
     }
 
     // 카테고리 이름으로 조회(활성화 된것만)
-    @GetMapping("/name/active")
+    @GetMapping("/name")
     public ResponseDto<CategoryTreeResponseDto> getActiveByName(@RequestParam String name) {
         return bookCategoryService.getActiveByName(name);
     }
