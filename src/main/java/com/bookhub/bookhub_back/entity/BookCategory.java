@@ -1,6 +1,7 @@
 package com.bookhub.bookhub_back.entity;
 
 import com.bookhub.bookhub_back.common.enums.CategoryType;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -22,9 +23,11 @@ public class BookCategory {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "parent_category_id")
+    @JsonIgnore // 순환 방지
     private BookCategory parentCategoryId;
 
     @OneToMany(mappedBy = "parentCategoryId", cascade = CascadeType.ALL, orphanRemoval = true)
+    @JsonIgnore
     private List<BookCategory> subCategories = new ArrayList<>();
 
     @Column(name = "category_name", nullable = false)

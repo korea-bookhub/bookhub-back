@@ -14,9 +14,9 @@ import java.time.LocalDate;
 @Builder
 public class DiscountPolicyUpdateRequestDto {
     private String policyDescription;
-    private PolicyType policyType;
-    private int totalPriceAchieve;
-    private int discountPercent;
+    private Integer totalPriceAchieve;
+    private Integer discountPercent;
     private LocalDate startDate;
     private LocalDate endDate;
 }
+//Update 시에는 제목과 유형은 수정 불가

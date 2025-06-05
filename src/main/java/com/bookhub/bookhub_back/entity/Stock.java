@@ -24,5 +24,5 @@ public class Stock {
     private Branch branchId;
 
     @Column(name = "book_amount", nullable = false)
-    private int bookAmount;
+    private Long bookAmount;
 }

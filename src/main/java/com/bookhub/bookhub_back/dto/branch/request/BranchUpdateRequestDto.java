@@ -1,6 +1,5 @@
 package com.bookhub.bookhub_back.dto.branch.request;
 
-import jakarta.validation.constraints.NotNull;
 import lombok.*;
 
 @Getter
@@ -8,10 +7,7 @@ import lombok.*;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public class BranchCreateRequestDto {
-    @NotNull
+public class BranchUpdateRequestDto {
     private String branchName;
-
-    @NotNull
     private String branchLocation;
 }

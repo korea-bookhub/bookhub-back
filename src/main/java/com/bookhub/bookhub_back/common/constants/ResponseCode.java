@@ -30,6 +30,8 @@ public interface ResponseCode {
     String USER_NOT_FOUND = "UNF";
     String USER_ALREADY_EXISTS = "UAE";
     String NOT_MATCH_PASSWORD = "NMPW";
+    String NO_EXIST_USER_EMAIL = "NEUE";
+    String NO_EXIST_USER_TEL = "NEUT";
 
     // 리소스 관련
     String NO_EXIST_TOOL = "NT"; // 존재하지 않는 도구
@@ -59,4 +61,6 @@ public interface ResponseCode {
 
     // 존재 유무
     String NO_EXIST_ID = "NEI";
+    String NO_EXIST_BRANCH = "NEB";
+    String DUPLICATED_BRANCH = "DB";
 }

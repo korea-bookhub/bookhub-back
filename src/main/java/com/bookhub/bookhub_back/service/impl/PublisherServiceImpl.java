@@ -96,7 +96,29 @@ public class PublisherServiceImpl implements PublisherService {
         return ResponseDto.success(ResponseCode.SUCCESS, ResponseMessage.SUCCESS, responseDto);
     }
 
-    //5)출판사 삭제
+    //5)출판사 제목으로 검색
+    @Override
+    @Transactional(readOnly = true)
+    public ResponseDto<List<PublisherResponseDto>> getPublisherByName(String keyword) {
+        List<PublisherResponseDto> responseDtos = null;
+
+        if (keyword == null || keyword.trim().isEmpty()) {
+            return ResponseDto.fail(ResponseCode.REQUIRED_FIELD_MISSING,ResponseMessage.REQUIRED_FIELD_MISSING);
+        }
+
+        List<Publisher> publishers = publisherRepository.findByPublisherName(keyword);
+
+        responseDtos = publishers.stream()
+                .map(publisher -> PublisherResponseDto.builder()
+                        .publisherId(publisher.getPublisherId())
+                        .publisherName(publisher.getPublisherName())
+                        .build())
+                .collect(Collectors.toList());
+
+        return ResponseDto.success(ResponseCode.SUCCESS, ResponseMessage.SUCCESS, responseDtos);
+    }
+
+    //6)출판사 삭제
     @Override
     public ResponseDto<Void> deletePublisher(Long publisherId) {
         Publisher publisher = publisherRepository.findById(publisherId)

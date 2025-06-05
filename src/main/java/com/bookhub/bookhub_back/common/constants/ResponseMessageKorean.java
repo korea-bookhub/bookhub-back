@@ -30,6 +30,8 @@ public interface ResponseMessageKorean {
     String NO_EXIST_USER_ID = "존재하지 않는 사용자 ID입니다.";
     String USER_NOT_FOUND = "사용자를 찾을 수 없습니다.";
     String USER_ALREADY_EXISTS = "이미 가입된 사용자입니다.";
+    String NO_EXIST_USER_EMAIL = "존재하지 않는 이메일입니다.";
+    String NO_EXIST_USER_TEL = "존재하지 않는 전화번호입니다.";
 
     // 리소스 관련
     String NO_EXIST_TOOL = "존재하지 않는 도구입니다.";
@@ -59,4 +61,6 @@ public interface ResponseMessageKorean {
 
     // 존재 유무
     String NO_EXIST_ID = "아이디가 존재하지 않습니다.";
+    String NO_EXIST_BRANCH = "지점이 존재하지 않습니다.";
+    String DUPLICATED_BRANCH = "이미 지점이 존재합니다.";
 }
