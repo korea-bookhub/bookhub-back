@@ -18,7 +18,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
-@RequestMapping(ApiMappingPattern.CATEGORY_API)
+@RequestMapping(ApiMappingPattern.BASIC_API + ApiMappingPattern.ADMIN_API + "/categories")
 @RequiredArgsConstructor
 public class BookCategoryController {
     private final BookCategoryService bookCategoryService;
