@@ -15,7 +15,16 @@ import java.time.LocalDateTime;
 @Builder
 public class StockLog {
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "log_id")
     private Long StockLogId;
+
+    @Enumerated(EnumType.STRING)
+    @Column(name = "action_type", nullable = false)
+    private StockActionType stockActionType;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "employee_id", nullable = false)
+    private Employee employeeId;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "book_isbn")
@@ -25,10 +34,6 @@ public class StockLog {
     @JoinColumn(name = "branch_id")
     private Branch branchId;
 
-    @Enumerated(EnumType.STRING)
-    @Column(name = "action_type", nullable = false)
-    private StockActionType stockActionType;
-
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "target_branch_id", nullable = false)
     private Branch targetBranchId;
@@ -36,9 +41,8 @@ public class StockLog {
     @Column(name = "amount", nullable = false)
     private Long amount;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "employee_id", nullable = false)
-    private Employee employeeId;
+    @Column(name = "book_amount", nullable = false)
+    private Long bookAmount;
 
     @Column(name = "action_date", nullable = false)
     private LocalDateTime actionDate;
