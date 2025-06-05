@@ -6,4 +6,6 @@ public interface ApiMappingPattern {
     String PUBLISHER_API = "/api/v1/admin/publishers";
     String CATEGORY_API = "/api/v1/admin/categories";
     String BRANCH_API = "/api/v1/admin/branches";
+    String ADMIN_BOOK_API="/api/v1/admin/books";
+    String BOOK_API="/api/v1/common/books";
 }
