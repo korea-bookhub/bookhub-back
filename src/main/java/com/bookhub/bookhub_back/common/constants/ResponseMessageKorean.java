@@ -61,4 +61,6 @@ public interface ResponseMessageKorean {
 
     // 존재 유무
     String NO_EXIST_ID = "아이디가 존재하지 않습니다.";
+    String NO_EXIST_BRANCH = "지점이 존재하지 않습니다.";
+    String DUPLICATED_BRANCH = "이미 지점이 존재합니다.";
 }

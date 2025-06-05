@@ -61,4 +61,6 @@ public interface ResponseCode {
 
     // 존재 유무
     String NO_EXIST_ID = "NEI";
+    String NO_EXIST_BRANCH = "NEB";
+    String DUPLICATED_BRANCH = "DB";
 }

@@ -50,25 +50,13 @@ public class MailServiceImpl implements MailService {
                 helper.setTo(dto.getEmail());
                 helper.setSubject("이메일 인증 요청");
                 String htmlContent = """
-                        <div style="font-family: Arial, sans-serif; padding: 20px; background-color: #f9f9f9;">
-                            <div style="max-width: 600px; margin: auto; background-color: #ffffff; padding: 30px; border-radius: 8px; box-shadow: 0 0 10px rgba(0,0,0,0.1);">
-                                <h2 style="color: #333333;">[이메일 인증 요청]</h2>
-                                <p style="font-size: 16px; color: #555555;">
+                                <h2>[이메일 인증 요청]</h2>
+                                <p>
                                     안녕하세요,<br><br>
                                     이메일 인증을 위해 아래 버튼을 클릭해 주세요.
                                 </p>
-                                <div style="text-align: center; margin: 30px 0;">
-                                    <a href="http://localhost:8080/api/v1/auth/login-id-find?token=%s"
-                                       style="display: inline-block; padding: 12px 24px; background-color: #4CAF50; color: #ffffff; 
-                                              text-decoration: none; border-radius: 5px; font-size: 16px;">
-                                        이메일 인증하기
-                                    </a>
-                                </div>
-                                <p style="font-size: 12px; color: #cccccc; margin-top: 40px;">
-                                    본 이메일은 인증 목적으로 발송되었습니다. 인증을 원하지 않으시면 무시하셔도 됩니다.
-                                </p>
-                            </div>
-                        </div>
+                                <a href="http://localhost:8080/api/v1/auth/login-id-find?token=%s">이메일 인증하기</a>
+                                <p>본 이메일은 인증 목적으로 발송되었습니다. 인증을 원하지 않으시면 무시하셔도 됩니다.</p>
                     """.formatted(token);
 
                 helper.setText(htmlContent, true);  // true: HTML 형식
@@ -126,25 +114,13 @@ public class MailServiceImpl implements MailService {
                 helper.setTo(dto.getEmail());
                 helper.setSubject("이메일 인증 요청");
                 String htmlContent = """
-                        <div style="font-family: Arial, sans-serif; padding: 20px; background-color: #f9f9f9;">
-                            <div style="max-width: 600px; margin: auto; background-color: #ffffff; padding: 30px; border-radius: 8px; box-shadow: 0 0 10px rgba(0,0,0,0.1);">
-                                <h2 style="color: #333333;">[이메일 인증 요청]</h2>
-                                <p style="font-size: 16px; color: #555555;">
+                                <h2>[이메일 인증 요청]</h2>
+                                <p>
                                     안녕하세요,<br><br>
                                     이메일 인증을 위해 아래 버튼을 클릭해 주세요.
                                 </p>
-                                <div style="text-align: center; margin: 30px 0;">
-                                    <a href="http://localhost:8080/api/v1/auth/password-change?token=%s"
-                                       style="display: inline-block; padding: 12px 24px; background-color: #4CAF50; color: #ffffff; 
-                                              text-decoration: none; border-radius: 5px; font-size: 16px;">
-                                        이메일 인증하기
-                                    </a>
-                                </div>
-                                <p style="font-size: 12px; color: #cccccc; margin-top: 40px;">
-                                    본 이메일은 인증 목적으로 발송되었습니다. 인증을 원하지 않으시면 무시하셔도 됩니다.
-                                </p>
-                            </div>
-                        </div>
+                                <a href="http://localhost:8080/api/v1/auth/password-change?token=%s">이메일 인증하기</a>
+                                <p>본 이메일은 인증 목적으로 발송되었습니다. 인증을 원하지 않으시면 무시하셔도 됩니다.</p>
                     """.formatted(token);
 
                 helper.setText(htmlContent, true);  // true: HTML 형식
@@ -176,7 +152,9 @@ public class MailServiceImpl implements MailService {
                 return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("비밀번호가 일치하지 않습니다.");
             }
 
-            employee.setPassword(password);
+            String encodePassword = bCryptPasswordEncoder.encode(password);
+
+            employee.setPassword(encodePassword);
 
             Employee newEmployee = employeeRepository.save(employee);
 

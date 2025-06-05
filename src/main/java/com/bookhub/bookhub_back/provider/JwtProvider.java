@@ -12,9 +12,9 @@ import org.springframework.stereotype.Component;
 
 import java.security.Key;
 import java.util.Date;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 @Component
 public class JwtProvider {
@@ -39,7 +39,7 @@ public class JwtProvider {
     public String generateJwtToken(String username, Authority roles) {
         return Jwts.builder()
                 .claim("username", username)
-                .claim("roles", roles)
+                .claim("roles", List.of(roles.getAuthorityName()))
                 .setIssuedAt(new Date())
                 .setExpiration(new Date(System.currentTimeMillis() + jwtExpirationMs))
                 .signWith(key, SignatureAlgorithm.HS256)
@@ -85,6 +85,19 @@ public class JwtProvider {
 
     public Set<String> getRolesFromJwt(String token) {
         Claims claims = getClaims(token);
-        return new HashSet<>((List<String>) claims.get("roles"));
+        Object rolesObj = claims.get("roles");
+
+        if (rolesObj instanceof String rolesStr) {
+            // "USER,ADMIN" → Set("USER", "ADMIN")
+            return Set.of(rolesStr.split(","));
+        }
+
+        // 예외적으로 List<String> 형태가 올 경우 대비
+        if (rolesObj instanceof List<?> list) {
+            return list.stream().map(Object::toString).collect(Collectors.toSet());
+        }
+
+        // 그 외 예외 상황 처리
+        return Set.of();
     }
 }
