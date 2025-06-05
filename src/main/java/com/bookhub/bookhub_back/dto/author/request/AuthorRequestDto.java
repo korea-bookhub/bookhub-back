@@ -6,8 +6,8 @@ import lombok.Getter;
 
 @Getter
 public class AuthorRequestDto {
-    @NotNull
+    @NotBlank
     private String authorName;
-    @NotNull
+    @NotBlank
     private String authorEmail;
 }
