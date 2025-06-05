@@ -17,7 +17,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
-import java.util.function.Consumer;
 import java.util.stream.Collectors;
 
 @Service
@@ -170,6 +169,7 @@ public class DiscountPolicyServiceImpl implements DiscountPolicyService {
                 .orElseThrow(() -> new EntityNotFoundException(ResponseCode.NO_EXIST_ID + policyId));
 
         policyRepository.deleteById(policyId);
+
         return ResponseDto.success(ResponseCode.SUCCESS, ResponseMessage.SUCCESS);
     }
 }
