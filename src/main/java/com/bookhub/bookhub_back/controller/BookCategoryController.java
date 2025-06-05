@@ -9,6 +9,7 @@ import com.bookhub.bookhub_back.dto.category.response.CategoryCreateResponseDto;
 import com.bookhub.bookhub_back.dto.category.response.CategoryTreeResponseDto;
 import com.bookhub.bookhub_back.dto.category.response.CategoryUpdateResponseDto;
 import com.bookhub.bookhub_back.service.BookCategoryService;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -24,7 +25,8 @@ public class BookCategoryController {
 
     // 1) 카테고리 생성
     @PostMapping
-    public ResponseEntity<ResponseDto<CategoryCreateResponseDto>> createCategory(CategoryCreateRequestDto dto) {
+    public ResponseEntity<ResponseDto<CategoryCreateResponseDto>> createCategory(
+            @Valid @RequestBody CategoryCreateRequestDto dto) {
         ResponseDto<CategoryCreateResponseDto> category = bookCategoryService.createCategory(dto);
         return ResponseEntity.status(HttpStatus.CREATED).body(category);
     }
@@ -74,8 +76,8 @@ public class BookCategoryController {
     }
 
     // 카테고리 이름으로 조회(활성화 된것만)
-    @GetMapping("/name")
-    public ResponseDto<CategoryTreeResponseDto> getActiveByName(@RequestParam String name) {
+    @GetMapping("/name/active")
+    public ResponseDto<CategoryTreeResponseDto> getActiveByName(@RequestParam("name") String name) {
         return bookCategoryService.getActiveByName(name);
     }
 

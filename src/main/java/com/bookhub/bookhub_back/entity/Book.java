@@ -15,7 +15,7 @@ import java.time.LocalDateTime;
 @Builder
 public class Book extends BaseTimeEntity {
     @Id
-    @Column(name = "book_isbn")
+    @Column(name = "book_isbn", nullable = false, unique = true)
     private String isbn;
 
     @ManyToOne(fetch = FetchType.LAZY)
