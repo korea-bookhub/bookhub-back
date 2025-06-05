@@ -3,9 +3,10 @@ package com.bookhub.bookhub_back.common.constants;
 public interface ApiMappingPattern {
     // 예시
     String AUTH_API = "/api/v1/auth";
-    String PUBLISHER_API = "/api/v1/admin/publishers";
-    String CATEGORY_API = "/api/v1/admin/categories";
-    String BRANCH_API = "/api/v1/admin/branches";
-    String ADMIN_BOOK_API="/api/v1/admin/books";
-    String BOOK_API="/api/v1/common/books";
+
+    String BASIC_API = "/api/v1";
+    String ADMIN_API = "/admin";
+    String MANAGER_API = "/manager";
+    String COMMON_API = "/common";
+
 }
