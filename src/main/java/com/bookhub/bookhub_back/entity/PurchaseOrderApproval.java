@@ -31,7 +31,7 @@ public class PurchaseOrderApproval {
     // 참조
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "employee_id")
-    private Employee employee;
+    private Employee employeeId; // 승인한 담당자
 
     @OneToOne
     @JoinColumn(name = "purchase_order_id")

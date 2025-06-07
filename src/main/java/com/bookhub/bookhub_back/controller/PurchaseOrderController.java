@@ -34,8 +34,7 @@ public class PurchaseOrderController {
 
     // 2) 발주 요청서 전체 조회
     @GetMapping
-    public ResponseEntity<ResponseDto<List<PurchaseOrderResponseDto>>> getAllPurchaseOrders(
-    ) {
+    public ResponseEntity<ResponseDto<List<PurchaseOrderResponseDto>>> getAllPurchaseOrders() {
         ResponseDto<List<PurchaseOrderResponseDto>> response = purchaseOrderService.getAllPurchaseOrders();
         return ResponseEntity.status(HttpStatus.OK).body(response);
     }
@@ -63,7 +62,7 @@ public class PurchaseOrderController {
 
     // 발주 일자로 조회 - 고민중
 
-    // 5) 발주 요청서 수정 - 발주량
+    // 5) 발주 요청서 수정 - 발주량 수정
     @PutMapping("/{purchaseOrderId}")
     public ResponseEntity<ResponseDto<PurchaseOrderResponseDto>> updatePurchaseOrder(
             int purchaseAmount,
@@ -73,9 +72,18 @@ public class PurchaseOrderController {
         return ResponseEntity.status(HttpStatus.OK).body(response);
     }
 
-    // 7) 발주 요청서 수정 - 발주 승인 기능
+    // 6) 발주 요청서 수정 - 발주 승인 기능
+    @PutMapping("/{purchaseOrderId}/approval")
+    public ResponseEntity<ResponseDto<PurchaseOrderResponseDto>> approvePurchaseOrder(
+            @PathVariable Long purchaseOrderId,
+            String employeeName,
+            PurchaseOrderStatus status
+    ){
+        ResponseDto<PurchaseOrderResponseDto> response = purchaseOrderService.approvePurchaseOrder(purchaseOrderId, employeeName, status);
+        return ResponseEntity.status(HttpStatus.OK).body(response);
+    }
 
-    // 8) 발주 요청서 삭제
+    // 7) 발주 요청서 삭제
     @DeleteMapping("/{purchaseOrderId}")
     public ResponseEntity<ResponseDto<Void>> deletePurchaseOrder(
             @PathVariable Long purchaseOrderId
