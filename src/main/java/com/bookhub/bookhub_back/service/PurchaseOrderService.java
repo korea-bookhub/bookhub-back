@@ -20,4 +20,6 @@ public interface PurchaseOrderService {
     ResponseDto<PurchaseOrderResponseDto> getPurchaseOrderById(Long purchaseOrderId);
 
     ResponseDto<List<PurchaseOrderResponseDto>> getPurchaseOrderByEmployeeNameAndIsbnAndPurchaseOrderStatus(String employeeName, String isbn, PurchaseOrderStatus purchaseOrderStatus);
+
+    ResponseDto<PurchaseOrderResponseDto> approvePurchaseOrder(Long purchaseOrderId, String employeeName, PurchaseOrderStatus status);
 }

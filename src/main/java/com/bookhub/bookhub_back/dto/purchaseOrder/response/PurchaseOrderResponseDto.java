@@ -19,6 +19,7 @@ public class PurchaseOrderResponseDto {
     private String bookTitle;
     private Long bookPrice;
     private int purchaseOrderAmount;
+    private Long purchaseOrderPrice;
     private PurchaseOrderStatus purchaseOrderStatus;
     private LocalDateTime purchaseOrderDateAt;
 }
