@@ -5,17 +5,11 @@ import com.bookhub.bookhub_back.common.enums.DisplayType;
 import com.bookhub.bookhub_back.entity.datetime.BaseTimeEntity;
 import jakarta.persistence.*;
 import lombok.*;
-/*
-* publishers 서윤
-*book_display_locations 서윤
-* discount_policies 서윤
-* customer 서윤
-customer_orders 서윤
-customer_orders_detail 서윤
-* */
+
 @Entity
 @Table(name = "book_display_locations")
 @Getter
+@Setter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor
 @Builder
@@ -30,7 +24,7 @@ public class BookDisplayLocation extends BaseTimeEntity {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "book_isbn",  nullable = false)
-    private Book bookIsbn;
+    private Book book;
 
     @Column(name = "floor ", nullable = false)
     private String floor; //책이 위치한 층
@@ -44,6 +38,10 @@ public class BookDisplayLocation extends BaseTimeEntity {
     @Enumerated(EnumType.STRING)
     @Column(name = "display_type ", nullable = false) //진열방식(책장, 평대)
     private DisplayType displayType;
+
+    @Lob
+    @Column(name = "display_note")
+    private String note;
 
 
 }
