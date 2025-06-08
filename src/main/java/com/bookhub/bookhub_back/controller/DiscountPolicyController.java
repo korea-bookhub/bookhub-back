@@ -16,7 +16,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
-@RequestMapping()
+@RequestMapping("/discount")
 @RequiredArgsConstructor
 public class DiscountPolicyController {
     //서비스 단이랑 연결

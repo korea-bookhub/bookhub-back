@@ -14,7 +14,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
-@RequestMapping(ApiMappingPattern.PUBLISHER_API)
+@RequestMapping("/publisher")
 @RequiredArgsConstructor
 public class PublisherController {
     //서비스 단이랑 연결
