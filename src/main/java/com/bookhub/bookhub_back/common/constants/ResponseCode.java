@@ -63,4 +63,5 @@ public interface ResponseCode {
     String NO_EXIST_ID = "NEI";
     String NO_EXIST_BRANCH = "NEB";
     String DUPLICATED_BRANCH = "DB";
+    String NO_EXIST_CONTENT = "NEC";
 }
