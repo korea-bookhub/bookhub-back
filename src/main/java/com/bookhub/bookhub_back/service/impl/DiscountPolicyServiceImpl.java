@@ -16,6 +16,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -162,7 +163,27 @@ public class DiscountPolicyServiceImpl implements DiscountPolicyService {
         return ResponseDto.success(ResponseCode.SUCCESS, ResponseMessage.SUCCESS, responseDtos);
     }
 
-    //7) 할인 정책 삭제
+    //7)할인 정책 기간으로 검색
+    @Override
+    public ResponseDto<List<DiscountPolicyListResponseDto>> getPoliciesByTime(LocalDateTime start, LocalDateTime end) {
+        List<DiscountPolicyListResponseDto> responseDtos = null;
+
+        List<DiscountPolicy> policies = policyRepository.getPoliciesByTime(start, end);
+
+        responseDtos = policies.stream()
+                .map(policy -> DiscountPolicyListResponseDto.builder()
+                        .policyId(policy.getPolicyId())
+                        .policyTitle(policy.getPolicyTitle())
+                        .policyType(policy.getPolicyType())
+                        .startDate(policy.getStartDate())
+                        .endDate(policy.getEndDate())
+                        .build())
+                .collect(Collectors.toList());
+
+        return ResponseDto.success(ResponseCode.SUCCESS, ResponseMessage.SUCCESS, responseDtos);
+    }
+
+    //8) 할인 정책 삭제
     @Override
     public ResponseDto<Void> deletePolicy(Long policyId) {
         DiscountPolicy policy = policyRepository.findById(policyId)

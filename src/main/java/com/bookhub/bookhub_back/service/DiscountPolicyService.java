@@ -8,6 +8,7 @@ import com.bookhub.bookhub_back.dto.policy.response.DiscountPolicyDetailResponse
 import com.bookhub.bookhub_back.dto.policy.response.DiscountPolicyListResponseDto;
 import jakarta.validation.Valid;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 public interface DiscountPolicyService {
@@ -23,5 +24,9 @@ public interface DiscountPolicyService {
 
     ResponseDto<List<DiscountPolicyListResponseDto>> getPoliciesByType(PolicyType type);
 
+    ResponseDto<List<DiscountPolicyListResponseDto>> getPoliciesByTime(LocalDateTime start, LocalDateTime end);
+
     ResponseDto<Void> deletePolicy(Long policyId);
+
+
 }
