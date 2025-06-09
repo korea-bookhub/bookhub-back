@@ -1,6 +1,6 @@
 package com.bookhub.bookhub_back.entity;
 
-import com.bookhub.bookhub_back.common.enums.Status;
+import com.bookhub.bookhub_back.common.enums.IsApproved;
 import jakarta.persistence.*;
 import lombok.*;
 import org.springframework.data.annotation.CreatedDate;
@@ -16,7 +16,7 @@ import java.time.LocalDateTime;
 @AllArgsConstructor
 @Builder
 @EntityListeners(AuditingEntityListener.class)
-public class EmployeeSignupApproval {
+public class EmployeeSignUpApproval {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "approval_id")
@@ -32,15 +32,21 @@ public class EmployeeSignupApproval {
 
     @Column(name = "status", nullable = false)
     @Enumerated(EnumType.STRING)
-    private Status status;
+    private IsApproved status;
 
     @Column(name = "applied_at")
     private LocalDateTime appliedAt;
 
-    @Column(name = "approved_denied_at", nullable = false)
+    @Column(name = "updated_at", nullable = false)
     @CreatedDate
-    private LocalDateTime approvedDeniedAt;
+    private LocalDateTime updatedAt;
 
     @Column(name = "denied_reason")
     private String deniedReason;
+
+    @PreUpdate
+    public void preUpdate() {
+        this.updatedAt = LocalDateTime.now();
+    }
+
 }

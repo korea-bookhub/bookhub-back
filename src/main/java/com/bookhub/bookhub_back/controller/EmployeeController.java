@@ -1,4 +1,45 @@
 package com.bookhub.bookhub_back.controller;
 
+import com.bookhub.bookhub_back.common.constants.ApiMappingPattern;
+import com.bookhub.bookhub_back.common.enums.Status;
+import com.bookhub.bookhub_back.dto.ResponseDto;
+import com.bookhub.bookhub_back.dto.employee.request.EmployeeSignUpApprovalRequestDto;
+import com.bookhub.bookhub_back.dto.employee.response.EmployeeListResponseDto;
+import com.bookhub.bookhub_back.service.EmployeeService;
+import jakarta.validation.Valid;
+import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
+
+@RestController
+@RequestMapping(ApiMappingPattern.BASIC_API + ApiMappingPattern.ADMIN_API + "/employees")
+@RequiredArgsConstructor
 public class EmployeeController {
+    private final EmployeeService employeeService;
+
+    @GetMapping
+    public ResponseEntity<ResponseDto<List<EmployeeListResponseDto>>> searchEmployee(
+        @RequestParam(required = false) String name,
+        @RequestParam(required = false) String branchName,
+        @RequestParam(required = false) String positionName,
+        @RequestParam(required = false) String authorityName,
+        @RequestParam(required = false) Status status
+    ) {
+        ResponseDto<List<EmployeeListResponseDto>> responseDto = employeeService.searchEmployee(name, branchName, positionName, authorityName, status);
+        return ResponseDto.toResponseEntity(HttpStatus.OK, responseDto);
+    }
+
+    @PutMapping("/{employeeId}")
+    public ResponseEntity<ResponseDto<EmployeeListResponseDto>> updateApproval(
+        @PathVariable Long employeeId,
+        @Valid @RequestBody EmployeeSignUpApprovalRequestDto dto,
+        @AuthenticationPrincipal String email
+    ) {
+        ResponseDto<EmployeeListResponseDto> responseDto = employeeService.updateApproval(employeeId, dto, email);
+        return ResponseDto.toResponseEntity(HttpStatus.OK, responseDto);
+    }
 }
