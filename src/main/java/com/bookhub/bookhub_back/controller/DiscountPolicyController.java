@@ -9,10 +9,12 @@ import com.bookhub.bookhub_back.dto.policy.response.DiscountPolicyListResponseDt
 import com.bookhub.bookhub_back.service.DiscountPolicyService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 @RestController
@@ -64,11 +66,20 @@ public class DiscountPolicyController {
     }
 
     //6) 할인 정책 PolicyType로 검색
-    @GetMapping("/{policyType}")
+    @GetMapping("/type")
     public ResponseEntity<ResponseDto<List<DiscountPolicyListResponseDto>>> getPoliciesByType(
             @RequestParam PolicyType type){
-        ResponseDto<List<DiscountPolicyListResponseDto>> responseDto = discountPolicyService.getPoliciesByType(type);
-        return ResponseEntity.status(HttpStatus.OK).body(responseDto);
+        ResponseDto<List<DiscountPolicyListResponseDto>> responseDtos = discountPolicyService.getPoliciesByType(type);
+        return ResponseEntity.status(HttpStatus.OK).body(responseDtos);
+    }
+
+    //7)할인 정책 기간으로 검색
+    @GetMapping("/time")
+    public ResponseEntity<ResponseDto<List<DiscountPolicyListResponseDto>>> getPoliciesByTime(
+            @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) LocalDateTime start,
+            @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) LocalDateTime end){
+        ResponseDto<List<DiscountPolicyListResponseDto>> responseDtos = discountPolicyService.getPoliciesByTime(start,end);
+        return ResponseEntity.status(HttpStatus.OK).body(responseDtos);
     }
 
     //7) 할인 정책 삭제
