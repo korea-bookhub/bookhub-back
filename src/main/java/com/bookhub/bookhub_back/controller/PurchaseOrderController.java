@@ -1,5 +1,6 @@
 package com.bookhub.bookhub_back.controller;
 
+import com.bookhub.bookhub_back.common.constants.ApiMappingPattern;
 import com.bookhub.bookhub_back.common.enums.PurchaseOrderStatus;
 import com.bookhub.bookhub_back.dto.ResponseDto;
 import com.bookhub.bookhub_back.dto.author.request.AuthorCreateRequestDto;
@@ -17,7 +18,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
-@RequestMapping("api/v1/auth/purchaseOrder")
+@RequestMapping(ApiMappingPattern.BASIC_API + ApiMappingPattern.MANAGER_API + "/purchaseOrder")
 @RequiredArgsConstructor
 public class PurchaseOrderController {
     private final PurchaseOrderService purchaseOrderService;
@@ -72,16 +73,6 @@ public class PurchaseOrderController {
         return ResponseEntity.status(HttpStatus.OK).body(response);
     }
 
-    // 6) 발주 요청서 수정 - 발주 승인 기능
-    @PutMapping("/{purchaseOrderId}/approval")
-    public ResponseEntity<ResponseDto<PurchaseOrderResponseDto>> approvePurchaseOrder(
-            @PathVariable Long purchaseOrderId,
-            String employeeName,
-            PurchaseOrderStatus status
-    ){
-        ResponseDto<PurchaseOrderResponseDto> response = purchaseOrderService.approvePurchaseOrder(purchaseOrderId, employeeName, status);
-        return ResponseEntity.status(HttpStatus.OK).body(response);
-    }
 
     // 7) 발주 요청서 삭제
     @DeleteMapping("/{purchaseOrderId}")

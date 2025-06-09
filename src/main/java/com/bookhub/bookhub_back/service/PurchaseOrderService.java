@@ -21,5 +21,5 @@ public interface PurchaseOrderService {
 
     ResponseDto<List<PurchaseOrderResponseDto>> getPurchaseOrderByEmployeeNameAndIsbnAndPurchaseOrderStatus(String employeeName, String isbn, PurchaseOrderStatus purchaseOrderStatus);
 
-    ResponseDto<PurchaseOrderResponseDto> approvePurchaseOrder(Long purchaseOrderId, String employeeName, PurchaseOrderStatus status);
+    ResponseDto<PurchaseOrderResponseDto> approvePurchaseOrder(Long employeeId, Long purchaseOrderId, PurchaseOrderStatus status);
 }

@@ -1,10 +1,10 @@
 package com.bookhub.bookhub_back.controller;
 
+import com.bookhub.bookhub_back.common.constants.ApiMappingPattern;
 import com.bookhub.bookhub_back.dto.ResponseDto;
 import com.bookhub.bookhub_back.dto.author.request.AuthorCreateRequestDto;
 import com.bookhub.bookhub_back.dto.author.request.AuthorRequestDto;
 import com.bookhub.bookhub_back.dto.author.response.AuthorResponseDto;
-import com.bookhub.bookhub_back.dto.publisher.response.PublisherResponseDto;
 import com.bookhub.bookhub_back.service.AuthorService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -15,7 +15,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
-@RequestMapping("api/v1/auth/author") // 권한 수정 예정
+@RequestMapping(ApiMappingPattern.BASIC_API + ApiMappingPattern.ADMIN_API + "/author")
 @RequiredArgsConstructor
 public class AuthorController {
     private final AuthorService authorService;
@@ -46,7 +46,7 @@ public class AuthorController {
     }
 
     // 작가 이름으로 조회 (동명이인까지 조회)
-    @GetMapping("/authorName/{authorName}")
+    @GetMapping("/author-name/{authorName}")
     public ResponseEntity<ResponseDto<List<AuthorResponseDto>>> getAllAuthorsByName(
             @PathVariable String authorName
     ) {
