@@ -10,6 +10,7 @@ import com.bookhub.bookhub_back.dto.branch.response.BranchResponseDto;
 import com.bookhub.bookhub_back.entity.Branch;
 import com.bookhub.bookhub_back.repository.BranchRepository;
 import com.bookhub.bookhub_back.service.BranchService;
+import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -27,7 +28,7 @@ public class BranchServiceImpl implements BranchService {
         Branch branch = null;
 
         if (branchRepository.existsByBranchName(dto.getBranchName())) {
-            return ResponseDto.fail(ResponseCode.DUPLICATED_BRANCH, ResponseMessageKorean.DUPLICATED_BRANCH);
+            throw new EntityNotFoundException();
         }
 
         branch = Branch.builder()
@@ -50,12 +51,11 @@ public class BranchServiceImpl implements BranchService {
     @Override
     public ResponseDto<List<BranchResponseDto>> getBranchesByLocation(String branchLocation) {
         List<BranchResponseDto> responseDtos = null;
-
         List<Branch> branches = null;
-        if(branchLocation == null || branchLocation.isBlank()){
+
+        if (branchLocation == null || branchLocation.isBlank()) {
             throw new IllegalArgumentException();
-        }
-        else if (branchLocation.equals("전체")) {
+        } else if (branchLocation.equals("전체")) {
             branches = branchRepository.findAll();
         } else {
             branches = branchRepository.findByBranchLocationContaining(branchLocation);
@@ -75,14 +75,47 @@ public class BranchServiceImpl implements BranchService {
 
     @Override
     public ResponseDto<BranchResponseDto> updateBranch(Long branchId, BranchUpdateRequestDto dto) {
-//        BranchResponseDto responseDto = null;
-//
-//        Branch branch = branchRepository.findById(branchId)
-//            .orElseThrow(() -> new IllegalArgumentException(ResponseCode.NO_EXIST_BRANCH));
-//
-//        if(branch.getBranchLocation() == null) {
-//            branch.setBranchName(dto.get);
-//        }
-        return null;
+        BranchResponseDto responseDto = null;
+
+        Branch branch = branchRepository.findById(branchId)
+            .orElseThrow(IllegalArgumentException::new);
+
+        if (dto.getBranchName().isBlank() && dto.getBranchLocation().isBlank()) {
+            throw new IllegalArgumentException();
+        }
+
+        if (dto.getBranchName().isBlank()) {
+            branch.setBranchLocation(dto.getBranchLocation());
+        }
+        if (dto.getBranchLocation().isBlank()) {
+            branch.setBranchName(dto.getBranchName());
+        }
+
+        if (!dto.getBranchName().isEmpty() && !dto.getBranchLocation().isEmpty()) {
+            branch.setBranchName(dto.getBranchName());
+            branch.setBranchLocation(dto.getBranchLocation());
+        }
+
+
+        Branch updateBranch = branchRepository.save(branch);
+
+        responseDto = BranchResponseDto.builder()
+            .branchName(updateBranch.getBranchName())
+            .branchLocation(updateBranch.getBranchLocation())
+            .build();
+
+        return ResponseDto.success(ResponseCode.SUCCESS, ResponseMessageKorean.SUCCESS, responseDto);
+    }
+
+    @Override
+    public ResponseDto<Void> deleteBranch(Long branchId) {
+        Branch branch = null;
+
+        branch = branchRepository.findById(branchId)
+            .orElseThrow(IllegalArgumentException::new);
+
+        branchRepository.delete(branch);
+
+        return ResponseDto.success(ResponseCode.SUCCESS, ResponseMessageKorean.SUCCESS, null);
     }
 }
