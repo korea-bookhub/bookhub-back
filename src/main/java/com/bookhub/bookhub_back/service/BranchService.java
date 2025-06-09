@@ -14,4 +14,6 @@ public interface BranchService {
     ResponseDto<List<BranchResponseDto>> getBranchesByLocation(String branchLocation);
 
     ResponseDto<BranchResponseDto> updateBranch(Long branchId, @Valid BranchUpdateRequestDto dto);
+
+    ResponseDto<Void> deleteBranch(Long branchId);
 }
