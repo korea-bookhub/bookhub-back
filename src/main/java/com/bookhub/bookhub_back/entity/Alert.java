@@ -2,6 +2,7 @@ package com.bookhub.bookhub_back.entity;
 
 import com.bookhub.bookhub_back.common.enums.AlertTargetTable;
 import com.bookhub.bookhub_back.common.enums.AlertType;
+import com.bookhub.bookhub_back.entity.datetime.BaseTimeEntity;
 import jakarta.persistence.*;
 import lombok.*;
 import org.springframework.data.annotation.CreatedDate;
@@ -47,7 +48,7 @@ public class Alert {
     @Column(name = "is_read", nullable = false)
     private Boolean isRead = false;
 
-    @Column(name = "created_at", nullable = false)
     @CreatedDate
+    @Column(name = "created_at", nullable = false)
     private LocalDateTime createdAt;
 }
