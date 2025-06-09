@@ -9,19 +9,14 @@ import com.bookhub.bookhub_back.dto.employee.request.EmployeeSignInRequestDto;
 import com.bookhub.bookhub_back.dto.employee.request.EmployeeSignUpRequestDto;
 import com.bookhub.bookhub_back.dto.employee.response.EmployeeSignInResponseDto;
 import com.bookhub.bookhub_back.dto.employee.response.EmployeeSignUpResponseDto;
-import com.bookhub.bookhub_back.entity.Authority;
-import com.bookhub.bookhub_back.entity.Branch;
-import com.bookhub.bookhub_back.entity.Employee;
-import com.bookhub.bookhub_back.entity.Position;
+import com.bookhub.bookhub_back.entity.*;
 import com.bookhub.bookhub_back.provider.JwtProvider;
-import com.bookhub.bookhub_back.repository.AuthorityRepository;
-import com.bookhub.bookhub_back.repository.BranchRepository;
-import com.bookhub.bookhub_back.repository.EmployeeRepository;
-import com.bookhub.bookhub_back.repository.PositionRepository;
+import com.bookhub.bookhub_back.repository.*;
 import com.bookhub.bookhub_back.service.AuthService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
 import java.util.Random;
@@ -33,10 +28,12 @@ public class AuthServiceImpl implements AuthService {
     private final BranchRepository branchRepository;
     private final PositionRepository positionRepository;
     private final AuthorityRepository authorityRepository;
+    private final EmployeeSignUpApprovalRepository employeeSignupApprovalRepository;
     private final BCryptPasswordEncoder bCryptPasswordEncoder;
     private final JwtProvider jwtProvider;
 
     @Override
+    @Transactional
     public ResponseDto<EmployeeSignUpResponseDto> signup(EmployeeSignUpRequestDto dto) {
         EmployeeSignUpResponseDto responseDto = null;
         Employee newEmployee = null;
@@ -107,6 +104,14 @@ public class AuthServiceImpl implements AuthService {
             .build();
 
         employeeRepository.save(newEmployee);
+
+        EmployeeSignUpApproval employeeSignupApproval = EmployeeSignUpApproval.builder()
+            .employeeId(newEmployee)
+            .appliedAt(newEmployee.getCreatedAt())
+            .status(newEmployee.getIsApproved())
+            .build();
+
+        employeeSignupApprovalRepository.save(employeeSignupApproval);
 
         return ResponseDto.success(ResponseCode.SUCCESS, ResponseMessageKorean.SUCCESS);
     }
