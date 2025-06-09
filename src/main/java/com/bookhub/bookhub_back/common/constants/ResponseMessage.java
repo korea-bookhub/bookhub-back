@@ -63,5 +63,6 @@ public interface ResponseMessage {
     String NO_EXIST_ID = "ID does not exist";
     String NO_EXIST_BRANCH = "Branch does not exist";
     String DUPLICATED_BRANCH = "Duplicated branch";
+    String NO_EXIST_CONTENT = "No Exist Content";
 }
 

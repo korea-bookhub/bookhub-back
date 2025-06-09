@@ -16,7 +16,7 @@ import java.time.LocalDateTime;
 public class StockLog {
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "log_id")
-    private Long StockLogId;
+    private Long logId;
 
     @Enumerated(EnumType.STRING)
     @Column(name = "action_type", nullable = false)
@@ -34,13 +34,11 @@ public class StockLog {
     @JoinColumn(name = "branch_id")
     private Branch branchId;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "target_branch_id", nullable = false)
-    private Branch targetBranchId;
-
+    //변경량
     @Column(name = "amount", nullable = false)
     private Long amount;
 
+    //누적량
     @Column(name = "book_amount", nullable = false)
     private Long bookAmount;
 

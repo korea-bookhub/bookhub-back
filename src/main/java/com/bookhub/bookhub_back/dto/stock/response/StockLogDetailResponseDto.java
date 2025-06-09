@@ -1,5 +1,6 @@
 package com.bookhub.bookhub_back.dto.stock.response;
 
+
 import com.bookhub.bookhub_back.common.enums.StockActionType;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -12,13 +13,14 @@ import java.time.LocalDateTime;
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
-public class StockLogResponseDto {
+public class StockLogDetailResponseDto {
     private Long stockLogId;
     private StockActionType type;
     private String employeeName;
     private String bookTitle;
     private String branchName;
     private Long amount;
+    private Long bookAmount;
     private LocalDateTime actionDate;
-
+    private String description;
 }
