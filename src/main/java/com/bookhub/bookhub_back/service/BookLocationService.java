@@ -23,5 +23,7 @@ public interface BookLocationService {
     ResponseDto<List<LocationResponseDto>> searchBranchBooksByTitle(Long branchId, String bookTitle);
 
     //4)해당 책을 클릭하여 위치 반환
-    ResponseDto<LocationDetailResponseDto> getLocation(Long branchId, String bookIsbn);
+    ResponseDto<LocationDetailResponseDto> getLocation(Long branchId, Long locationId);
+
+    ResponseDto<Void> deleteLocation(Long locationId);
 }

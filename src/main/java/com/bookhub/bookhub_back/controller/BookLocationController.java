@@ -53,12 +53,19 @@ public class BookLocationController {
     }
 
     //4)해당 책을 클릭하여 위치 반환
-    @GetMapping(ApiMappingPattern.COMMON_API+"/location/{branchId}/search/{bookIsbn}")
+    @GetMapping(ApiMappingPattern.COMMON_API+"/location/{branchId}/search/{locationId}")
     public ResponseEntity<ResponseDto<LocationDetailResponseDto>> getLocation(
             @PathVariable Long branchId,
-            @PathVariable String bookIsbn){
-        ResponseDto<LocationDetailResponseDto> location = bookLocationService.getLocation(branchId,bookIsbn);
+            @PathVariable Long locationId){
+        ResponseDto<LocationDetailResponseDto> location = bookLocationService.getLocation(branchId,locationId);
         return ResponseEntity.status(HttpStatus.OK).body(location);
+    }
+
+    //5)위치 삭제하기
+    @DeleteMapping("/{locationId}")
+    public ResponseEntity<ResponseDto<Void>> deleteLocation(@PathVariable Long locationId){
+        ResponseDto<Void> responseDto = bookLocationService.deleteLocation(locationId);
+        return ResponseEntity.noContent().build();
     }
 
 
