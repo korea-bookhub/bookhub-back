@@ -22,6 +22,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -97,15 +98,63 @@ public class BookLocationServiceImpl implements BookLocationService {
     @Override
     @Transactional(readOnly = true)
     public ResponseDto<List<LocationResponseDto>> searchBranchBooksByTitle(Long branchId, String bookTitle) {
-        List<LocationResponseDto> responseDtos = null;
-        List<BookDisplayLocation> locations = bookLocationRepository.findAll();
+        Branch branch = branchRepository.findById(branchId)
+                .orElseThrow(() -> new EntityNotFoundException(ResponseCode.NO_EXIST_ID + ResponseMessage.NO_EXIST_ID));
 
-        return null;
+        List<Book> books = bookRepository.searchAllByKeyword(bookTitle);
+        if (books.isEmpty()) {
+            throw new EntityNotFoundException(ResponseCode.NO_EXIST_ID + ResponseMessage.NO_EXIST_ID);
+        }
+
+        List<BookDisplayLocation> locations = bookLocationRepository.findByBranchAndBooks(branch, books);
+        if (locations.isEmpty()) {
+            throw new EntityNotFoundException(ResponseCode.NO_EXIST_ID + ": 해당 지점에 해당 책들이 진열되어 있지 않습니다.");
+        }
+
+        List<LocationResponseDto> responseDtos = null;
+
+        responseDtos = locations.stream()
+                .map(location -> LocationResponseDto.builder()
+                        .locationId(location.getLocationId())
+                        .bookTitle(location.getBook().getBookTitle())
+                        .floor(location.getFloor())
+                        .build())
+                .collect(Collectors.toList());
+
+        return ResponseDto.success(ResponseCode.SUCCESS, ResponseMessage.SUCCESS, responseDtos);
     }
+
+
+
     //4)해당 책을 클릭하여 위치 반환
     @Override
     @Transactional(readOnly = true)
-    public ResponseDto<LocationDetailResponseDto> getLocation(Long branchId, String bookIsbn) {
-        return null;
+    public ResponseDto<LocationDetailResponseDto> getLocation(Long branchId, Long locationId) {
+        LocationDetailResponseDto responseDto = null;
+        BookDisplayLocation location = bookLocationRepository.findById(locationId)
+                .orElseThrow(() -> new EntityNotFoundException(ResponseCode.NO_EXIST_ID));
+
+        responseDto = LocationDetailResponseDto.builder()
+                .locationId(location.getLocationId())
+                .bookTitle(location.getBook().getBookTitle())
+                .floor(location.getFloor())
+                .hall(location.getHall())
+                .section(location.getSection())
+                .type(location.getDisplayType())
+                .note(location.getNote())
+                .build();
+        return ResponseDto.success(ResponseCode.SUCCESS, ResponseMessage.SUCCESS, responseDto);
     }
+
+    //5)지점에서 위치 삭제 (더이상 진열하지 않음)
+
+    @Override
+    public ResponseDto<Void> deleteLocation(Long locationId) {
+        BookDisplayLocation location = bookLocationRepository.findById(locationId)
+                .orElseThrow(() -> new EntityNotFoundException(ResponseCode.NO_EXIST_ID));
+
+        bookLocationRepository.deleteById(locationId);
+        return ResponseDto.success(ResponseCode.SUCCESS, ResponseMessage.SUCCESS);
+    }
+    
 }

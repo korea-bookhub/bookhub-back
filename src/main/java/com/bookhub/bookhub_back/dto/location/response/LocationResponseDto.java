@@ -9,5 +9,6 @@ import lombok.Getter;
 @AllArgsConstructor
 public class LocationResponseDto {
     private Long locationId;
-
+    private String bookTitle;
+    private String floor;
 }
