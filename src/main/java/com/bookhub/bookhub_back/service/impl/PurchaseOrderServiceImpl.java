@@ -158,15 +158,14 @@ public class PurchaseOrderServiceImpl implements PurchaseOrderService {
     }
 
     // 6) 발주 요청서 수정 - 발주 승인 기능
-
     @Override
     @Transactional
-    public ResponseDto<PurchaseOrderResponseDto> approvePurchaseOrder(Long purchaseOrderId, String employeeName, PurchaseOrderStatus status) {
+    public ResponseDto<PurchaseOrderResponseDto> approvePurchaseOrder(Long employeeId, Long purchaseOrderId, PurchaseOrderStatus status) {
 
         PurchaseOrder purchaseOrder = purchaseOrderRepository.findById(purchaseOrderId)
                 .orElseThrow(() -> new EntityNotFoundException(ResponseMessage.FAILED + purchaseOrderId));
 
-        Employee employee = employeeRepository.findByName(employeeName)
+        Employee employee = employeeRepository.findById(employeeId)
                 .orElseThrow(() -> new EntityNotFoundException(ResponseMessage.NO_EXIST_ID));
 
         if(purchaseOrder.getPurchaseOrderStatus() == PurchaseOrderStatus.REQUESTED) {
@@ -186,13 +185,13 @@ public class PurchaseOrderServiceImpl implements PurchaseOrderService {
         PurchaseOrderResponseDto responseDto = changeToPurchaseOrderResponseDto(approvedPurchaseOrder);
 
         // 발주 승인 로그 생성
-        PurchaseOrderApproval purchaseOrderApproval = PurchaseOrderApproval.builder()
+        PurchaseOrderApproval pOA = PurchaseOrderApproval.builder()
                 .employeeId(employee)
                 .purchaseOrderId(purchaseOrder)
-                .isApproved(true)
+                .isApproved(status == PurchaseOrderStatus.APPROVED ? true : false)
                 .build();
 
-        purchaseOrderApprovalRepository.save(purchaseOrderApproval);
+        purchaseOrderApprovalRepository.save(pOA);
 
         return ResponseDto.success(ResponseCode.SUCCESS, ResponseMessage.SUCCESS, responseDto);
     }

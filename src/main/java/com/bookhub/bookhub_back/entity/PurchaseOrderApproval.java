@@ -24,9 +24,9 @@ public class PurchaseOrderApproval {
     @Column(name = "is_approved", nullable = false)
     private boolean isApproved;
 
-    @Column(name = "approved_date_at")
+    @Column(name = "created_at")
     @CreatedDate
-    private LocalDateTime approvedDateAt;
+    private LocalDateTime createdAt;
 
     // 참조
     @ManyToOne(fetch = FetchType.LAZY)
