@@ -45,4 +45,9 @@ public class EmployeeChangeLog {
 
     @Column(name = "changed_at")
     private LocalDateTime changedAt;
+
+    @PrePersist
+    public void prePersist() {
+        this.changedAt = LocalDateTime.now();
+    }
 }
