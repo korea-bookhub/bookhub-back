@@ -3,6 +3,7 @@ package com.bookhub.bookhub_back.controller;
 import com.bookhub.bookhub_back.common.constants.ApiMappingPattern;
 import com.bookhub.bookhub_back.common.enums.Status;
 import com.bookhub.bookhub_back.dto.ResponseDto;
+import com.bookhub.bookhub_back.dto.employee.request.EmployeeOrganizationUpdateRequestDto;
 import com.bookhub.bookhub_back.dto.employee.request.EmployeeSignUpApprovalRequestDto;
 import com.bookhub.bookhub_back.dto.employee.response.EmployeeListResponseDto;
 import com.bookhub.bookhub_back.service.EmployeeService;
@@ -33,13 +34,23 @@ public class EmployeeController {
         return ResponseDto.toResponseEntity(HttpStatus.OK, responseDto);
     }
 
-    @PutMapping("/{employeeId}")
+    @PutMapping("/{employeeId}/approve")
     public ResponseEntity<ResponseDto<EmployeeListResponseDto>> updateApproval(
         @PathVariable Long employeeId,
         @Valid @RequestBody EmployeeSignUpApprovalRequestDto dto,
-        @AuthenticationPrincipal String email
+        @AuthenticationPrincipal String loginId
     ) {
-        ResponseDto<EmployeeListResponseDto> responseDto = employeeService.updateApproval(employeeId, dto, email);
+        ResponseDto<EmployeeListResponseDto> responseDto = employeeService.updateApproval(employeeId, dto, loginId);
+        return ResponseDto.toResponseEntity(HttpStatus.OK, responseDto);
+    }
+
+    @PutMapping("/{employeeId}/organization")
+    public ResponseEntity<ResponseDto<Void>> updateOrganization(
+        @PathVariable Long employeeId,
+        @RequestBody EmployeeOrganizationUpdateRequestDto dto,
+        @AuthenticationPrincipal String loginId
+    ) {
+        ResponseDto<Void> responseDto = employeeService.updateOrganization(employeeId, dto, loginId);
         return ResponseDto.toResponseEntity(HttpStatus.OK, responseDto);
     }
 }
