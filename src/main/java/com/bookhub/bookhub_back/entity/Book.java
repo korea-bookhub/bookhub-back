@@ -1,5 +1,6 @@
 package com.bookhub.bookhub_back.entity;
 
+import com.bookhub.bookhub_back.common.enums.BookStatus;
 import com.bookhub.bookhub_back.entity.datetime.BaseTimeEntity;
 import jakarta.persistence.*;
 import lombok.*;
@@ -51,6 +52,11 @@ public class Book extends BaseTimeEntity {
     @Lob
     @Column(name = "description")
     private String description;
+
+    @Enumerated(EnumType.STRING)
+    @Column(name = "book_status", nullable = false)
+    private BookStatus bookStatus;
+
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "discount_policy_id")

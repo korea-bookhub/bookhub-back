@@ -20,26 +20,31 @@ import java.util.List;
 public class BookController {
     private final BookService bookService;
 
-    // 1. 책 생성
     @PostMapping(ApiMappingPattern.ADMIN_API + "/books")
     public ResponseEntity<ResponseDto<BookResponseDto>> createBook(
+            @RequestHeader("Authorization") String token,
             @Valid @RequestBody BookCreateRequestDto dto) {
-        ResponseDto<BookResponseDto> book = bookService.createBook(dto);
+
+        ResponseDto<BookResponseDto> book = bookService.createBook(dto, token);
         return ResponseEntity.status(HttpStatus.CREATED).body(book);
     }
+
 
     // 2. 책 수정
     @PutMapping(ApiMappingPattern.ADMIN_API + "/books/{isbn}")
     public ResponseDto<BookResponseDto> updateBook(
             @PathVariable String isbn,
+            @RequestHeader("Authorization") String token,
             @RequestBody BookUpdateRequestDto dto) {
-        return bookService.updateBook(isbn, dto);
+        return bookService.updateBook(isbn, dto, token);
     }
 
-    // 3. 책 삭제
-    @DeleteMapping(ApiMappingPattern.ADMIN_API + "/books/{isbn}")
-    public ResponseDto<Void> deleteBook(@PathVariable String isbn) {
-        return bookService.deleteBook(isbn);
+    // 3. 책 hidden 처리
+    @PutMapping(ApiMappingPattern.ADMIN_API + "/books/hidden/{isbn}")
+    public ResponseDto<Void> hideBook(
+            @PathVariable String isbn,
+            @RequestHeader("Authorization") String token) {
+        return bookService.hideBook(isbn, token);
     }
 
     // 4. 책 통합 검색

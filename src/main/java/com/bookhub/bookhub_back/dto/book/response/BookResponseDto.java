@@ -20,5 +20,6 @@ public class BookResponseDto {
     private String pageCount;
     private String language;
     private String description;
+    private String bookStatus;
     private Long policyId;
 }

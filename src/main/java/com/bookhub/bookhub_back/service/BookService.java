@@ -8,8 +8,8 @@ import com.bookhub.bookhub_back.dto.book.response.BookResponseDto;
 import java.util.List;
 
 public interface BookService {
-    ResponseDto<BookResponseDto> createBook(BookCreateRequestDto dto);
-    ResponseDto<BookResponseDto> updateBook(String isbn, BookUpdateRequestDto dto);
+    ResponseDto<BookResponseDto> createBook(BookCreateRequestDto dto, String token);
+    ResponseDto<BookResponseDto> updateBook(String isbn, BookUpdateRequestDto dto, String token);
     ResponseDto<List<BookResponseDto>> searchBook(String keyword);
-    ResponseDto<Void> deleteBook(String isbn);
+    ResponseDto<Void> hideBook(String isbn, String token);
 }
