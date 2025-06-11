@@ -1,6 +1,6 @@
 package com.bookhub.bookhub_back.entity;
 
-import com.bookhub.bookhub_back.common.enums.LogType;
+import com.bookhub.bookhub_back.common.enums.BookLogType;
 import jakarta.persistence.*;
 import lombok.*;
 import org.springframework.data.annotation.CreatedDate;
@@ -24,26 +24,20 @@ public class BookLog {
 
     @Enumerated(EnumType.STRING)
     @Column(name = "log_type", nullable = false)
-    private LogType logType;
+    private BookLogType bookLogType;
 
     @Column(name = "previous_price")
-    private int previousPrice;
+    private Long previousPrice;
     @Column(name = "previous_discount_rate")
-    private int previousDiscountRate;
+    private Integer previousDiscountRate;
 
     @Column(name = "changed_at")
     @CreatedDate
     private LocalDateTime changedAt;
 
-
-    // 참조관계
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "employee_id")
     private Employee employeeId;
-
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "branch_id")
-    private Branch branchId;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "policy_id")
@@ -52,6 +46,5 @@ public class BookLog {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "book_isbn")
     private Book bookIsbn;
-
 
 }

@@ -21,5 +21,6 @@ public class BookUpdateRequestDto {
     private String pageCount;
     private String language;
     private String description;
+    private String bookStatus;
     private Long policyId;
 }
