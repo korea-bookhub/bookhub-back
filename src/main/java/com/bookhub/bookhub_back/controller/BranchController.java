@@ -15,24 +15,24 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
-@RequestMapping(ApiMappingPattern.BASIC_API+ApiMappingPattern.ADMIN_API+"/branches")
+@RequestMapping(ApiMappingPattern.BASIC_API)
 @RequiredArgsConstructor
 public class BranchController {
     private final BranchService branchService;
 
-    @PostMapping
+    @PostMapping(ApiMappingPattern.ADMIN_API+"/branches")
     public ResponseEntity<ResponseDto<BranchResponseDto>> createBranch(@Valid @RequestBody BranchCreateRequestDto dto) {
         ResponseDto<BranchResponseDto> responseDto = branchService.createBranch(dto);
         return ResponseDto.toResponseEntity(HttpStatus.CREATED, responseDto);
     }
 
-    @GetMapping
+    @GetMapping("/auth/branches")
     public ResponseEntity<ResponseDto<List<BranchResponseDto>>> getBranchesByLocation(@RequestParam String branchLocation) {
         ResponseDto<List<BranchResponseDto>> responseDto = branchService.getBranchesByLocation(branchLocation);
         return ResponseDto.toResponseEntity(HttpStatus.OK, responseDto);
     }
 
-    @PutMapping("/{branchId}")
+    @PutMapping(ApiMappingPattern.ADMIN_API+"/branches/{branchId}")
     public ResponseEntity<ResponseDto<BranchResponseDto>> updateBranch(
         @PathVariable Long branchId,
         @Valid @RequestBody BranchUpdateRequestDto dto
@@ -41,7 +41,7 @@ public class BranchController {
         return ResponseDto.toResponseEntity(HttpStatus.OK, responseDto);
     }
 
-    @DeleteMapping("/{branchId}")
+    @DeleteMapping(ApiMappingPattern.ADMIN_API+"/branches/{branchId}")
     public ResponseEntity<ResponseDto<Void>> deleteBranch (@PathVariable Long branchId) {
         ResponseDto<Void> responseDto = branchService.deleteBranch(branchId);
         return ResponseDto.toResponseEntity(HttpStatus.OK, responseDto);

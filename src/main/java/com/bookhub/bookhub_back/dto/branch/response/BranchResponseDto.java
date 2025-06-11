@@ -10,6 +10,7 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @Builder
 public class BranchResponseDto {
+    private Long branchId;
     private String branchName;
     private String branchLocation;
     private String createdAt;

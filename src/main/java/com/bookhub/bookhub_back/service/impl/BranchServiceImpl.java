@@ -63,6 +63,7 @@ public class BranchServiceImpl implements BranchService {
 
         responseDtos = branches.stream()
             .map(branch -> BranchResponseDto.builder()
+                .branchId(branch.getBranchId())
                 .branchName(branch.getBranchName())
                 .branchLocation(branch.getBranchLocation())
                 .createdAt(DateUtils.format(branch.getCreatedAt()))
