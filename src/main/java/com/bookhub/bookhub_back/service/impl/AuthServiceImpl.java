@@ -79,7 +79,7 @@ public class AuthServiceImpl implements AuthService {
         Long employeeNumber;
 
         while (true) {
-            int randomSixDigits = 000000 + random.nextInt(900000); // 100000~999999 범위
+            int randomSixDigits = 100000 + random.nextInt(900000); // 100000~999999 범위
             String resultStr = String.format("%02d", LocalDate.now().getYear() % 100) + randomSixDigits;
             employeeNumber = Long.parseLong(resultStr);
 
