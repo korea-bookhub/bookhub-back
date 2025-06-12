@@ -156,4 +156,12 @@ public class AuthServiceImpl implements AuthService {
 
         return ResponseDto.success(ResponseCode.SUCCESS, ResponseMessageKorean.SUCCESS, responseDto);
     }
+
+    @Override
+    public ResponseDto<Void> checkLoginIdDuplicate(String loginId) {
+        if (employeeRepository.existsByLoginId(loginId)) {
+            return ResponseDto.fail(ResponseCode.DUPLICATED_USER_ID, ResponseMessageKorean.DUPLICATED_USER_ID);
+        }
+        return ResponseDto.success(ResponseCode.SUCCESS, "사용 가능한 아이디입니다.");
+    }
 }
