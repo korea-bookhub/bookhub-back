@@ -9,7 +9,7 @@ import jakarta.validation.Valid;
 import java.util.List;
 
 public interface PurchaseOrderService {
-    ResponseDto<List<PurchaseOrderResponseDto>> createPurchaseOrder(Long employeeId, @Valid PurchaseOrderCreateRequestDto dto);
+    ResponseDto<List<PurchaseOrderResponseDto>> createPurchaseOrder(String loginId, @Valid PurchaseOrderCreateRequestDto dto);
 
     ResponseDto<List<PurchaseOrderResponseDto>> getAllPurchaseOrders();
 
@@ -21,5 +21,5 @@ public interface PurchaseOrderService {
 
     ResponseDto<List<PurchaseOrderResponseDto>> getPurchaseOrderByEmployeeNameAndIsbnAndPurchaseOrderStatus(String employeeName, String isbn, PurchaseOrderStatus purchaseOrderStatus);
 
-    ResponseDto<PurchaseOrderResponseDto> approvePurchaseOrder(Long employeeId, Long purchaseOrderId, PurchaseOrderStatus status);
+    ResponseDto<PurchaseOrderResponseDto> approvePurchaseOrder(String loginId, Long purchaseOrderId, PurchaseOrderStatus status);
 }
