@@ -26,10 +26,10 @@ public class PurchaseOrderController {
     // 1) 발주 요청서 작성
     @PostMapping
     public ResponseEntity<ResponseDto<List<PurchaseOrderResponseDto>>> createPurchaseOrder(
-            @AuthenticationPrincipal Long employeeId,
+            @AuthenticationPrincipal String loginId,
             @Valid @RequestBody PurchaseOrderCreateRequestDto dto
     ) {
-        ResponseDto<List<PurchaseOrderResponseDto>> response = purchaseOrderService.createPurchaseOrder(employeeId, dto);
+        ResponseDto<List<PurchaseOrderResponseDto>> response = purchaseOrderService.createPurchaseOrder(loginId, dto);
         return ResponseEntity.status(HttpStatus.CREATED).body(response);
     }
 

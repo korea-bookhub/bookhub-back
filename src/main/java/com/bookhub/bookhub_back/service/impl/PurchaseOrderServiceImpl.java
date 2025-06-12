@@ -34,12 +34,12 @@ public class PurchaseOrderServiceImpl implements PurchaseOrderService {
 
     // 1) 발주 요청서 작성
     @Override
-    public ResponseDto<List<PurchaseOrderResponseDto>> createPurchaseOrder(Long employeeId, PurchaseOrderCreateRequestDto dto) {
+    public ResponseDto<List<PurchaseOrderResponseDto>> createPurchaseOrder(String loginId, PurchaseOrderCreateRequestDto dto) {
         List<PurchaseOrderResponseDto> responseDtos = null;
         List<PurchaseOrder> purchaseOrders = new ArrayList<>();
 
-        Employee employee = employeeRepository.findById(employeeId)
-                .orElseThrow(() -> new IllegalArgumentException(ResponseMessage.AUTHENTICATION_FAIL));
+        Employee employee = employeeRepository.findByLoginId(loginId)
+                .orElseThrow(IllegalArgumentException::new);
 
         Branch branch = employee.getBranchId();
 
@@ -160,13 +160,13 @@ public class PurchaseOrderServiceImpl implements PurchaseOrderService {
     // 6) 발주 요청서 수정 - 발주 승인 기능
     @Override
     @Transactional
-    public ResponseDto<PurchaseOrderResponseDto> approvePurchaseOrder(Long employeeId, Long purchaseOrderId, PurchaseOrderStatus status) {
+    public ResponseDto<PurchaseOrderResponseDto> approvePurchaseOrder(String loginId, Long purchaseOrderId, PurchaseOrderStatus status) {
 
         PurchaseOrder purchaseOrder = purchaseOrderRepository.findById(purchaseOrderId)
                 .orElseThrow(() -> new EntityNotFoundException(ResponseMessage.FAILED + purchaseOrderId));
 
-        Employee employee = employeeRepository.findById(employeeId)
-                .orElseThrow(() -> new EntityNotFoundException(ResponseMessage.NO_EXIST_ID));
+        Employee employee = employeeRepository.findByLoginId(loginId)
+                .orElseThrow(IllegalArgumentException::new);
 
         if(purchaseOrder.getPurchaseOrderStatus() == PurchaseOrderStatus.REQUESTED) {
             if (status == PurchaseOrderStatus.APPROVED) {

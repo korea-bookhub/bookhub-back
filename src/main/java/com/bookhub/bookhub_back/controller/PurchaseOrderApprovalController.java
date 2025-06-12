@@ -26,11 +26,11 @@ public class PurchaseOrderApprovalController {
     // 1-1) 발주 요청서 수정 - 발주 승인 기능 (승인 또는 승인 거절) -> purchaseOrderApproval 생성
     @PutMapping("/approval/{purchaseOrderId}")
     public ResponseEntity<ResponseDto<PurchaseOrderResponseDto>> approvePurchaseOrder(
-            @AuthenticationPrincipal Long employeeId,
+            @AuthenticationPrincipal String loginId,
             @PathVariable Long purchaseOrderId,
             PurchaseOrderStatus status
     ){
-        ResponseDto<PurchaseOrderResponseDto> response = purchaseOrderService.approvePurchaseOrder(employeeId, purchaseOrderId, status);
+        ResponseDto<PurchaseOrderResponseDto> response = purchaseOrderService.approvePurchaseOrder(loginId, purchaseOrderId, status);
         return ResponseEntity.status(HttpStatus.OK).body(response);
     }
 
