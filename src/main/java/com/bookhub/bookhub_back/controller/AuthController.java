@@ -63,4 +63,10 @@ public class AuthController {
     public Mono<ResponseEntity<String>> verifyEmailPassword(@RequestParam String token, @Valid @RequestBody PasswordResetRequestDto dto) {
         return mailService.verifyEailPassword(token, dto);
     }
+
+    @GetMapping("/login-id-exists")
+    public ResponseEntity<ResponseDto<Void>> checkLoginIdDuplicate(@RequestParam String loginId) {
+        ResponseDto<Void> responseDto = authService.checkLoginIdDuplicate(loginId);
+        return ResponseDto.toResponseEntity(HttpStatus.OK, responseDto);
+    }
 }

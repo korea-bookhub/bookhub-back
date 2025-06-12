@@ -11,4 +11,6 @@ public interface AuthService {
     ResponseDto<EmployeeSignUpResponseDto> signup(@Valid EmployeeSignUpRequestDto dto);
 
     ResponseDto<EmployeeSignInResponseDto> login(@Valid EmployeeSignInRequestDto dto);
+
+    ResponseDto<Void> checkLoginIdDuplicate(String loginId);
 }
