@@ -15,5 +15,5 @@ public class EmployeeSignInResponseDto {
     private String BranchName;
     private String PositionName;
     private String AuthorityName;
-    private int expirTime;
+    private int exprTime;
 }
