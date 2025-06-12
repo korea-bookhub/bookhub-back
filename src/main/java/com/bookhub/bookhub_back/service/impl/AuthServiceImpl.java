@@ -124,7 +124,7 @@ public class AuthServiceImpl implements AuthService {
         EmployeeSignInResponseDto responseDto = null;
         Employee employee = null;
 
-        int expirTime = jwtProvider.getExpiration();
+        int exprTime = jwtProvider.getExpiration();
 
         employee = employeeRepository.findByLoginId(loginId)
             .orElseThrow(null);
@@ -151,7 +151,7 @@ public class AuthServiceImpl implements AuthService {
             .BranchName(employee.getBranchId().getBranchName())
             .PositionName(employee.getPositionId().getPositionName())
             .AuthorityName(employee.getAuthorityId().getAuthorityName())
-            .expirTime(expirTime)
+            .exprTime(exprTime)
             .build();
 
         return ResponseDto.success(ResponseCode.SUCCESS, ResponseMessageKorean.SUCCESS, responseDto);
