@@ -3,9 +3,8 @@ package com.bookhub.bookhub_back.controller;
 import com.bookhub.bookhub_back.common.constants.ApiMappingPattern;
 import com.bookhub.bookhub_back.common.enums.PurchaseOrderStatus;
 import com.bookhub.bookhub_back.dto.ResponseDto;
-import com.bookhub.bookhub_back.dto.author.request.AuthorCreateRequestDto;
-import com.bookhub.bookhub_back.dto.author.response.AuthorResponseDto;
 import com.bookhub.bookhub_back.dto.purchaseOrder.request.PurchaseOrderCreateRequestDto;
+import com.bookhub.bookhub_back.dto.purchaseOrder.request.PurchaseOrderRequestDto;
 import com.bookhub.bookhub_back.dto.purchaseOrder.response.PurchaseOrderResponseDto;
 import com.bookhub.bookhub_back.service.PurchaseOrderService;
 import jakarta.validation.Valid;
@@ -18,7 +17,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
-@RequestMapping(ApiMappingPattern.BASIC_API + ApiMappingPattern.MANAGER_API + "/purchaseOrder")
+@RequestMapping(ApiMappingPattern.BASIC_API + ApiMappingPattern.MANAGER_API + "/purchase-order")
 @RequiredArgsConstructor
 public class PurchaseOrderController {
     private final PurchaseOrderService purchaseOrderService;
@@ -33,10 +32,12 @@ public class PurchaseOrderController {
         return ResponseEntity.status(HttpStatus.CREATED).body(response);
     }
 
-    // 2) 발주 요청서 전체 조회
+    // 2) 발주 요청서 전체 조회 - 사용자 소속 지점 해당 발주서만
     @GetMapping
-    public ResponseEntity<ResponseDto<List<PurchaseOrderResponseDto>>> getAllPurchaseOrders() {
-        ResponseDto<List<PurchaseOrderResponseDto>> response = purchaseOrderService.getAllPurchaseOrders();
+    public ResponseEntity<ResponseDto<List<PurchaseOrderResponseDto>>> getAllPurchaseOrders(
+            @AuthenticationPrincipal String loginId
+    ) {
+        ResponseDto<List<PurchaseOrderResponseDto>> response = purchaseOrderService.getAllPurchaseOrders(loginId);
         return ResponseEntity.status(HttpStatus.OK).body(response);
     }
 
@@ -49,15 +50,16 @@ public class PurchaseOrderController {
         return ResponseEntity.status(HttpStatus.OK).body(response);
     }
 
-    // 4) 발주 요청서 조회 - 조회 기준: 발주담당사원, isbn, 승인 상태
+    // 4) 발주 요청서 조회 - 조회 기준: 발주담당사원, isbn, 승인 상태 (사용자 소속 지점 해당 발주서만)
     @GetMapping("/search")
     public ResponseEntity<ResponseDto<List<PurchaseOrderResponseDto>>> getPurchaseOrderByEmployeeNameAndIsbnAndPurchaseOrderStatus(
+            @AuthenticationPrincipal String loginId,
             @RequestParam(required = false) String employeeName,
-            @RequestParam(required = false) String isbn,
+            @RequestParam(required = false) String bookTitle,
             @RequestParam(required = false) PurchaseOrderStatus purchaseOrderStatus
             // api 형식: GET /search?category=xxx&writer=yyy
     ) {
-        ResponseDto<List<PurchaseOrderResponseDto>> response = purchaseOrderService.getPurchaseOrderByEmployeeNameAndIsbnAndPurchaseOrderStatus(employeeName, isbn, purchaseOrderStatus);
+        ResponseDto<List<PurchaseOrderResponseDto>> response = purchaseOrderService.getPurchaseOrderByEmployeeNameAndBookTitleAndPurchaseOrderStatus(loginId, employeeName, bookTitle, purchaseOrderStatus);
         return ResponseEntity.status(HttpStatus.OK).body(response);
     }
 
@@ -66,10 +68,10 @@ public class PurchaseOrderController {
     // 5) 발주 요청서 수정 - 발주량 수정
     @PutMapping("/{purchaseOrderId}")
     public ResponseEntity<ResponseDto<PurchaseOrderResponseDto>> updatePurchaseOrder(
-            int purchaseAmount,
+            @RequestBody PurchaseOrderRequestDto dto,
             @PathVariable Long purchaseOrderId
     ) {
-        ResponseDto<PurchaseOrderResponseDto> response = purchaseOrderService.updatePurchaseOrder(purchaseAmount, purchaseOrderId);
+        ResponseDto<PurchaseOrderResponseDto> response = purchaseOrderService.updatePurchaseOrder(dto, purchaseOrderId);
         return ResponseEntity.status(HttpStatus.OK).body(response);
     }
 

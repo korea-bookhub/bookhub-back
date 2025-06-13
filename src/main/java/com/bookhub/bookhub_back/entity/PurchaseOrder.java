@@ -43,7 +43,7 @@ public class PurchaseOrder {
     private Book bookIsbn;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "employee_id")
+    @JoinColumn(name = "purchase_employee_id")
     private Employee employeeId;
 
     @OneToOne(mappedBy = "purchaseOrderId", cascade = CascadeType.ALL)

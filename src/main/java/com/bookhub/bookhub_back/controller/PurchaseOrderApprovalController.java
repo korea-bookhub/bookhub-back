@@ -3,6 +3,7 @@ package com.bookhub.bookhub_back.controller;
 import com.bookhub.bookhub_back.common.constants.ApiMappingPattern;
 import com.bookhub.bookhub_back.common.enums.PurchaseOrderStatus;
 import com.bookhub.bookhub_back.dto.ResponseDto;
+import com.bookhub.bookhub_back.dto.purchaseOrder.request.PurchaseOrderApproveRequestDto;
 import com.bookhub.bookhub_back.dto.purchaseOrder.response.PurchaseOrderResponseDto;
 import com.bookhub.bookhub_back.dto.purchaseOrderApproval.response.PurchaseOrderApprovalResponseDto;
 import com.bookhub.bookhub_back.service.PurchaseOrderApprovalService;
@@ -17,7 +18,7 @@ import java.time.LocalDate;
 import java.util.List;
 
 @RestController
-@RequestMapping(ApiMappingPattern.BASIC_API + ApiMappingPattern.ADMIN_API + "/purchaseOrderApproval")
+@RequestMapping(ApiMappingPattern.BASIC_API + ApiMappingPattern.ADMIN_API + "/purchase-order-approval")
 @RequiredArgsConstructor
 public class PurchaseOrderApprovalController {
     private final PurchaseOrderApprovalService purchaseOrderApprovalService;
@@ -28,9 +29,9 @@ public class PurchaseOrderApprovalController {
     public ResponseEntity<ResponseDto<PurchaseOrderResponseDto>> approvePurchaseOrder(
             @AuthenticationPrincipal String loginId,
             @PathVariable Long purchaseOrderId,
-            PurchaseOrderStatus status
-    ){
-        ResponseDto<PurchaseOrderResponseDto> response = purchaseOrderService.approvePurchaseOrder(loginId, purchaseOrderId, status);
+            @RequestBody PurchaseOrderApproveRequestDto dto
+            ){
+        ResponseDto<PurchaseOrderResponseDto> response = purchaseOrderService.approvePurchaseOrder(loginId, purchaseOrderId, dto);
         return ResponseEntity.status(HttpStatus.OK).body(response);
     }
 

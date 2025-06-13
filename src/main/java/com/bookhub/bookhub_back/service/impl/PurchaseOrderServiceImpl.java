@@ -5,6 +5,7 @@ import com.bookhub.bookhub_back.common.constants.ResponseMessage;
 import com.bookhub.bookhub_back.common.enums.PurchaseOrderStatus;
 import com.bookhub.bookhub_back.dto.ResponseDto;
 import com.bookhub.bookhub_back.dto.author.request.AuthorRequestDto;
+import com.bookhub.bookhub_back.dto.purchaseOrder.request.PurchaseOrderApproveRequestDto;
 import com.bookhub.bookhub_back.dto.purchaseOrder.request.PurchaseOrderCreateRequestDto;
 import com.bookhub.bookhub_back.dto.purchaseOrder.request.PurchaseOrderRequestDto;
 import com.bookhub.bookhub_back.dto.purchaseOrder.response.PurchaseOrderResponseDto;
@@ -51,8 +52,8 @@ public class PurchaseOrderServiceImpl implements PurchaseOrderService {
                             .purchaseOrderStatus(PurchaseOrderStatus.REQUESTED)
                             .employeeId(employee)
                             .branchId(branch)
-                            .bookIsbn(bookRepository.findByIsbn(requestDto.getIsbn())
-                                    .orElseThrow(() -> new IllegalArgumentException(ResponseMessage.NO_EXIST_ID)))
+                            .bookIsbn(bookRepository.findByBookTitle(requestDto.getBookTitle())
+                                    .orElseThrow(() -> new IllegalArgumentException("등록되지 않은 책입니다.")))
                     .build());
         }
 
@@ -67,10 +68,15 @@ public class PurchaseOrderServiceImpl implements PurchaseOrderService {
 
     // 2) 발주 요청서 전체 조회
     @Override
-    public ResponseDto<List<PurchaseOrderResponseDto>> getAllPurchaseOrders() {
+    public ResponseDto<List<PurchaseOrderResponseDto>> getAllPurchaseOrders(String loginId) {
         List<PurchaseOrderResponseDto> responseDtos = null;
 
-        List<PurchaseOrder> purchaseOrders = purchaseOrderRepository.findAll();
+        Employee employee = employeeRepository.findByLoginId(loginId)
+                .orElseThrow(IllegalArgumentException::new);
+
+        Branch branch = employee.getBranchId();
+
+        List<PurchaseOrder> purchaseOrders = purchaseOrderRepository.findAllByBranchId(branch);
 
         responseDtos = purchaseOrders.stream()
                 .map(order -> changeToPurchaseOrderResponseDto(order))
@@ -93,47 +99,57 @@ public class PurchaseOrderServiceImpl implements PurchaseOrderService {
 
     // 4) 발주 요청서 조회 - 조회 기준: 발주담당사원, isbn, 승인 상태
     @Override
-    public ResponseDto<List<PurchaseOrderResponseDto>> getPurchaseOrderByEmployeeNameAndIsbnAndPurchaseOrderStatus(
-            String employeeName, String isbn, PurchaseOrderStatus purchaseOrderStatus
+    public ResponseDto<List<PurchaseOrderResponseDto>> getPurchaseOrderByEmployeeNameAndBookTitleAndPurchaseOrderStatus(
+            String loginId, String employeeName, String bookTitle, PurchaseOrderStatus purchaseOrderStatus
     ) {
         List<PurchaseOrderResponseDto> responseDtos = null;
         List<PurchaseOrder> purchaseOrders = null;
 
-        if(employeeName == null && isbn == null && purchaseOrderStatus == null) {
+        if(employeeName == null && bookTitle == null && purchaseOrderStatus == null) {
             throw new IllegalArgumentException("조회 조건을 선택하세요");
-        } if(isbn == null && purchaseOrderStatus == null) {
+        } if(bookTitle == null && purchaseOrderStatus == null) {
             Employee employee = employeeRepository.findByName(employeeName)
                 .orElseThrow(() -> new EntityNotFoundException(ResponseMessage.NO_EXIST_ID));
             purchaseOrders = purchaseOrderRepository.findByEmployeeId(employee);
         } else if (employeeName == null && purchaseOrderStatus == null) {
-            Book book = bookRepository.findByIsbn(isbn)
+            Book book = bookRepository.findByBookTitle(bookTitle)
                     .orElseThrow(() -> new EntityNotFoundException(ResponseMessage.NO_EXIST_ID));
             purchaseOrders = purchaseOrderRepository.findByBookIsbn(book);
-        } else if (employeeName == null && isbn == null) {
+        } else if (employeeName == null && bookTitle == null) {
             purchaseOrders = purchaseOrderRepository.findByPurchaseOrderStatus(purchaseOrderStatus);
         } else if (purchaseOrderStatus == null) {
             Employee employee = employeeRepository.findByName(employeeName)
                 .orElseThrow(() -> new EntityNotFoundException(ResponseMessage.NO_EXIST_ID));
-            Book book = bookRepository.findByIsbn(isbn)
+            Book book = bookRepository.findByBookTitle(bookTitle)
                     .orElseThrow(() -> new EntityNotFoundException(ResponseMessage.NO_EXIST_ID));
             purchaseOrders = purchaseOrderRepository.findByEmployeeIdAndBookIsbn(employee, book);
-        } else if (isbn == null) {
+        } else if (bookTitle == null) {
             Employee employee = employeeRepository.findByName(employeeName)
                     .orElseThrow(() -> new EntityNotFoundException(ResponseMessage.NO_EXIST_ID));
             purchaseOrders = purchaseOrderRepository.findByEmployeeIdAndPurchaseOrderStatus(employee, purchaseOrderStatus);
         } else if (employeeName == null) {
-            Book book = bookRepository.findByIsbn(isbn)
+            Book book = bookRepository.findByBookTitle(bookTitle)
                     .orElseThrow(() -> new EntityNotFoundException(ResponseMessage.NO_EXIST_ID));
             purchaseOrders = purchaseOrderRepository.findByBookIsbnAndPurchaseOrderStatus(book, purchaseOrderStatus);
         } else {
             Employee employee = employeeRepository.findByName(employeeName)
                     .orElseThrow(() -> new EntityNotFoundException(ResponseMessage.NO_EXIST_ID));
-            Book book = bookRepository.findByIsbn(isbn)
+            Book book = bookRepository.findByBookTitle(bookTitle)
                     .orElseThrow(() -> new EntityNotFoundException(ResponseMessage.NO_EXIST_ID));
             purchaseOrders = purchaseOrderRepository.findByEmployeeIdAndBookIsbnAndPurchaseOrderStatus(employee, book, purchaseOrderStatus);
         }
 
-        responseDtos = purchaseOrders.stream()
+        // 사용자의 지점에 해당하는 purchaseOrders 필터링
+        Employee employee = employeeRepository.findByLoginId(loginId)
+                .orElseThrow(IllegalArgumentException::new);
+
+        Branch branch = employee.getBranchId();
+
+        List<PurchaseOrder> filteredPurchaseOrder = purchaseOrders.stream()
+                .filter(purchaseOrder -> purchaseOrder.getBranchId() == branch)
+                .collect(Collectors.toList());
+
+        responseDtos = filteredPurchaseOrder.stream()
                 .map(order -> changeToPurchaseOrderResponseDto(order))
                 .collect(Collectors.toList());
 
@@ -143,12 +159,12 @@ public class PurchaseOrderServiceImpl implements PurchaseOrderService {
 
     // 5) 발주 요청서 수정 - 발주량
     @Override
-    public ResponseDto<PurchaseOrderResponseDto> updatePurchaseOrder(int purchaseAmount, Long purchaseOrderId) {
+    public ResponseDto<PurchaseOrderResponseDto> updatePurchaseOrder(PurchaseOrderRequestDto dto, Long purchaseOrderId) {
 
         PurchaseOrder purchaseOrder = purchaseOrderRepository.findById(purchaseOrderId)
                 .orElseThrow(() -> new EntityNotFoundException(ResponseMessage.FAILED + purchaseOrderId));
 
-        purchaseOrder.setPurchaseOrderAmount(purchaseAmount);
+        purchaseOrder.setPurchaseOrderAmount(dto.getPurchaseOrderAmount());
 
         PurchaseOrder updatedPurchaseOrder = purchaseOrderRepository.save(purchaseOrder);
 
@@ -160,7 +176,7 @@ public class PurchaseOrderServiceImpl implements PurchaseOrderService {
     // 6) 발주 요청서 수정 - 발주 승인 기능
     @Override
     @Transactional
-    public ResponseDto<PurchaseOrderResponseDto> approvePurchaseOrder(String loginId, Long purchaseOrderId, PurchaseOrderStatus status) {
+    public ResponseDto<PurchaseOrderResponseDto> approvePurchaseOrder(String loginId, Long purchaseOrderId, PurchaseOrderApproveRequestDto dto) {
 
         PurchaseOrder purchaseOrder = purchaseOrderRepository.findById(purchaseOrderId)
                 .orElseThrow(() -> new EntityNotFoundException(ResponseMessage.FAILED + purchaseOrderId));
@@ -169,9 +185,9 @@ public class PurchaseOrderServiceImpl implements PurchaseOrderService {
                 .orElseThrow(IllegalArgumentException::new);
 
         if(purchaseOrder.getPurchaseOrderStatus() == PurchaseOrderStatus.REQUESTED) {
-            if (status == PurchaseOrderStatus.APPROVED) {
+            if (dto.getStatus() == PurchaseOrderStatus.APPROVED) {
                 purchaseOrder.setPurchaseOrderStatus(PurchaseOrderStatus.APPROVED);
-            } else if (status == PurchaseOrderStatus.REJECTED) {
+            } else if (dto.getStatus() == PurchaseOrderStatus.REJECTED) {
                 purchaseOrder.setPurchaseOrderStatus(PurchaseOrderStatus.REJECTED);
             } else {
                 throw new IllegalArgumentException("APPROVED 또는 REJECTED 중 하나를 입력하세요.");
@@ -188,7 +204,7 @@ public class PurchaseOrderServiceImpl implements PurchaseOrderService {
         PurchaseOrderApproval pOA = PurchaseOrderApproval.builder()
                 .employeeId(employee)
                 .purchaseOrderId(purchaseOrder)
-                .isApproved(status == PurchaseOrderStatus.APPROVED ? true : false)
+                .isApproved(dto.getStatus() == PurchaseOrderStatus.APPROVED ? true : false)
                 .build();
 
         purchaseOrderApprovalRepository.save(pOA);
