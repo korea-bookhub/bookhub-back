@@ -34,7 +34,7 @@ public class AuthServiceImpl implements AuthService {
 
     @Override
     @Transactional
-    public ResponseDto<EmployeeSignUpResponseDto> signup(EmployeeSignUpRequestDto dto) {
+    public ResponseDto<Void> signup(EmployeeSignUpRequestDto dto) {
         EmployeeSignUpResponseDto responseDto = null;
         Employee newEmployee = null;
 
@@ -145,12 +145,6 @@ public class AuthServiceImpl implements AuthService {
 
         responseDto = EmployeeSignInResponseDto.builder()
             .token(token)
-            .loginId(loginId)
-            .email(employee.getEmail())
-            .name(employee.getName())
-            .BranchName(employee.getBranchId().getBranchName())
-            .PositionName(employee.getPositionId().getPositionName())
-            .AuthorityName(employee.getAuthorityId().getAuthorityName())
             .exprTime(exprTime)
             .build();
 

@@ -9,11 +9,5 @@ import lombok.Getter;
 @Builder
 public class EmployeeSignInResponseDto {
     private String token;
-    private String loginId;
-    private String email;
-    private String name;
-    private String BranchName;
-    private String PositionName;
-    private String AuthorityName;
     private int exprTime;
 }

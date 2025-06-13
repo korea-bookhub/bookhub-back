@@ -1,6 +1,8 @@
 package com.bookhub.bookhub_back.service.impl;
 
+import com.bookhub.bookhub_back.common.constants.ResponseCode;
 import com.bookhub.bookhub_back.common.constants.ResponseMessageKorean;
+import com.bookhub.bookhub_back.dto.ResponseDto;
 import com.bookhub.bookhub_back.dto.auth.request.LoginIdFindSendEmailRequestDto;
 import com.bookhub.bookhub_back.dto.auth.request.PasswordFindSendEmailReqestDto;
 import com.bookhub.bookhub_back.dto.auth.request.PasswordResetRequestDto;
@@ -31,62 +33,60 @@ public class MailServiceImpl implements MailService {
     private final BCryptPasswordEncoder bCryptPasswordEncoder;
 
     @Override
-    public Mono<ResponseEntity<String>> sendEmailFindId(LoginIdFindSendEmailRequestDto dto) {
-        return Mono.fromSupplier(() -> {
-            try {
-                if (!employeeRepository.existsByEmail(dto.getEmail())) {
-                    return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(ResponseMessageKorean.NO_EXIST_USER_EMAIL);
-                }
-                if (!employeeRepository.existsByPhoneNumber(dto.getEmail())) {
-                    return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(ResponseMessageKorean.NO_EXIST_USER_TEL);
-                }
+    public Mono<ResponseEntity<ResponseDto<String>>> sendEmailFindId(LoginIdFindSendEmailRequestDto dto) {
+        return Mono.fromCallable(() -> {
 
-                String token = UUID.randomUUID().toString();
-                verificationTokens.put(token, dto.getEmail());
+            Employee employee = employeeRepository.findByEmail(dto.getEmail())
+                .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 이메일입니다."));
 
-                MimeMessage message = mailSender.createMimeMessage();
-                MimeMessageHelper helper = new MimeMessageHelper(message, true, "UTF-8");
-
-                helper.setTo(dto.getEmail());
-                helper.setSubject("이메일 인증 요청");
-                String htmlContent = """
-                                <h2>[이메일 인증 요청]</h2>
-                                <p>
-                                    안녕하세요,<br><br>
-                                    이메일 인증을 위해 아래 버튼을 클릭해 주세요.
-                                </p>
-                                <a href="http://localhost:8080/api/v1/auth/login-id-find?token=%s">이메일 인증하기</a>
-                                <p>본 이메일은 인증 목적으로 발송되었습니다. 인증을 원하지 않으시면 무시하셔도 됩니다.</p>
-                    """.formatted(token);
-
-                helper.setText(htmlContent, true);  // true: HTML 형식
-
-                mailSender.send(message);
-
-                return ResponseEntity.ok("인증 메일 전송 완료");
-            } catch (MessagingException e) {
-                throw new RuntimeException(e);
+            if (!employee.getPhoneNumber().equals(dto.getPhoneNumber())) {
+                throw new IllegalArgumentException("사용자의 전화번호와 일치하지 않습니다.");
             }
 
+            String token = UUID.randomUUID().toString();
+            verificationTokens.put(token, dto.getEmail());
+
+            MimeMessage message = mailSender.createMimeMessage();
+            MimeMessageHelper helper = new MimeMessageHelper(message, true, "UTF-8");
+
+            helper.setTo(dto.getEmail());
+            helper.setSubject("이메일 인증 요청");
+            String htmlContent = """
+                            <h2>[이메일 인증 요청]</h2>
+                            <p>
+                                안녕하세요,<br><br>
+                                이메일 인증을 위해 아래 버튼을 클릭해 주세요.
+                            </p>
+                            <a href="http://localhost:5173/auth/login-id-find?token=%s">이메일 인증하기</a>
+                            <p>본 이메일은 인증 목적으로 발송되었습니다. 인증을 원하지 않으시면 무시하셔도 됩니다.</p>
+                """.formatted(token);
+
+            helper.setText(htmlContent, true);  // true: HTML 형식
+
+            mailSender.send(message);
+
+            return ResponseEntity.status(HttpStatus.OK)
+                .body(ResponseDto.success(ResponseCode.SUCCESS, ResponseMessageKorean.SUCCESS, "이메일 전송 성공"));
         });
     }
 
     @Override
-    public Mono<ResponseEntity<String>> verifyEailId(String token) {
-        return Mono.fromSupplier(() -> {
+    public Mono<ResponseEntity<ResponseDto<String>>> verifyEmailId(String token) {
+        return Mono.fromCallable(() -> {
             String email = verificationTokens.remove(token);
+            System.out.println(email);
+
+            if (email == null) {
+                return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(
+                    ResponseDto.fail(ResponseCode.TOKEN_EXPIRED, ResponseMessageKorean.TOKEN_EXPIRED));
+            }
+
+
             Employee employee = employeeRepository.findByEmail(email)
                 .orElseThrow(() -> new IllegalArgumentException("직원이 존재하지 않습니다."));
 
-            if (employee == null) {
-                return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("직원이 존재하지 않습니다.");
-            }
-
-            if (email != null) {
-                return ResponseEntity.ok(employee.getLoginId());
-            } else {
-                return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("유효하지 않은 또는 만료된 토큰입니다.");
-            }
+            return ResponseEntity.status(HttpStatus.OK)
+                .body(ResponseDto.success(ResponseCode.SUCCESS, ResponseMessageKorean.SUCCESS, employee.getLoginId()));
         });
     }
 
@@ -135,7 +135,7 @@ public class MailServiceImpl implements MailService {
     }
 
     @Override
-    public Mono<ResponseEntity<String>> verifyEailPassword(String token, PasswordResetRequestDto dto) {
+    public Mono<ResponseEntity<String>> verifyEmailPassword(String token, PasswordResetRequestDto dto) {
         return Mono.fromSupplier(() -> {
             String email = verificationTokens.remove(token);
             Employee employee = employeeRepository.findByEmail(email)
