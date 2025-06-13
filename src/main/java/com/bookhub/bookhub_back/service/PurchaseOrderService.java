@@ -2,7 +2,9 @@ package com.bookhub.bookhub_back.service;
 
 import com.bookhub.bookhub_back.common.enums.PurchaseOrderStatus;
 import com.bookhub.bookhub_back.dto.ResponseDto;
+import com.bookhub.bookhub_back.dto.purchaseOrder.request.PurchaseOrderApproveRequestDto;
 import com.bookhub.bookhub_back.dto.purchaseOrder.request.PurchaseOrderCreateRequestDto;
+import com.bookhub.bookhub_back.dto.purchaseOrder.request.PurchaseOrderRequestDto;
 import com.bookhub.bookhub_back.dto.purchaseOrder.response.PurchaseOrderResponseDto;
 import jakarta.validation.Valid;
 
@@ -11,15 +13,15 @@ import java.util.List;
 public interface PurchaseOrderService {
     ResponseDto<List<PurchaseOrderResponseDto>> createPurchaseOrder(String loginId, @Valid PurchaseOrderCreateRequestDto dto);
 
-    ResponseDto<List<PurchaseOrderResponseDto>> getAllPurchaseOrders();
+    ResponseDto<List<PurchaseOrderResponseDto>> getAllPurchaseOrders(String loginId);
 
-    ResponseDto<PurchaseOrderResponseDto> updatePurchaseOrder(int purchaseAmount, Long purchaseOrderId);
+    ResponseDto<PurchaseOrderResponseDto> updatePurchaseOrder(PurchaseOrderRequestDto dto, Long purchaseOrderId);
 
     ResponseDto<Void> deletePurchaseOrder(Long purchaseOrderId);
 
     ResponseDto<PurchaseOrderResponseDto> getPurchaseOrderById(Long purchaseOrderId);
 
-    ResponseDto<List<PurchaseOrderResponseDto>> getPurchaseOrderByEmployeeNameAndIsbnAndPurchaseOrderStatus(String employeeName, String isbn, PurchaseOrderStatus purchaseOrderStatus);
+    ResponseDto<List<PurchaseOrderResponseDto>> getPurchaseOrderByEmployeeNameAndBookTitleAndPurchaseOrderStatus(String loginId, String employeeName, String bookTitle, PurchaseOrderStatus purchaseOrderStatus);
 
-    ResponseDto<PurchaseOrderResponseDto> approvePurchaseOrder(String loginId, Long purchaseOrderId, PurchaseOrderStatus status);
+    ResponseDto<PurchaseOrderResponseDto> approvePurchaseOrder(String loginId, Long purchaseOrderId, PurchaseOrderApproveRequestDto dto);
 }

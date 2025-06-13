@@ -11,7 +11,7 @@ import lombok.Getter;
 @AllArgsConstructor
 public class PurchaseOrderRequestDto {
     @NotBlank
-    private String isbn;
+    private String bookTitle;
     @NotNull
     private int purchaseOrderAmount;
 }
