@@ -8,7 +8,6 @@ import com.bookhub.bookhub_back.dto.auth.request.PasswordResetRequestDto;
 import com.bookhub.bookhub_back.dto.employee.request.EmployeeSignInRequestDto;
 import com.bookhub.bookhub_back.dto.employee.request.EmployeeSignUpRequestDto;
 import com.bookhub.bookhub_back.dto.employee.response.EmployeeSignInResponseDto;
-import com.bookhub.bookhub_back.dto.employee.response.EmployeeSignUpResponseDto;
 import com.bookhub.bookhub_back.service.AuthService;
 import com.bookhub.bookhub_back.service.MailService;
 import jakarta.validation.Valid;
@@ -31,8 +30,8 @@ public class AuthController {
 
     // 1) 회원가입
     @PostMapping(POST_SIGN_UP)
-    public ResponseEntity<ResponseDto<EmployeeSignUpResponseDto>> signup(@Valid @RequestBody EmployeeSignUpRequestDto dto) {
-        ResponseDto<EmployeeSignUpResponseDto> response = authService.signup(dto);
+    public ResponseEntity<ResponseDto<Void>> signup(@Valid @RequestBody EmployeeSignUpRequestDto dto) {
+        ResponseDto<Void> response = authService.signup(dto);
         return ResponseDto.toResponseEntity(HttpStatus.OK, response);
     }
 
@@ -45,13 +44,13 @@ public class AuthController {
     }
 
     @PostMapping("/login-id-find/email")
-    public Mono<ResponseEntity<String>> SendEmailFindId(@Valid @RequestBody LoginIdFindSendEmailRequestDto dto) {
+    public Mono<ResponseEntity<ResponseDto<String>>> SendEmailFindId(@Valid @RequestBody LoginIdFindSendEmailRequestDto dto) {
         return mailService.sendEmailFindId(dto);
     }
 
     @GetMapping("/login-id-find")
-    public Mono<ResponseEntity<String>> verifyEmailId(@RequestParam String token) {
-        return mailService.verifyEailId(token);
+    public Mono<ResponseEntity<ResponseDto<String>>> verifyEmailId(@RequestParam String token) {
+        return mailService.verifyEmailId(token);
     }
 
     @PostMapping("/password-change/email")
@@ -61,7 +60,7 @@ public class AuthController {
 
     @PutMapping("/password-change")
     public Mono<ResponseEntity<String>> verifyEmailPassword(@RequestParam String token, @Valid @RequestBody PasswordResetRequestDto dto) {
-        return mailService.verifyEailPassword(token, dto);
+        return mailService.verifyEmailPassword(token, dto);
     }
 
     @GetMapping("/login-id-exists")
