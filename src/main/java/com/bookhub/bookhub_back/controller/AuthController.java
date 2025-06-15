@@ -54,13 +54,18 @@ public class AuthController {
     }
 
     @PostMapping("/password-change/email")
-    public Mono<ResponseEntity<String>> sendEmailResetPassword (@Valid @RequestBody PasswordFindSendEmailReqestDto dto) {
+    public Mono<ResponseEntity<ResponseDto<String>>> sendEmailResetPassword (@Valid @RequestBody PasswordFindSendEmailReqestDto dto) {
         return mailService.sendEmailResetPassword(dto);
     }
 
+    @GetMapping("/password-change")
+    public Mono<ResponseEntity<ResponseDto<String>>> verifyLoginIdPassword(@RequestParam String token) {
+        return mailService.verifyLoginIdPassword(token);
+    }
+
     @PutMapping("/password-change")
-    public Mono<ResponseEntity<String>> verifyEmailPassword(@RequestParam String token, @Valid @RequestBody PasswordResetRequestDto dto) {
-        return mailService.verifyEmailPassword(token, dto);
+    public Mono<ResponseEntity<ResponseDto<String>>> passwordChange(@RequestParam String token, @Valid @RequestBody PasswordResetRequestDto dto) {
+        return mailService.passwordChange(token, dto);
     }
 
     @GetMapping("/login-id-exists")
