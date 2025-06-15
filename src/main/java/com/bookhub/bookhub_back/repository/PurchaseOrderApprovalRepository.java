@@ -9,6 +9,7 @@ import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 
@@ -16,8 +17,10 @@ import java.util.Optional;
 public interface PurchaseOrderApprovalRepository extends JpaRepository<PurchaseOrderApproval, Long> {
     List<PurchaseOrderApproval> findByEmployeeId(Employee employee);
 
-    @Query(value = "SELECT * FROM purchase_order_approvals WHERE approved_date_at BETWEEN MONTH(:startedDate) AND MONTH(:endedDate)", nativeQuery = true)
-    List<PurchaseOrderApproval> findByCreatedAt(@Param("startedDate") LocalDate startedDate, @Param("endedDate") LocalDate endedDate);
+//    @Query(value = "SELECT * FROM purchase_order_approvals WHERE created_at BETWEEN :startDate AND :endDate", nativeQuery = true)
+    List<PurchaseOrderApproval> findByCreatedAtBetween(LocalDateTime startDate, LocalDateTime endDate);
 
     List<PurchaseOrderApproval> findByIsApproved(boolean isApproved);
+
+    List<PurchaseOrderApproval> findByEmployeeIdAndIsApproved(Employee employee, boolean isApproved);
 }

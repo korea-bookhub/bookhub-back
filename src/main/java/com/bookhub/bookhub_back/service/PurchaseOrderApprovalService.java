@@ -4,6 +4,7 @@ import com.bookhub.bookhub_back.dto.ResponseDto;
 import com.bookhub.bookhub_back.dto.purchaseOrderApproval.response.PurchaseOrderApprovalResponseDto;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.List;
 
 public interface PurchaseOrderApprovalService {
@@ -16,5 +17,7 @@ public interface PurchaseOrderApprovalService {
 
     ResponseDto<List<PurchaseOrderApprovalResponseDto>> getPurchaseOrderApprovalByIsApproved(boolean isApproved);
 
-    ResponseDto<List<PurchaseOrderApprovalResponseDto>> getPurchaseOrderApprovalByCreatedAt(LocalDate startedDate, LocalDate endedDate);
+    ResponseDto<List<PurchaseOrderApprovalResponseDto>> getPurchaseOrderApprovalByCreatedAt(LocalDate startDate, LocalDate endDate);
+
+    ResponseDto<List<PurchaseOrderApprovalResponseDto>> getPurchaseOrderApprovalByEmployeeNameAndIsApproved(String employeeName, Boolean isApproved);
 }

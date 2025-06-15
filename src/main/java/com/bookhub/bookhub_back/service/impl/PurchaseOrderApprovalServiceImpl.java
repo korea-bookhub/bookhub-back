@@ -3,17 +3,19 @@ package com.bookhub.bookhub_back.service.impl;
 import com.bookhub.bookhub_back.common.constants.ResponseCode;
 import com.bookhub.bookhub_back.common.constants.ResponseMessage;
 import com.bookhub.bookhub_back.dto.ResponseDto;
+import com.bookhub.bookhub_back.dto.purchaseOrder.response.PurchaseOrderResponseDto;
 import com.bookhub.bookhub_back.dto.purchaseOrderApproval.response.PurchaseOrderApprovalResponseDto;
-import com.bookhub.bookhub_back.entity.Employee;
-import com.bookhub.bookhub_back.entity.PurchaseOrderApproval;
+import com.bookhub.bookhub_back.entity.*;
 import com.bookhub.bookhub_back.repository.EmployeeRepository;
 import com.bookhub.bookhub_back.repository.PurchaseOrderApprovalRepository;
 import com.bookhub.bookhub_back.service.PurchaseOrderApprovalService;
+import com.bookhub.bookhub_back.service.PurchaseOrderService;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -69,14 +71,20 @@ public class PurchaseOrderApprovalServiceImpl implements PurchaseOrderApprovalSe
         return ResponseDto.success(ResponseCode.SUCCESS, ResponseMessage.SUCCESS, responseDtos);
     }
 
-    // 조회 - 승인 일자 (월 단위)
+    // 조회 - 승인 일자
     @Override
-    public ResponseDto<List<PurchaseOrderApprovalResponseDto>> getPurchaseOrderApprovalByCreatedAt(LocalDate startedDate, LocalDate endedDate) {
+    public ResponseDto<List<PurchaseOrderApprovalResponseDto>> getPurchaseOrderApprovalByCreatedAt(LocalDate startDate, LocalDate endDate) {
         List<PurchaseOrderApprovalResponseDto> responseDtos = null;
-
         List<PurchaseOrderApproval> purchaseOrderApprovals = null;
 
-        purchaseOrderApprovals = purchaseOrderApprovalRepository.findByCreatedAt(startedDate, endedDate);
+        if (startDate == null || endDate == null) {
+            throw new IllegalArgumentException("시작일과 종료일을 입력해주세요.");
+        }
+
+        LocalDateTime start = startDate.atStartOfDay();
+        LocalDateTime end = endDate.atTime(23, 59, 59);
+
+        purchaseOrderApprovals = purchaseOrderApprovalRepository.findByCreatedAtBetween(start, end);
 
         responseDtos = purchaseOrderApprovals.stream()
                 .map(purchaseOrderApproval -> changeToResponseDto(purchaseOrderApproval))
@@ -84,6 +92,7 @@ public class PurchaseOrderApprovalServiceImpl implements PurchaseOrderApprovalSe
 
         return ResponseDto.success(ResponseCode.SUCCESS, ResponseMessage.SUCCESS, responseDtos);
     }
+
 
     // 조회 - 승인 여부
     @Override
@@ -100,6 +109,35 @@ public class PurchaseOrderApprovalServiceImpl implements PurchaseOrderApprovalSe
         return ResponseDto.success(ResponseCode.SUCCESS, ResponseMessage.SUCCESS, responseDtos);
     }
 
+    // 조회 - 승인 담당자 + 승인 여부
+    @Override
+    public ResponseDto<List<PurchaseOrderApprovalResponseDto>> getPurchaseOrderApprovalByEmployeeNameAndIsApproved(
+            String employeeName, Boolean isApproved
+    ) {
+        List<PurchaseOrderApprovalResponseDto> responseDtos = null;
+        List<PurchaseOrderApproval> purchaseOrderApprovals = null;
+
+        if(employeeName == null && isApproved == null) {
+            throw new IllegalArgumentException("조회 조건을 선택하세요");
+        }else if(employeeName == null) {
+            purchaseOrderApprovals = purchaseOrderApprovalRepository.findByIsApproved(isApproved);
+        }else if(isApproved == null) {
+            Employee employee = employeeRepository.findByName(employeeName)
+                    .orElseThrow(() -> new EntityNotFoundException(ResponseMessage.NO_EXIST_ID));
+            purchaseOrderApprovals = purchaseOrderApprovalRepository.findByEmployeeId(employee);
+        }else {
+            Employee employee = employeeRepository.findByName(employeeName)
+                    .orElseThrow(() -> new EntityNotFoundException(ResponseMessage.NO_EXIST_ID));
+            purchaseOrderApprovals = purchaseOrderApprovalRepository.findByEmployeeIdAndIsApproved(employee, isApproved);
+        }
+
+        responseDtos = purchaseOrderApprovals.stream()
+                .map(approval -> changeToResponseDto(approval))
+                .collect(Collectors.toList());
+
+        return ResponseDto.success(ResponseCode.SUCCESS, ResponseMessage.SUCCESS, responseDtos);
+    }
+
     // responseDto 변환 메서드
     public PurchaseOrderApprovalResponseDto changeToResponseDto(PurchaseOrderApproval purchaseOrderApproval) {
         return  PurchaseOrderApprovalResponseDto.builder()
@@ -110,6 +148,7 @@ public class PurchaseOrderApprovalServiceImpl implements PurchaseOrderApprovalSe
                                 .employeeName(purchaseOrderApproval.getPurchaseOrderId().getEmployeeId().getName())
                                 .isbn(purchaseOrderApproval.getPurchaseOrderId().getBookIsbn().getIsbn())
                                 .bookTitle(purchaseOrderApproval.getPurchaseOrderId().getBookIsbn().getBookTitle())
+                                .bookPrice(purchaseOrderApproval.getPurchaseOrderId().getBookIsbn().getBookPrice())
                                 .purchaseOrderAmount(purchaseOrderApproval.getPurchaseOrderId().getPurchaseOrderAmount())
                                 .purchaseOrderStatus(purchaseOrderApproval.getPurchaseOrderId().getPurchaseOrderStatus())
                                 .build()
