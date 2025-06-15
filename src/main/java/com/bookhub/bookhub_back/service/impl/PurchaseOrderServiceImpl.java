@@ -76,15 +76,30 @@ public class PurchaseOrderServiceImpl implements PurchaseOrderService {
 
         Branch branch = employee.getBranchId();
 
-        List<PurchaseOrder> purchaseOrders = purchaseOrderRepository.findAllByBranchId(branch);
+        List<PurchaseOrder> purchaseOrders = purchaseOrderRepository.findAll();
 
         responseDtos = purchaseOrders.stream()
+                .filter(order -> order.getBranchId() == branch)
                 .map(order -> changeToPurchaseOrderResponseDto(order))
                 .collect(Collectors.toList());
 
         return ResponseDto.success(ResponseCode.SUCCESS, ResponseMessage.SUCCESS, responseDtos);
     }
 
+    // 2-1) 발주 요청서 업데이트 (승인 상태 - 요청중 인 발주서만 전체 조회)
+    @Override
+    public ResponseDto<List<PurchaseOrderResponseDto>> getAllPurchaseOrdersRequested() {
+        List<PurchaseOrderResponseDto> responseDtos = null;
+
+        List<PurchaseOrder> purchaseOrders = purchaseOrderRepository.findAll();
+
+        responseDtos = purchaseOrders.stream()
+                .filter(order -> order.getPurchaseOrderStatus() == PurchaseOrderStatus.REQUESTED)
+                .map(order -> changeToPurchaseOrderResponseDto(order))
+                .collect(Collectors.toList());
+
+        return ResponseDto.success(ResponseCode.SUCCESS, ResponseMessage.SUCCESS, responseDtos);
+    }
 
     // 3) 발주 요청서 단건 조회 - id로 조회
     @Override
@@ -204,13 +219,14 @@ public class PurchaseOrderServiceImpl implements PurchaseOrderService {
         PurchaseOrderApproval pOA = PurchaseOrderApproval.builder()
                 .employeeId(employee)
                 .purchaseOrderId(purchaseOrder)
-                .isApproved(dto.getStatus() == PurchaseOrderStatus.APPROVED ? true : false)
+                .isApproved(purchaseOrder.getPurchaseOrderStatus() == PurchaseOrderStatus.APPROVED ? true : false)
                 .build();
 
         purchaseOrderApprovalRepository.save(pOA);
 
         return ResponseDto.success(ResponseCode.SUCCESS, ResponseMessage.SUCCESS, responseDto);
     }
+
 
     // 7) 발주 요청서 삭제
     @Override

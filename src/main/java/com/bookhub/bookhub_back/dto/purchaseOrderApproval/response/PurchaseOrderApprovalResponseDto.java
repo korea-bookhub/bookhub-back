@@ -1,6 +1,7 @@
 package com.bookhub.bookhub_back.dto.purchaseOrderApproval.response;
 
 import com.bookhub.bookhub_back.common.enums.PurchaseOrderStatus;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -12,6 +13,7 @@ import java.time.LocalDateTime;
 @AllArgsConstructor
 public class PurchaseOrderApprovalResponseDto {
     private Long purchaseOrderApprovalId;
+    @JsonProperty("isApproved")
     private boolean isApproved;
     private LocalDateTime approvedDateAt;
     private String employeeName; // 승인한 담당자 이름
