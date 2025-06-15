@@ -11,10 +11,12 @@ import reactor.core.publisher.Mono;
 public interface MailService {
     Mono<ResponseEntity<ResponseDto<String>>> sendEmailFindId(@Valid LoginIdFindSendEmailRequestDto dto);
 
-    Mono<ResponseEntity<ResponseDto<String>>>  verifyEmailId(String token);
+    Mono<ResponseEntity<ResponseDto<String>>> verifyEmailId(String token);
 
-    Mono<ResponseEntity<String>> sendEmailResetPassword(@Valid PasswordFindSendEmailReqestDto dto);
+    Mono<ResponseEntity<ResponseDto<String>>> sendEmailResetPassword(@Valid PasswordFindSendEmailReqestDto dto);
 
-    Mono<ResponseEntity<String>> verifyEmailPassword(String token, @Valid PasswordResetRequestDto dto);
+    Mono<ResponseEntity<ResponseDto<String>>> verifyLoginIdPassword(String token);
+
+    Mono<ResponseEntity<ResponseDto<String>>> passwordChange(String token, @Valid PasswordResetRequestDto dto);
 
 }
