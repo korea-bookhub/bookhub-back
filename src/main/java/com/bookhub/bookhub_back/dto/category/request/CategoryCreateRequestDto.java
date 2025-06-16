@@ -18,7 +18,6 @@ public class CategoryCreateRequestDto {
     @NotNull(message = "카테고리 타입은 필수입니다.")
     private CategoryType categoryType;
 
-    @NotNull(message = "카테고리 정렬 순서는 필수입니다.")
     private Integer categoryOrder;
 
     private Long parentCategoryId; // 선택 사항

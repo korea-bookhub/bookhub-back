@@ -2,13 +2,12 @@ package com.bookhub.bookhub_back.dto.reception.request;
 
 import lombok.*;
 
-import java.time.LocalDateTime;
-
 @Getter
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
-public class ReceptionCreateRequestDto {
+public class ReceptionApprovalLogCreateRequestDto {
+    private Long employeeId;
     private Long branchId;
     private Long purchaseOrderApprovalId;
 }
