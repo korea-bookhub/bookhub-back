@@ -1,5 +1,6 @@
 package com.bookhub.bookhub_back.service;
 
+import com.bookhub.bookhub_back.dto.PageResponseDto;
 import com.bookhub.bookhub_back.dto.ResponseDto;
 import com.bookhub.bookhub_back.dto.publisher.request.PublisherRequestDto;
 import com.bookhub.bookhub_back.dto.publisher.response.PublisherResponseDto;
@@ -14,11 +15,12 @@ public interface PublisherService {
 
     ResponseDto<PublisherResponseDto> updatePublisher(Long publisherId, @Valid PublisherRequestDto dto);
 
-    ResponseDto<List<PublisherResponseDto>> getAllPublishers();
+    ResponseDto<PageResponseDto<PublisherResponseDto>> getAllPublishers(int page, int size);
 
-    ResponseDto<PublisherResponseDto> getPublisherById(Long publisherId);
 
-    ResponseDto<List<PublisherResponseDto>> getPublisherByName(String keyword);
+//    ResponseDto<PublisherResponseDto> getPublisherById(Long publisherId);
+
+    ResponseDto<List<PublisherResponseDto>> getPublisherByNameContaining(String keyword);
 
     ResponseDto<Void> deletePublisher(Long publisherId);
 
