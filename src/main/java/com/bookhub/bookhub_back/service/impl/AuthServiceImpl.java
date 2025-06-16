@@ -13,7 +13,11 @@ import com.bookhub.bookhub_back.entity.*;
 import com.bookhub.bookhub_back.provider.JwtProvider;
 import com.bookhub.bookhub_back.repository.*;
 import com.bookhub.bookhub_back.service.AuthService;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
+import jakarta.servlet.http.HttpSession;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.ResponseCookie;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -158,4 +162,17 @@ public class AuthServiceImpl implements AuthService {
         }
         return ResponseDto.success(ResponseCode.SUCCESS, "사용 가능한 아이디입니다.");
     }
+
+    @Override
+    public ResponseDto<Void> logout(HttpServletResponse response) {
+        ResponseCookie accessTokenCookie = ResponseCookie.from("accessToken", "")
+            .path("/")
+            .maxAge(0)
+            .build();
+
+        response.addHeader("Set-Cookie", accessTokenCookie.toString());
+
+        return ResponseDto.success(ResponseCode.SUCCESS, ResponseMessageKorean.SUCCESS);
+    }
+
 }
