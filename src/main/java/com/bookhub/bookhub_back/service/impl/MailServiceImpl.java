@@ -56,7 +56,7 @@ public class MailServiceImpl implements MailService {
                                 안녕하세요,<br><br>
                                 이메일 인증을 위해 아래 버튼을 클릭해 주세요.
                             </p>
-                            <a href="http://localhost:5173/auth/login-id-find?token=%s">이메일 인증하기</a>
+                            <a href="http://localhost:5174/auth/login-id-find?token=%s">이메일 인증하기</a>
                             <p>본 이메일은 인증 목적으로 발송되었습니다. 인증을 원하지 않으시면 무시하셔도 됩니다.</p>
                 """.formatted(token);
 
@@ -115,7 +115,7 @@ public class MailServiceImpl implements MailService {
                                 안녕하세요,<br><br>
                                 이메일 인증을 위해 아래 버튼을 클릭해 주세요.
                             </p>
-                            <a href="http://localhost:5173/auth/password-change?token=%s">이메일 인증하기</a>
+                            <a href="http://localhost:5174/auth/password-change?token=%s">이메일 인증하기</a>
                             <p>본 이메일은 인증 목적으로 발송되었습니다. 인증을 원하지 않으시면 무시하셔도 됩니다.</p>
                 """.formatted(token);
 

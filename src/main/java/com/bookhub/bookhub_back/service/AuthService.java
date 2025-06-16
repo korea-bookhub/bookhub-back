@@ -4,6 +4,7 @@ import com.bookhub.bookhub_back.dto.ResponseDto;
 import com.bookhub.bookhub_back.dto.employee.request.EmployeeSignInRequestDto;
 import com.bookhub.bookhub_back.dto.employee.request.EmployeeSignUpRequestDto;
 import com.bookhub.bookhub_back.dto.employee.response.EmployeeSignInResponseDto;
+import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.Valid;
 
 public interface AuthService {
@@ -12,4 +13,7 @@ public interface AuthService {
     ResponseDto<EmployeeSignInResponseDto> login(@Valid EmployeeSignInRequestDto dto);
 
     ResponseDto<Void> checkLoginIdDuplicate(String loginId);
+
+
+    ResponseDto<Void> logout(HttpServletResponse response);
 }

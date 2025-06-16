@@ -10,6 +10,7 @@ import com.bookhub.bookhub_back.dto.employee.request.EmployeeSignUpRequestDto;
 import com.bookhub.bookhub_back.dto.employee.response.EmployeeSignInResponseDto;
 import com.bookhub.bookhub_back.service.AuthService;
 import com.bookhub.bookhub_back.service.MailService;
+import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -71,6 +72,12 @@ public class AuthController {
     @GetMapping("/login-id-exists")
     public ResponseEntity<ResponseDto<Void>> checkLoginIdDuplicate(@RequestParam String loginId) {
         ResponseDto<Void> responseDto = authService.checkLoginIdDuplicate(loginId);
+        return ResponseDto.toResponseEntity(HttpStatus.OK, responseDto);
+    }
+
+    @PostMapping("/logout")
+    public ResponseEntity<ResponseDto<Void>> logout (HttpServletResponse response) {
+        ResponseDto<Void> responseDto = authService.logout(response);
         return ResponseDto.toResponseEntity(HttpStatus.OK, responseDto);
     }
 }
