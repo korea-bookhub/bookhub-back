@@ -20,5 +20,5 @@ public interface AuthorService {
 
     ResponseDto<List<AuthorResponseDto>> getAllAuthorsByName(String authorName);
 
-    ResponseDto<AuthorResponseDto> getAuthorById(Long authorId);
+    ResponseDto<Void> checkDuplicateAuthorEmail(String authorEmail);
 }

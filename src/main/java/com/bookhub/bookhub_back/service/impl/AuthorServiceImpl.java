@@ -29,6 +29,8 @@ public class AuthorServiceImpl implements AuthorService {
 
         List<AuthorRequestDto> requestDtos = dto.getAuthors();
 
+        //
+
         List<Author> authors = requestDtos.stream()
                         .map(requestDto -> Author.builder()
                                 .authorName(requestDto.getAuthorName())
@@ -69,19 +71,16 @@ public class AuthorServiceImpl implements AuthorService {
 
     // 작가 단건 조회
     @Override
-    public ResponseDto<AuthorResponseDto> getAuthorById(Long authorId) {
+    public ResponseDto<Void> checkDuplicateAuthorEmail(String authorEmail) {
         AuthorResponseDto responseDto = null;
 
-        Author author = authorRepository.findById(authorId)
-                .orElseThrow(() -> new EntityNotFoundException(ResponseMessage.FAILED + authorId));
+        Author author = authorRepository.findByAuthorEmail(authorEmail);
 
-        responseDto = AuthorResponseDto.builder()
-                .authorId(author.getAuthorId())
-                .authorName(author.getAuthorName())
-                .authorEmail(author.getAuthorEmail())
-                .build();
+        if(author != null) {
+            throw new IllegalArgumentException("중복된 이메일입니다.");
+        }
 
-        return ResponseDto.success(ResponseCode.SUCCESS, ResponseMessage.SUCCESS, responseDto);
+        return ResponseDto.success(ResponseCode.SUCCESS, ResponseMessage.SUCCESS);
     }
 
     // 작가 이름으로 조회 (동명이인까지 조회)

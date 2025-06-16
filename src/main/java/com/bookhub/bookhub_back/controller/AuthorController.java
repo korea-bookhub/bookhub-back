@@ -20,6 +20,15 @@ import java.util.List;
 public class AuthorController {
     private final AuthorService authorService;
 
+    // 작가 추가 시 이메일 중복 점검
+    @GetMapping("/{authorEmail}")
+    public ResponseEntity<ResponseDto<Void>> checkDuplicateAuthorEmail(
+            @PathVariable String authorEmail
+    ) {
+        authorService.checkDuplicateAuthorEmail(authorEmail);
+        return ResponseEntity.noContent().build();
+    }
+
     // 작가 등록 (여러건 동시 등록)
     @PostMapping
     public ResponseEntity<ResponseDto<List<AuthorResponseDto>>> createAuthor(
@@ -36,14 +45,6 @@ public class AuthorController {
         return ResponseEntity.status(HttpStatus.OK).body(response);
     }
 
-    // 작가 단건 조회
-    @GetMapping("/{authorId}")
-    public ResponseEntity<ResponseDto<AuthorResponseDto>> getAuthorById(
-            @PathVariable Long authorId
-    ) {
-        ResponseDto<AuthorResponseDto> response = authorService.getAuthorById(authorId);
-        return ResponseEntity.status(HttpStatus.OK).body(response);
-    }
 
     // 작가 이름으로 조회 (동명이인까지 조회)
     @GetMapping("/author-name/{authorName}")

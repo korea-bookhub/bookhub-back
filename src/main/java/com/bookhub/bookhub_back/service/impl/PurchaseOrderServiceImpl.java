@@ -52,7 +52,7 @@ public class PurchaseOrderServiceImpl implements PurchaseOrderService {
                             .purchaseOrderStatus(PurchaseOrderStatus.REQUESTED)
                             .employeeId(employee)
                             .branchId(branch)
-                            .bookIsbn(bookRepository.findByBookTitle(requestDto.getBookTitle())
+                            .bookIsbn(bookRepository.findById(requestDto.getIsbn())
                                     .orElseThrow(() -> new IllegalArgumentException("등록되지 않은 책입니다.")))
                     .build());
         }
