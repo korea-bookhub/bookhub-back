@@ -45,7 +45,6 @@ public class BookCategoryServiceImpl implements BookCategoryService {
                 .categoryName(dto.getCategoryName())
                 .categoryLevel(dto.getCategoryLevel())
                 .categoryType(dto.getCategoryType())
-                .categoryOrder(dto.getCategoryOrder())
                 .isActive(true) // 기본값으로 활성 상태로 생성
                 .parentCategoryId(parent)
                 .build();

@@ -10,10 +10,7 @@ import com.bookhub.bookhub_back.dto.purchaseOrder.request.PurchaseOrderCreateReq
 import com.bookhub.bookhub_back.dto.purchaseOrder.request.PurchaseOrderRequestDto;
 import com.bookhub.bookhub_back.dto.purchaseOrder.response.PurchaseOrderResponseDto;
 import com.bookhub.bookhub_back.entity.*;
-import com.bookhub.bookhub_back.repository.BookRepository;
-import com.bookhub.bookhub_back.repository.EmployeeRepository;
-import com.bookhub.bookhub_back.repository.PurchaseOrderApprovalRepository;
-import com.bookhub.bookhub_back.repository.PurchaseOrderRepository;
+import com.bookhub.bookhub_back.repository.*;
 import com.bookhub.bookhub_back.service.PurchaseOrderService;
 import jakarta.persistence.EntityNotFoundException;
 import jakarta.transaction.Transactional;
@@ -32,6 +29,7 @@ public class PurchaseOrderServiceImpl implements PurchaseOrderService {
     private final PurchaseOrderApprovalRepository purchaseOrderApprovalRepository;
     private final EmployeeRepository employeeRepository;
     private final BookRepository bookRepository;
+    private final BookReceptionApprovalRepository bookReceptionApprovalRepository;
 
     // 1) 발주 요청서 작성
     @Override
@@ -223,6 +221,25 @@ public class PurchaseOrderServiceImpl implements PurchaseOrderService {
                 .build();
 
         purchaseOrderApprovalRepository.save(pOA);
+
+        // 수령 확인 자동 생성 (승인됐을때 자동 생성)
+        PurchaseOrderApproval savedApproval = purchaseOrderApprovalRepository.save(pOA);
+
+        if(purchaseOrder.getPurchaseOrderStatus() == PurchaseOrderStatus.APPROVED) {
+            BookReceptionApproval reception = BookReceptionApproval.builder()
+                    .bookIsbn(approvedPurchaseOrder.getBookIsbn().getIsbn())
+                    .receptionEmployeeId(null)
+                    .branchName(approvedPurchaseOrder.getBranchId().getBranchName())
+                    .bookTitle(approvedPurchaseOrder.getBookIsbn().getBookTitle())
+                    .purchaseOrderAmount(approvedPurchaseOrder.getPurchaseOrderAmount())
+                    .isReceptionApproved(false)
+                    .receptionDateAt(null)
+                    .purchaseOrderApprovalId(savedApproval)
+                    .build();
+
+            bookReceptionApprovalRepository.save(reception);
+        }
+
 
         return ResponseDto.success(ResponseCode.SUCCESS, ResponseMessage.SUCCESS, responseDto);
     }
