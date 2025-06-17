@@ -18,7 +18,7 @@ import java.time.LocalDate;
 import java.util.List;
 
 @RestController
-@RequestMapping(ApiMappingPattern.BASIC_API + ApiMappingPattern.ADMIN_API + "/purchase-order-approval")
+@RequestMapping(ApiMappingPattern.BASIC_API + ApiMappingPattern.ADMIN_API + "/purchase-order-approvals")
 @RequiredArgsConstructor
 public class PurchaseOrderApprovalController {
     private final PurchaseOrderApprovalService purchaseOrderApprovalService;
@@ -27,11 +27,11 @@ public class PurchaseOrderApprovalController {
     // 1-2) 발주 요청서 기능 - 발주 승인 취소 (승인 -> 승인 거절) --- 고민중
 
     // 2) 전체 조회
-    @GetMapping
-    public ResponseEntity<ResponseDto<List<PurchaseOrderApprovalResponseDto>>> getAllPurchaseOrderApprovals() {
-        ResponseDto<List<PurchaseOrderApprovalResponseDto>> response = purchaseOrderApprovalService.getAllPurchaseOrderApprovals();
-        return ResponseEntity.status(HttpStatus.OK).body(response);
-    }
+//    @GetMapping
+//    public ResponseEntity<ResponseDto<List<PurchaseOrderApprovalResponseDto>>> getAllPurchaseOrderApprovals() {
+//        ResponseDto<List<PurchaseOrderApprovalResponseDto>> response = purchaseOrderApprovalService.getAllPurchaseOrderApprovals();
+//        return ResponseEntity.status(HttpStatus.OK).body(response);
+//    }
 
     // 3) 단건 조회
     @GetMapping("/{purchaseOrderApprovalId}")
@@ -44,7 +44,7 @@ public class PurchaseOrderApprovalController {
 
     // 4) 조회 조건으로 조회 - 승인 담당자, 승인 일자, 승인 여부
     // 승인 담당자, 승인 여부로 조회
-    @GetMapping("/search")
+    @GetMapping
     public ResponseEntity<ResponseDto<List<PurchaseOrderApprovalResponseDto>>> getPurchaseOrderApprovalByEmployeeNameAndIsApproved(
             @RequestParam(required = false) String employeeName,
             @RequestParam(required = false) Boolean isApproved

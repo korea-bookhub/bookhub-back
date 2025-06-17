@@ -15,7 +15,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
-@RequestMapping(ApiMappingPattern.BASIC_API + ApiMappingPattern.ADMIN_API + "/author")
+@RequestMapping(ApiMappingPattern.BASIC_API + ApiMappingPattern.ADMIN_API + "/authors")
 @RequiredArgsConstructor
 public class AuthorController {
     private final AuthorService authorService;
@@ -44,7 +44,6 @@ public class AuthorController {
         ResponseDto<List<AuthorResponseDto>> response = authorService.getAllAuthors();
         return ResponseEntity.status(HttpStatus.OK).body(response);
     }
-
 
     // 작가 이름으로 조회 (동명이인까지 조회)
     @GetMapping("/author-name/{authorName}")

@@ -4,7 +4,6 @@ import com.bookhub.bookhub_back.common.constants.ResponseCode;
 import com.bookhub.bookhub_back.common.constants.ResponseMessage;
 import com.bookhub.bookhub_back.common.enums.PurchaseOrderStatus;
 import com.bookhub.bookhub_back.dto.ResponseDto;
-import com.bookhub.bookhub_back.dto.author.request.AuthorRequestDto;
 import com.bookhub.bookhub_back.dto.purchaseOrder.request.PurchaseOrderApproveRequestDto;
 import com.bookhub.bookhub_back.dto.purchaseOrder.request.PurchaseOrderCreateRequestDto;
 import com.bookhub.bookhub_back.dto.purchaseOrder.request.PurchaseOrderRequestDto;
@@ -15,16 +14,17 @@ import com.bookhub.bookhub_back.service.PurchaseOrderService;
 import jakarta.persistence.EntityNotFoundException;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
 import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
 public class PurchaseOrderServiceImpl implements PurchaseOrderService {
-
     private final PurchaseOrderRepository purchaseOrderRepository;
     private final PurchaseOrderApprovalRepository purchaseOrderApprovalRepository;
     private final EmployeeRepository employeeRepository;
@@ -119,8 +119,8 @@ public class PurchaseOrderServiceImpl implements PurchaseOrderService {
         List<PurchaseOrder> purchaseOrders = null;
 
         if(employeeName == null && bookTitle == null && purchaseOrderStatus == null) {
-            throw new IllegalArgumentException("조회 조건을 선택하세요");
-        } if(bookTitle == null && purchaseOrderStatus == null) {
+            purchaseOrders = purchaseOrderRepository.findAll();
+        } else if(bookTitle == null && purchaseOrderStatus == null) {
             Employee employee = employeeRepository.findByName(employeeName)
                 .orElseThrow(() -> new EntityNotFoundException(ResponseMessage.NO_EXIST_ID));
             purchaseOrders = purchaseOrderRepository.findByEmployeeId(employee);
@@ -160,6 +160,7 @@ public class PurchaseOrderServiceImpl implements PurchaseOrderService {
 
         List<PurchaseOrder> filteredPurchaseOrder = purchaseOrders.stream()
                 .filter(purchaseOrder -> purchaseOrder.getBranchId() == branch)
+                .sorted(Comparator.comparing(PurchaseOrder::getPurchaseOrderDateAt).reversed())
                 .collect(Collectors.toList());
 
         responseDtos = filteredPurchaseOrder.stream()
