@@ -11,6 +11,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
 
@@ -23,9 +24,10 @@ public class BookController {
     @PostMapping(ApiMappingPattern.ADMIN_API + "/books")
     public ResponseEntity<ResponseDto<BookResponseDto>> createBook(
             @RequestHeader("Authorization") String token,
-            @Valid @RequestBody BookCreateRequestDto dto) {
+            @RequestPart("dto") BookCreateRequestDto dto,
+            @RequestPart(value = "coverImageFile", required = false) MultipartFile coverImageFile) throws Exception{
 
-        ResponseDto<BookResponseDto> book = bookService.createBook(dto, token);
+        ResponseDto<BookResponseDto> book = bookService.createBook(dto, token, coverImageFile);
         return ResponseEntity.status(HttpStatus.CREATED).body(book);
     }
 
@@ -35,8 +37,9 @@ public class BookController {
     public ResponseDto<BookResponseDto> updateBook(
             @PathVariable String isbn,
             @RequestHeader("Authorization") String token,
-            @RequestBody BookUpdateRequestDto dto) {
-        return bookService.updateBook(isbn, dto, token);
+            @RequestPart BookUpdateRequestDto dto,
+            @RequestPart(value = "file", required = false) MultipartFile newCoverImageFile) throws Exception{
+        return bookService.updateBook(isbn, dto, token, newCoverImageFile);
     }
 
     // 3. 책 hidden 처리

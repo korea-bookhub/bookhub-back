@@ -13,10 +13,16 @@ import com.bookhub.bookhub_back.provider.JwtProvider;
 import com.bookhub.bookhub_back.repository.*;
 import com.bookhub.bookhub_back.service.BookLogService;
 import com.bookhub.bookhub_back.service.BookService;
+import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.io.File;
+import java.io.IOException;
 import java.util.List;
+import java.util.UUID;
 
 @Service
 @RequiredArgsConstructor
@@ -31,10 +37,13 @@ public class BookServiceImpl implements BookService {
     private final EmployeeRepository employeeRepository;
     private final JwtProvider jwtProvider;
 
+    @Value("${file.upload-dir}")
+    private String uploadDir;
 
 
     @Override
-    public ResponseDto<BookResponseDto> createBook(BookCreateRequestDto dto, String token) {
+    @Transactional
+    public ResponseDto<BookResponseDto> createBook(BookCreateRequestDto dto, String token, MultipartFile coverImageFile) throws IOException{
         // 1. 로그인한 사용자 정보 추출
         String loginId = jwtProvider.getUsernameFromJwt(jwtProvider.removeBearer(token));
         Employee employee = employeeRepository.findByLoginId(loginId)
@@ -48,7 +57,7 @@ public class BookServiceImpl implements BookService {
                 .bookTitle(dto.getBookTitle())
                 .bookPrice(dto.getBookPrice())
                 .publishedDate(dto.getPublishedDate())
-                .coverUrl(dto.getCoverUrl())
+                .coverUrl(null)
                 .pageCount(dto.getPageCount())
                 .language(dto.getLanguage())
                 .description(dto.getDescription())
@@ -59,70 +68,75 @@ public class BookServiceImpl implements BookService {
                 )
                 .build();
         Book savedBook = bookRepository.save(book);
+        // 이미지 파일 저장
+        if (coverImageFile != null && !coverImageFile.isEmpty()) {
+            String coverUrl = saveCoverImageFile(coverImageFile);
+            savedBook.setCoverUrl(coverUrl);
+        }
+
         bookLogService.logCreate(savedBook, employee);
         return ResponseDto.success(ResponseCode.SUCCESS, ResponseMessage.SUCCESS, toDto(savedBook));
     }
 
     @Override
-    public ResponseDto<BookResponseDto> updateBook(String isbn, BookUpdateRequestDto dto, String token) {
-        // 1. 로그인한 사용자 정보 추출
+    public ResponseDto<BookResponseDto> updateBook(String isbn, BookUpdateRequestDto dto, String token, MultipartFile coverImageFile) throws IOException {
+        // 로그인 유저 확인
         String loginId = jwtProvider.getUsernameFromJwt(jwtProvider.removeBearer(token));
         Employee employee = employeeRepository.findByLoginId(loginId)
                 .orElseThrow(() -> new IllegalArgumentException(ResponseCode.NO_EXIST_USER_ID));
 
+        Book book = bookRepository.findById(dto.getIsbn())
+                .orElseThrow(() -> new IllegalArgumentException("해당 ISBN의 책이 존재하지 않습니다."));
 
-        Book book = bookRepository.findById(dto.getIsbn()).orElseThrow(() -> new IllegalArgumentException("해당 ISBN의 책이 존재하지 않습니다."));
-        // 기존 정보 보관
+        // 기존 정보 저장
         Long oldPrice = book.getBookPrice();
         DiscountPolicy oldPolicy = book.getPolicyId();
         BookStatus oldStatus = book.getBookStatus();
-
         Integer oldRate = oldPolicy != null ? oldPolicy.getDiscountPercent() : null;
 
-
-        book.setBookTitle(dto.getBookTitle());
+        // 필드 업데이트
         book.setBookPrice(dto.getBookPrice());
-        book.setPageCount(dto.getPageCount());
-        book.setLanguage(dto.getLanguage());
         book.setDescription(dto.getDescription());
+
         BookStatus newStatus = dto.getBookStatus() != null
                 ? BookStatus.valueOf(dto.getBookStatus().toUpperCase())
                 : oldStatus;
         book.setBookStatus(newStatus);
 
-        book.setAuthorId(authorRepository.findById(dto.getAuthorId()).orElseThrow(()-> new IllegalArgumentException("존재하지 않는 작가입니다..")));
-        book.setCategoryId(bookCategoryRepository.findById(dto.getCategoryId()).orElseThrow(()-> new IllegalArgumentException("존재하지 않는 카테고리입니다.")));
-        book.setPublisherId(publisherRepository.findById(dto.getPublisherId()).orElseThrow(()-> new IllegalArgumentException("존재하지 않는 출판사 입니다.")));
-        book.setPolicyId(dto.getPolicyId() != null
-                ? discountPolicyRepository.findById(dto.getPolicyId()).orElseThrow(()-> new IllegalArgumentException("존재하지 않는 할인 정책입니다."))
-                : null
-        );
-        book.setCoverUrl(dto.getCoverUrl());
-        book.setPublishedDate(dto.getPublishedDate());
+        if (dto.getPolicyId() != null) {
+            DiscountPolicy newPolicy = discountPolicyRepository.findById(dto.getPolicyId())
+                    .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 할인 정책입니다."));
+            book.setPolicyId(newPolicy);
+        }
+
+
+        // 이미지 업데이트
+        if (coverImageFile != null && !coverImageFile.isEmpty()) {
+            String coverUrl = saveCoverImageFile(coverImageFile);
+            book.setCoverUrl(coverUrl);
+        }
+
         Book savedBook = bookRepository.save(book);
 
-        // 가격 변경 로그 생성
+        // 로그 기록
         if (!oldPrice.equals(dto.getBookPrice())) {
             bookLogService.logPriceChange(savedBook, oldPrice, employee);
         }
 
-        // 할인 정책 변경 로그 생성
         DiscountPolicy newPolicy = savedBook.getPolicyId();
         Integer newRate = newPolicy != null ? newPolicy.getDiscountPercent() : null;
-        boolean isRateChanged = (oldRate != null && !oldRate.equals(newRate)) || (oldRate == null && newRate != null);
-
-        if (isRateChanged) {
+        if ((oldRate != null && !oldRate.equals(newRate)) || (oldRate == null && newRate != null)) {
             bookLogService.logDiscountChange(savedBook, oldRate != null ? oldRate : 0, newPolicy, employee);
         }
 
-        // bookStatus 변경 로그 생성
         if (!oldStatus.equals(newStatus)) {
             bookLogService.logStatusChange(savedBook, employee);
         }
 
-
         return ResponseDto.success(ResponseCode.SUCCESS, ResponseMessage.SUCCESS, toDto(savedBook));
     }
+
+
 
     @Override
     public ResponseDto<List<BookResponseDto>> searchBook(String keyword) {
@@ -176,5 +190,16 @@ public class BookServiceImpl implements BookService {
                                 : null
                 )
                 .build();
+    }
+    // 실제 파일 저장 및 메타데이터 기록
+    private String saveCoverImageFile(MultipartFile file) throws IOException {
+        File dir = new File(uploadDir);
+        if (!dir.exists()) dir.mkdirs();
+
+        String originalName = file.getOriginalFilename();
+        String uuid = UUID.randomUUID() + "_" + originalName;
+        file.transferTo(new File(uploadDir + "/" + uuid));
+
+        return "/files/" + uuid;
     }
 }

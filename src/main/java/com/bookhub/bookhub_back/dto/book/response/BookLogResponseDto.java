@@ -2,6 +2,7 @@ package com.bookhub.bookhub_back.dto.book.response;
 
 import lombok.*;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 
 @Getter
@@ -18,5 +19,5 @@ public class BookLogResponseDto {
     private Integer previousDiscountRate;
     private String employeeName;
     private Long policyId;
-    private LocalDateTime changedAt;
+    private LocalDate changedAt;
 }
