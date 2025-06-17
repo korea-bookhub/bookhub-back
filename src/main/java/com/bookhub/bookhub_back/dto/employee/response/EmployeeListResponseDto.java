@@ -9,8 +9,9 @@ import lombok.*;
 @AllArgsConstructor
 @Builder
 public class EmployeeListResponseDto {
-    private Long EmployeeNumber;
-    private String EmployeeName;
+    private Long employeeId;
+    private Long employeeNumber;
+    private String employeeName;
     private String branchName;
     private String positionName;
     private String authorityName;

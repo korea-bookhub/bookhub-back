@@ -5,6 +5,7 @@ import com.bookhub.bookhub_back.common.enums.Status;
 import com.bookhub.bookhub_back.dto.ResponseDto;
 import com.bookhub.bookhub_back.dto.employee.request.EmployeeOrganizationUpdateRequestDto;
 import com.bookhub.bookhub_back.dto.employee.request.EmployeeSignUpApprovalRequestDto;
+import com.bookhub.bookhub_back.dto.employee.response.EmployeeDetailResponseDto;
 import com.bookhub.bookhub_back.dto.employee.response.EmployeeListResponseDto;
 import com.bookhub.bookhub_back.service.EmployeeService;
 import jakarta.validation.Valid;
@@ -22,6 +23,7 @@ import java.util.List;
 public class EmployeeController {
     private final EmployeeService employeeService;
 
+    // 1. 직원 검색 조회
     @GetMapping
     public ResponseEntity<ResponseDto<List<EmployeeListResponseDto>>> searchEmployee(
         @RequestParam(required = false) String name,
@@ -33,6 +35,14 @@ public class EmployeeController {
         ResponseDto<List<EmployeeListResponseDto>> responseDto = employeeService.searchEmployee(name, branchName, positionName, authorityName, status);
         return ResponseDto.toResponseEntity(HttpStatus.OK, responseDto);
     }
+
+    // 2. 직원 상세 조회
+    @GetMapping("/{employeeId}")
+    public ResponseEntity<ResponseDto<EmployeeDetailResponseDto>> getEmployeeById(@PathVariable Long employeeId) {
+        ResponseDto<EmployeeDetailResponseDto> responseDto = employeeService.getEmployeeById(employeeId);
+        return ResponseDto.toResponseEntity(HttpStatus.OK, responseDto);
+    }
+
 
     @PutMapping("/{employeeId}/approve")
     public ResponseEntity<ResponseDto<EmployeeListResponseDto>> updateApproval(
