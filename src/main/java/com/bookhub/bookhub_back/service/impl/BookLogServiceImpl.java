@@ -3,7 +3,6 @@ package com.bookhub.bookhub_back.service.impl;
 import com.bookhub.bookhub_back.common.constants.ResponseCode;
 import com.bookhub.bookhub_back.common.constants.ResponseMessage;
 import com.bookhub.bookhub_back.common.enums.BookLogType;
-import com.bookhub.bookhub_back.common.enums.BookStatus;
 import com.bookhub.bookhub_back.dto.ResponseDto;
 import com.bookhub.bookhub_back.dto.book.response.BookLogResponseDto;
 import com.bookhub.bookhub_back.entity.Book;
@@ -16,6 +15,7 @@ import com.bookhub.bookhub_back.service.BookLogService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -72,7 +72,7 @@ public class BookLogServiceImpl implements BookLogService {
                 .previousPrice(prevPrice)
                 .previousDiscountRate(prevDiscount)
                 .policyId(policy)
-                .changedAt(LocalDateTime.now())
+                .changedAt(LocalDate.now())
                 .build();
 
         bookLogRepository.save(log);

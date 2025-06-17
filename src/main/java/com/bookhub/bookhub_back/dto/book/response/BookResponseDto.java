@@ -1,6 +1,8 @@
 package com.bookhub.bookhub_back.dto.book.response;
 
 import lombok.*;
+
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 
 @Getter
@@ -15,7 +17,7 @@ public class BookResponseDto {
     private String authorName;
     private String publisherName;
     private Long bookPrice;
-    private LocalDateTime publishedDate;
+    private LocalDate publishedDate;
     private String coverUrl;
     private String pageCount;
     private String language;
