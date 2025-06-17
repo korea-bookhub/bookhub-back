@@ -8,6 +8,7 @@ import com.bookhub.bookhub_back.common.enums.Status;
 import com.bookhub.bookhub_back.dto.ResponseDto;
 import com.bookhub.bookhub_back.dto.employee.request.EmployeeOrganizationUpdateRequestDto;
 import com.bookhub.bookhub_back.dto.employee.request.EmployeeSignUpApprovalRequestDto;
+import com.bookhub.bookhub_back.dto.employee.response.EmployeeDetailResponseDto;
 import com.bookhub.bookhub_back.dto.employee.response.EmployeeListResponseDto;
 import com.bookhub.bookhub_back.entity.Employee;
 import com.bookhub.bookhub_back.entity.EmployeeChangeLog;
@@ -48,8 +49,9 @@ public class EmployeeServiceImpl implements EmployeeService {
 
         responseDtos = employees.stream()
             .map(employee -> EmployeeListResponseDto.builder()
-                .EmployeeNumber(employee.getEmployeeNumber())
-                .EmployeeName(employee.getName())
+                .employeeId(employee.getEmployeeId())
+                .employeeNumber(employee.getEmployeeNumber())
+                .employeeName(employee.getName())
                 .branchName(employee.getBranchId().getBranchName())
                 .positionName(employee.getPositionId().getPositionName())
                 .authorityName(employee.getAuthorityId().getAuthorityName())
@@ -58,6 +60,31 @@ public class EmployeeServiceImpl implements EmployeeService {
             .collect(Collectors.toList());
 
         return ResponseDto.success(ResponseCode.SUCCESS, ResponseMessageKorean.SUCCESS, responseDtos);
+    }
+
+    @Override
+    public ResponseDto<EmployeeDetailResponseDto> getEmployeeById(Long employeeId) {
+        EmployeeDetailResponseDto responseDto = null;
+        Employee employee = null;
+
+        employee = employeeRepository.findById(employeeId)
+            .orElseThrow(() -> new IllegalArgumentException("직원을 찾을 수 없습니다."));
+
+        responseDto = EmployeeDetailResponseDto.builder()
+            .employeeId(employee.getEmployeeId())
+            .employeeNumber(employee.getEmployeeNumber())
+            .employeeName(employee.getName())
+            .branchName(employee.getBranchId().getBranchName())
+            .positionName(employee.getPositionId().getPositionName())
+            .authorityName(employee.getAuthorityId().getAuthorityName())
+            .email(employee.getEmail())
+            .phoneNumber(employee.getPhoneNumber())
+            .birthDate(employee.getBirthDate())
+            .status(employee.getIsApproved())
+            .createdAt(employee.getCreatedAt())
+            .build();
+
+        return ResponseDto.success(ResponseCode.SUCCESS, ResponseMessageKorean.SUCCESS, responseDto);
     }
 
     @Override
@@ -111,7 +138,7 @@ public class EmployeeServiceImpl implements EmployeeService {
             .orElseThrow(() -> new IllegalArgumentException("직원 정보를 찾을 수 없습니다."));
 
         authorizer = employeeRepository.findByLoginId(loginId)
-                .orElseThrow(() -> new IllegalArgumentException("직원 정보를 찾을 수 없습니다."));
+            .orElseThrow(() -> new IllegalArgumentException("직원 정보를 찾을 수 없습니다."));
 
         Long preBranchId = employee.getBranchId().getBranchId();
         Long prePositionId = employee.getPositionId().getPositionId();
