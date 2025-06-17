@@ -17,6 +17,7 @@ import org.springframework.stereotype.Service;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -34,6 +35,7 @@ public class PurchaseOrderApprovalServiceImpl implements PurchaseOrderApprovalSe
         List<PurchaseOrderApproval> purchaseOrderApprovals = purchaseOrderApprovalRepository.findAll();
 
         responseDtos = purchaseOrderApprovals.stream()
+                .sorted(Comparator.comparing(PurchaseOrderApproval::getCreatedAt).reversed())
                 .map(purchaseOrderApproval -> changeToResponseDto(purchaseOrderApproval))
                 .collect(Collectors.toList());
 
@@ -118,7 +120,7 @@ public class PurchaseOrderApprovalServiceImpl implements PurchaseOrderApprovalSe
         List<PurchaseOrderApproval> purchaseOrderApprovals = null;
 
         if(employeeName == null && isApproved == null) {
-            throw new IllegalArgumentException("조회 조건을 선택하세요");
+            purchaseOrderApprovals = purchaseOrderApprovalRepository.findAll();
         }else if(employeeName == null) {
             purchaseOrderApprovals = purchaseOrderApprovalRepository.findByIsApproved(isApproved);
         }else if(isApproved == null) {
