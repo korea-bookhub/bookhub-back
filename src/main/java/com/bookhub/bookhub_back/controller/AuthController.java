@@ -7,6 +7,7 @@ import com.bookhub.bookhub_back.dto.auth.request.PasswordFindSendEmailReqestDto;
 import com.bookhub.bookhub_back.dto.auth.request.PasswordResetRequestDto;
 import com.bookhub.bookhub_back.dto.employee.request.EmployeeSignInRequestDto;
 import com.bookhub.bookhub_back.dto.employee.request.EmployeeSignUpRequestDto;
+import com.bookhub.bookhub_back.dto.employee.request.EmployeeUpdateRequestDto;
 import com.bookhub.bookhub_back.dto.employee.response.EmployeeSignInResponseDto;
 import com.bookhub.bookhub_back.service.AuthService;
 import com.bookhub.bookhub_back.service.MailService;
@@ -79,5 +80,22 @@ public class AuthController {
     public ResponseEntity<ResponseDto<Void>> logout (HttpServletResponse response) {
         ResponseDto<Void> responseDto = authService.logout(response);
         return ResponseDto.toResponseEntity(HttpStatus.OK, responseDto);
+    }
+
+    // 회원 가입 승임 및 거절 시 이메일 전송
+    @PostMapping("/employees/{approvalId}/approve")
+    public Mono<ResponseEntity<ResponseDto<String>>> SendEmailSignUpResult(@PathVariable Long approvalId) {
+        return mailService.SendEmailSignUpResult(approvalId);
+    }
+
+    @GetMapping("employees/approve")
+    public Mono<ResponseEntity<ResponseDto<String>>> verifyEmployeeUpdate(@RequestParam String token) {
+        return mailService.verifyEmployeeUpdate(token);
+    }
+
+    // 거절 시 회원 정보 수정
+    @PutMapping("/employees/approve")
+    public Mono<ResponseEntity<ResponseDto<String>>> employeeUpdate(@RequestParam String token, @RequestBody EmployeeUpdateRequestDto dto) {
+        return mailService.employeeUpdate(token, dto);
     }
 }

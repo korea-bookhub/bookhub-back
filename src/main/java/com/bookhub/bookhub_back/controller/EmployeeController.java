@@ -5,9 +5,11 @@ import com.bookhub.bookhub_back.common.enums.Status;
 import com.bookhub.bookhub_back.dto.ResponseDto;
 import com.bookhub.bookhub_back.dto.employee.request.EmployeeOrganizationUpdateRequestDto;
 import com.bookhub.bookhub_back.dto.employee.request.EmployeeSignUpApprovalRequestDto;
-import com.bookhub.bookhub_back.dto.employee.response.EmployeeDetailResponseDto;
 import com.bookhub.bookhub_back.dto.employee.response.EmployeeListResponseDto;
+import com.bookhub.bookhub_back.dto.employee.response.EmployeeResponseDto;
+import com.bookhub.bookhub_back.dto.employee.response.EmployeeSignUpApprovalsReponseDto;
 import com.bookhub.bookhub_back.service.EmployeeService;
+import com.bookhub.bookhub_back.service.MailService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -22,6 +24,7 @@ import java.util.List;
 @RequiredArgsConstructor
 public class EmployeeController {
     private final EmployeeService employeeService;
+    private final MailService mailService;
 
     // 1. 직원 검색 조회
     @GetMapping
@@ -36,21 +39,28 @@ public class EmployeeController {
         return ResponseDto.toResponseEntity(HttpStatus.OK, responseDto);
     }
 
-    // 2. 직원 상세 조회
-    @GetMapping("/{employeeId}")
-    public ResponseEntity<ResponseDto<EmployeeDetailResponseDto>> getEmployeeById(@PathVariable Long employeeId) {
-        ResponseDto<EmployeeDetailResponseDto> responseDto = employeeService.getEmployeeById(employeeId);
+    // 2. 직원 전체 조회
+    @GetMapping("/approval")
+    public ResponseEntity<ResponseDto<List<EmployeeSignUpApprovalsReponseDto>>> getPendingEmployee() {
+        ResponseDto<List<EmployeeSignUpApprovalsReponseDto>> responseDto = employeeService.getPendingEmployee();
         return ResponseDto.toResponseEntity(HttpStatus.OK, responseDto);
     }
 
+    // 3. 직원 상세 조회
+    @GetMapping("/{employeeId}")
+    public ResponseEntity<ResponseDto<EmployeeResponseDto>> getEmployeeById(@PathVariable Long employeeId) {
+        ResponseDto<EmployeeResponseDto> responseDto = employeeService.getEmployeeById(employeeId);
+        return ResponseDto.toResponseEntity(HttpStatus.OK, responseDto);
+    }
 
+    // 회원가입 승인
     @PutMapping("/{employeeId}/approve")
-    public ResponseEntity<ResponseDto<EmployeeListResponseDto>> updateApproval(
+    public ResponseEntity<ResponseDto<EmployeeSignUpApprovalsReponseDto>> updateApproval(
         @PathVariable Long employeeId,
         @Valid @RequestBody EmployeeSignUpApprovalRequestDto dto,
         @AuthenticationPrincipal String loginId
     ) {
-        ResponseDto<EmployeeListResponseDto> responseDto = employeeService.updateApproval(employeeId, dto, loginId);
+        ResponseDto<EmployeeSignUpApprovalsReponseDto> responseDto = employeeService.updateApproval(employeeId, dto, loginId);
         return ResponseDto.toResponseEntity(HttpStatus.OK, responseDto);
     }
 

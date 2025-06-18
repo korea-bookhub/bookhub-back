@@ -11,7 +11,7 @@ import lombok.*;
 @Builder
 public class EmployeeSignUpApprovalRequestDto {
     @NotNull
-    private IsApproved status;
+    private IsApproved isApproved;
 
     private String deniedReason;
 }

@@ -13,9 +13,7 @@ import com.bookhub.bookhub_back.entity.*;
 import com.bookhub.bookhub_back.provider.JwtProvider;
 import com.bookhub.bookhub_back.repository.*;
 import com.bookhub.bookhub_back.service.AuthService;
-import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
-import jakarta.servlet.http.HttpSession;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseCookie;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
@@ -112,7 +110,7 @@ public class AuthServiceImpl implements AuthService {
         EmployeeSignUpApproval employeeSignupApproval = EmployeeSignUpApproval.builder()
             .employeeId(newEmployee)
             .appliedAt(newEmployee.getCreatedAt())
-            .status(newEmployee.getIsApproved())
+            .isApproved(newEmployee.getIsApproved())
             .build();
 
         employeeSignupApprovalRepository.save(employeeSignupApproval);

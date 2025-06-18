@@ -4,7 +4,6 @@ import com.bookhub.bookhub_back.common.enums.IsApproved;
 import jakarta.persistence.*;
 import lombok.*;
 import org.springframework.data.annotation.CreatedDate;
-import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 import java.time.LocalDateTime;
 
@@ -15,7 +14,6 @@ import java.time.LocalDateTime;
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor
 @Builder
-@EntityListeners(AuditingEntityListener.class)
 public class EmployeeSignUpApproval {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -32,7 +30,7 @@ public class EmployeeSignUpApproval {
 
     @Column(name = "status", nullable = false)
     @Enumerated(EnumType.STRING)
-    private IsApproved status;
+    private IsApproved isApproved;
 
     @Column(name = "applied_at")
     private LocalDateTime appliedAt;
