@@ -1,5 +1,6 @@
 package com.bookhub.bookhub_back.repository;
 
+import com.bookhub.bookhub_back.common.enums.IsApproved;
 import com.bookhub.bookhub_back.common.enums.Status;
 import com.bookhub.bookhub_back.entity.Employee;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -43,4 +44,5 @@ public interface EmployeeRepository extends JpaRepository<Employee, Long> {
     );
 
 
+    Optional<List<Employee>> findByIsApproved(IsApproved isApproved);
 }

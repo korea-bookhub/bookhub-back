@@ -8,8 +8,9 @@ import com.bookhub.bookhub_back.common.enums.Status;
 import com.bookhub.bookhub_back.dto.ResponseDto;
 import com.bookhub.bookhub_back.dto.employee.request.EmployeeOrganizationUpdateRequestDto;
 import com.bookhub.bookhub_back.dto.employee.request.EmployeeSignUpApprovalRequestDto;
-import com.bookhub.bookhub_back.dto.employee.response.EmployeeDetailResponseDto;
+import com.bookhub.bookhub_back.dto.employee.response.EmployeeResponseDto;
 import com.bookhub.bookhub_back.dto.employee.response.EmployeeListResponseDto;
+import com.bookhub.bookhub_back.dto.employee.response.EmployeeSignUpApprovalsReponseDto;
 import com.bookhub.bookhub_back.entity.Employee;
 import com.bookhub.bookhub_back.entity.EmployeeChangeLog;
 import com.bookhub.bookhub_back.entity.EmployeeSignUpApproval;
@@ -34,7 +35,8 @@ public class EmployeeServiceImpl implements EmployeeService {
 
     @Override
     @Transactional(readOnly = true)
-    public ResponseDto<List<EmployeeListResponseDto>> searchEmployee(
+    public ResponseDto<List<EmployeeListResponseDto>>
+    searchEmployee(
         String name,
         String branchName,
         String positionName,
@@ -48,6 +50,7 @@ public class EmployeeServiceImpl implements EmployeeService {
 
 
         responseDtos = employees.stream()
+            .filter(employee -> IsApproved.APPROVED == employee.getIsApproved())
             .map(employee -> EmployeeListResponseDto.builder()
                 .employeeId(employee.getEmployeeId())
                 .employeeNumber(employee.getEmployeeNumber())
@@ -63,14 +66,40 @@ public class EmployeeServiceImpl implements EmployeeService {
     }
 
     @Override
-    public ResponseDto<EmployeeDetailResponseDto> getEmployeeById(Long employeeId) {
-        EmployeeDetailResponseDto responseDto = null;
+    public ResponseDto<List<EmployeeSignUpApprovalsReponseDto>> getPendingEmployee() {
+        List<EmployeeSignUpApproval> employees = null;
+        List<EmployeeSignUpApprovalsReponseDto> responseDtos = null;
+
+        employees = employeeSignUpApprovalRepository.findAll();
+
+        responseDtos = employees.stream()
+            .filter(employee -> employee.getIsApproved() == IsApproved.PENDING)
+            .map(employee -> EmployeeSignUpApprovalsReponseDto.builder()
+                .approvalId(employee.getApprovalId())
+                .employeeId(employee.getEmployeeId().getEmployeeId())
+                .employeeNumber(employee.getEmployeeId().getEmployeeNumber())
+                .employeeName(employee.getEmployeeId().getName())
+                .branchName(employee.getEmployeeId().getBranchId().getBranchName())
+                .email(employee.getEmployeeId().getEmail())
+                .phoneNumber(employee.getEmployeeId().getPhoneNumber())
+                .appliedAt(employee.getEmployeeId().getCreatedAt())
+                .isApproved(employee.getIsApproved())
+                .build())
+            .collect(Collectors.toList());
+
+
+        return ResponseDto.success(ResponseCode.SUCCESS, ResponseMessageKorean.SUCCESS, responseDtos);
+    }
+
+    @Override
+    public ResponseDto<EmployeeResponseDto> getEmployeeById(Long employeeId) {
+        EmployeeResponseDto responseDto = null;
         Employee employee = null;
 
         employee = employeeRepository.findById(employeeId)
             .orElseThrow(() -> new IllegalArgumentException("직원을 찾을 수 없습니다."));
 
-        responseDto = EmployeeDetailResponseDto.builder()
+        responseDto = EmployeeResponseDto.builder()
             .employeeId(employee.getEmployeeId())
             .employeeNumber(employee.getEmployeeNumber())
             .employeeName(employee.getName())
@@ -80,7 +109,7 @@ public class EmployeeServiceImpl implements EmployeeService {
             .email(employee.getEmail())
             .phoneNumber(employee.getPhoneNumber())
             .birthDate(employee.getBirthDate())
-            .status(employee.getIsApproved())
+            .status(employee.getStatus())
             .createdAt(employee.getCreatedAt())
             .build();
 
@@ -89,34 +118,30 @@ public class EmployeeServiceImpl implements EmployeeService {
 
     @Override
     @Transactional
-    public ResponseDto<EmployeeListResponseDto> updateApproval(Long EmployeeId, EmployeeSignUpApprovalRequestDto dto, String loginId) {
+    public ResponseDto<EmployeeSignUpApprovalsReponseDto> updateApproval(Long EmployeeId, EmployeeSignUpApprovalRequestDto dto, String loginId) {
         EmployeeListResponseDto responseDto = null;
         EmployeeSignUpApproval employeeSignUpApproval = null;
         Employee employee = null;
 
         employee = employeeRepository.findById(EmployeeId)
-            .orElseThrow(IllegalArgumentException::new);
+            .filter(emp -> emp.getIsApproved() == IsApproved.PENDING )
+            .orElseThrow(()-> new IllegalArgumentException("회원가입 승인 대기중인 사원이 아닙니다."));
 
-        employeeSignUpApproval = employeeSignUpApprovalRepository.findByEmployeeId(employee)
-            .filter(a -> a.getAuthorizerId() == null)
-            .orElse(null);
-
-        if (employeeSignUpApproval == null) {
-            throw new IllegalArgumentException();
-        }
+        employeeSignUpApproval = employeeSignUpApprovalRepository.findAllByEmployeeIdAndIsApproved(employee, IsApproved.PENDING)
+            .orElseThrow(() -> new IllegalArgumentException("회원가입 승인 대기 상태인 사원이 없습니다."));
 
         Employee authorizerEmployee = employeeRepository.findByLoginId(loginId)
-            .orElseThrow(IllegalArgumentException::new);
+            .orElseThrow(() -> new IllegalArgumentException("관리자를 찾을 수 없습니다."));
 
 
-        if (dto.getStatus().equals(IsApproved.APPROVED) && dto.getDeniedReason().isBlank()) {
-            employee.setIsApproved(dto.getStatus());
+        if (dto.getIsApproved().equals(IsApproved.APPROVED) && dto.getDeniedReason().isBlank()) {
+            employee.setIsApproved(dto.getIsApproved());
             employeeSignUpApproval.setAuthorizerId(authorizerEmployee);
-            employeeSignUpApproval.setStatus(dto.getStatus());
-        } else if (dto.getStatus().equals(IsApproved.DENIED) && !dto.getDeniedReason().isBlank()) {
-            employee.setIsApproved(dto.getStatus());
+            employeeSignUpApproval.setIsApproved(dto.getIsApproved());
+        } else if (dto.getIsApproved().equals(IsApproved.DENIED) && !dto.getDeniedReason().isBlank()) {
+            employee.setIsApproved(dto.getIsApproved());
             employeeSignUpApproval.setAuthorizerId(authorizerEmployee);
-            employeeSignUpApproval.setStatus(dto.getStatus());
+            employeeSignUpApproval.setIsApproved(dto.getIsApproved());
             employeeSignUpApproval.setDeniedReason(dto.getDeniedReason());
         } else {
             throw new IllegalArgumentException();
