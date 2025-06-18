@@ -25,7 +25,6 @@ public class StockUpdateRequestDto {
     private Employee employeeId;
     private Book bookIsbn;
     private Branch branchId;
-    private Branch targetBranchId;
     private Long amount;
     private String description;
 }

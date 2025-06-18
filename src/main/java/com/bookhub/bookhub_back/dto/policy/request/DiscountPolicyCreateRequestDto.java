@@ -15,7 +15,7 @@ public class DiscountPolicyCreateRequestDto {
     @NotBlank
     private String policyTitle;
     private String policyDescription;
-    @NotBlank
+    @NotNull
     private PolicyType policyType;
     private Integer totalPriceAchieve;
     @NotNull

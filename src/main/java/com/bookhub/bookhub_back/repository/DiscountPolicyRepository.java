@@ -2,6 +2,9 @@ package com.bookhub.bookhub_back.repository;
 
 import com.bookhub.bookhub_back.common.enums.PolicyType;
 import com.bookhub.bookhub_back.entity.DiscountPolicy;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
@@ -21,4 +24,5 @@ public interface DiscountPolicyRepository extends JpaRepository< DiscountPolicy,
     List<DiscountPolicy> getPoliciesByTime(@Param("start") LocalDateTime start,
                                            @Param("end") LocalDateTime end);
 
+    Page<DiscountPolicy> findAll(Specification<DiscountPolicy> spec, Pageable pageable);
 }
