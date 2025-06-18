@@ -16,8 +16,11 @@ public class EmployeeResponseDto {
     private Long employeeId;
     private Long employeeNumber;
     private String employeeName;
+    private Long branchId;
     private String branchName;
+    private Long positionId;
     private String positionName;
+    private Long authorityId;
     private String authorityName;
     private String email;
     private String phoneNumber;
