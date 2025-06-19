@@ -149,7 +149,7 @@ public class BookLocationServiceImpl implements BookLocationService {
     //5)지점에서 위치 삭제 (더이상 진열하지 않음)
 
     @Override
-    public ResponseDto<Void> deleteLocation(Long locationId) {
+    public ResponseDto<Void> deleteLocation(Long branchId, Long locationId) {
         BookDisplayLocation location = bookLocationRepository.findById(locationId)
                 .orElseThrow(() -> new EntityNotFoundException(ResponseCode.NO_EXIST_ID));
 

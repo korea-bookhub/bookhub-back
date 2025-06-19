@@ -19,13 +19,13 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
-@RequestMapping("/booklocation")
+@RequestMapping(ApiMappingPattern.BASIC_API)
 @RequiredArgsConstructor
 public class BookLocationController {
     private final BookLocationService bookLocationService;
 
     //1)책의 위치 생성
-    @PostMapping(ApiMappingPattern.MANAGER_API+"/location/{branchId}")
+    @PostMapping(ApiMappingPattern.MANAGER_API+"/branch/{branchId}/locations")
     public ResponseEntity<ResponseDto<LocationCreateResponseDto>> createLocation(
             @PathVariable Long branchId,
             @Valid @RequestBody LocationCreateRequestDto dto){
@@ -34,7 +34,7 @@ public class BookLocationController {
     }
 
     //2)책의 위치 수정
-    @PutMapping
+    @PutMapping(ApiMappingPattern.MANAGER_API+"/branch/{branchId}/locations/{locationId}")
     public ResponseEntity<ResponseDto<LocationUpdateResponseDto>> updateLocation(
             @PathVariable Long branchId,
             @PathVariable Long locationId,
@@ -44,7 +44,7 @@ public class BookLocationController {
     }
 
     //3)책을 검색하여 하여 책 리스트 반환
-    @GetMapping(ApiMappingPattern.COMMON_API+"/location/{branchId}/search")
+    @GetMapping(ApiMappingPattern.COMMON_API+"/branch/{branchId}/locations")
     public ResponseEntity<ResponseDto<List<LocationResponseDto>>> searchBranchBooksByTitle(
             @PathVariable Long branchId,
             @RequestParam String bookTitle){
@@ -53,7 +53,7 @@ public class BookLocationController {
     }
 
     //4)해당 책을 클릭하여 위치 반환
-    @GetMapping(ApiMappingPattern.COMMON_API+"/location/{branchId}/search/{locationId}")
+    @GetMapping(ApiMappingPattern.COMMON_API+"/branch/{branchId}/locations/{locationId}")
     public ResponseEntity<ResponseDto<LocationDetailResponseDto>> getLocation(
             @PathVariable Long branchId,
             @PathVariable Long locationId){
@@ -62,10 +62,12 @@ public class BookLocationController {
     }
 
     //5)위치 삭제하기
-    @DeleteMapping("/{locationId}")
-    public ResponseEntity<ResponseDto<Void>> deleteLocation(@PathVariable Long locationId){
-        ResponseDto<Void> responseDto = bookLocationService.deleteLocation(locationId);
-        return ResponseEntity.noContent().build();
+    @DeleteMapping(ApiMappingPattern.MANAGER_API+"/branch/{branchId}/locations/{locationId}")
+    public ResponseEntity<ResponseDto<Void>> deleteLocation(
+            @PathVariable Long branchId,
+            @PathVariable Long locationId){
+        ResponseDto<Void> responseDto = bookLocationService.deleteLocation(branchId, locationId);
+        return ResponseEntity.status(HttpStatus.OK).body(responseDto);
     }
 
 
