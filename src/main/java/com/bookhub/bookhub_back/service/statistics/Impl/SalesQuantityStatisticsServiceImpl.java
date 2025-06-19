@@ -3,7 +3,8 @@ package com.bookhub.bookhub_back.service.statistics.Impl;
 import com.bookhub.bookhub_back.common.constants.ResponseCode;
 import com.bookhub.bookhub_back.common.constants.ResponseMessage;
 import com.bookhub.bookhub_back.dto.ResponseDto;
-import com.bookhub.bookhub_back.dto.statistics.projection.BookSalesProjection;
+import com.bookhub.bookhub_back.dto.statistics.projection.BestSellerProjection;
+import com.bookhub.bookhub_back.dto.statistics.projection.SalesQuantityStatisticsProjection;
 import com.bookhub.bookhub_back.repository.statistics.SalesQuantityStatisticsRepository;
 import com.bookhub.bookhub_back.service.statistics.SalesQuantityStatisticsService;
 import lombok.RequiredArgsConstructor;
@@ -17,32 +18,50 @@ public class SalesQuantityStatisticsServiceImpl implements SalesQuantityStatisti
     private final SalesQuantityStatisticsRepository salesQuantityStatisticsRepository;
 
     @Override
-    public ResponseDto<List<BookSalesProjection>> getTop100BestSellers() {
-        List<BookSalesProjection> responseDtos = salesQuantityStatisticsRepository.findTop100BestSellers();
+    public ResponseDto<List<BestSellerProjection>> getTop100BestSellers() {
+        List<BestSellerProjection> responseDtos = salesQuantityStatisticsRepository.findTop100BestSellers();
         return ResponseDto.success(ResponseCode.SUCCESS, ResponseMessage.SUCCESS, responseDtos);
     }
 
     @Override
-    public ResponseDto<List<BookSalesProjection>> getWeeklyBestSellers() {
-        List<BookSalesProjection> responseDtos = salesQuantityStatisticsRepository.findWeeklyBestSellers();
+    public ResponseDto<List<BestSellerProjection>> getWeeklyBestSellers() {
+        List<BestSellerProjection> responseDtos = salesQuantityStatisticsRepository.findWeeklyBestSellers();
         return ResponseDto.success(ResponseCode.SUCCESS, ResponseMessage.SUCCESS, responseDtos);
     }
 
     @Override
-    public ResponseDto<List<BookSalesProjection>> getMonthlyBestSellers() {
-        List<BookSalesProjection> responseDtos = salesQuantityStatisticsRepository.findMonthlyBestSellers();
+    public ResponseDto<List<BestSellerProjection>> getMonthlyBestSellers() {
+        List<BestSellerProjection> responseDtos = salesQuantityStatisticsRepository.findMonthlyBestSellers();
         return ResponseDto.success(ResponseCode.SUCCESS, ResponseMessage.SUCCESS, responseDtos);
     }
 
     @Override
-    public ResponseDto<List<BookSalesProjection>> getYearlyBestSellers() {
-        List<BookSalesProjection> responseDtos = salesQuantityStatisticsRepository.findYearlyBestSellers();
+    public ResponseDto<List<BestSellerProjection>> getYearlyBestSellers() {
+        List<BestSellerProjection> responseDtos = salesQuantityStatisticsRepository.findYearlyBestSellers();
         return ResponseDto.success(ResponseCode.SUCCESS, ResponseMessage.SUCCESS, responseDtos);
     }
 
     @Override
-    public ResponseDto<List<BookSalesProjection>> getBestSellersByCategory(String categoryName) {
-        List<BookSalesProjection> responseDtos = salesQuantityStatisticsRepository.findBestSellersByCategory(categoryName);
+    public ResponseDto<List<BestSellerProjection>> getBestSellersByCategory(String categoryName) {
+        List<BestSellerProjection> responseDtos = salesQuantityStatisticsRepository.findBestSellersByCategory(categoryName);
+        return ResponseDto.success(ResponseCode.SUCCESS, ResponseMessage.SUCCESS, responseDtos);
+    }
+
+    @Override
+    public ResponseDto<List<SalesQuantityStatisticsProjection>> getSalesQuantityByCategory() {
+        List<SalesQuantityStatisticsProjection> responseDtos = salesQuantityStatisticsRepository.findSalesQuantityByCategory();
+        return ResponseDto.success(ResponseCode.SUCCESS, ResponseMessage.SUCCESS, responseDtos);
+    }
+
+    @Override
+    public ResponseDto<List<SalesQuantityStatisticsProjection>> getSalesQuantityByDiscountPolicy() {
+        List<SalesQuantityStatisticsProjection> responseDtos = salesQuantityStatisticsRepository.findSalesQuantityByDiscountPolicy();
+        return ResponseDto.success(ResponseCode.SUCCESS, ResponseMessage.SUCCESS, responseDtos);
+    }
+
+    @Override
+    public ResponseDto<List<SalesQuantityStatisticsProjection>> getSalesQuantityByBranch() {
+        List<SalesQuantityStatisticsProjection> responseDtos = salesQuantityStatisticsRepository.findSalesQuantityByBranch();
         return ResponseDto.success(ResponseCode.SUCCESS, ResponseMessage.SUCCESS, responseDtos);
     }
 }
