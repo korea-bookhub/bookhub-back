@@ -22,7 +22,7 @@ public class Employee extends BaseTimeEntity {
     @Column(name = "employee_id")
     private Long employeeId;
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne
     @JoinColumn(name = "branch_id", nullable = false)
     private Branch branchId;
 

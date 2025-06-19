@@ -7,6 +7,7 @@ import com.bookhub.bookhub_back.common.enums.Status;
 import com.bookhub.bookhub_back.dto.ResponseDto;
 import com.bookhub.bookhub_back.dto.employee.request.EmployeeSignInRequestDto;
 import com.bookhub.bookhub_back.dto.employee.request.EmployeeSignUpRequestDto;
+import com.bookhub.bookhub_back.dto.employee.response.EmployeeResponseDto;
 import com.bookhub.bookhub_back.dto.employee.response.EmployeeSignInResponseDto;
 import com.bookhub.bookhub_back.dto.employee.response.EmployeeSignUpResponseDto;
 import com.bookhub.bookhub_back.entity.*;
@@ -145,9 +146,28 @@ public class AuthServiceImpl implements AuthService {
 
         String token = jwtProvider.generateJwtToken(loginId, employee.getAuthorityId());
 
+        EmployeeResponseDto reeponse = EmployeeResponseDto.builder()
+            .employeeId(employee.getEmployeeId())
+            .employeeName(employee.getName())
+            .employeeNumber(employee.getEmployeeNumber())
+            .branchId(employee.getBranchId().getBranchId())
+            .branchName(employee.getBranchId().getBranchName())
+            .positionId(employee.getPositionId().getPositionId())
+            .positionName(employee.getPositionId().getPositionName())
+            .authorityId(employee.getAuthorityId().getAuthorityId())
+            .authorityName(employee.getAuthorityId().getAuthorityName())
+            .email(employee.getEmail())
+            .phoneNumber(employee.getPhoneNumber())
+            .birthDate(employee.getBirthDate())
+            .createdAt(employee.getCreatedAt())
+            .status(employee.getStatus())
+            .isApproved(employee.getIsApproved())
+            .build();
+
         responseDto = EmployeeSignInResponseDto.builder()
             .token(token)
             .exprTime(exprTime)
+            .employee(reeponse)
             .build();
 
         return ResponseDto.success(ResponseCode.SUCCESS, ResponseMessageKorean.SUCCESS, responseDto);
