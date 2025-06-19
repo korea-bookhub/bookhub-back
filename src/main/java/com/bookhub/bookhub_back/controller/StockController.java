@@ -1,5 +1,6 @@
 package com.bookhub.bookhub_back.controller;
 
+import com.bookhub.bookhub_back.common.constants.ApiMappingPattern;
 import com.bookhub.bookhub_back.dto.ResponseDto;
 import com.bookhub.bookhub_back.dto.stock.request.StockUpdateRequestDto;
 import com.bookhub.bookhub_back.dto.stock.response.StockListResponseDto;
@@ -14,7 +15,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
-@RequestMapping
+@RequestMapping(ApiMappingPattern.BASIC_API+ApiMappingPattern.MANAGER_API+"/stocks")
 @RequiredArgsConstructor
 public class StockController {
 
