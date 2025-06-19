@@ -8,7 +8,7 @@ import com.bookhub.bookhub_back.dto.employee.request.EmployeeSignUpApprovalReque
 import com.bookhub.bookhub_back.dto.employee.request.EmployeeStatusUpdateRequestDto;
 import com.bookhub.bookhub_back.dto.employee.response.EmployeeListResponseDto;
 import com.bookhub.bookhub_back.dto.employee.response.EmployeeResponseDto;
-import com.bookhub.bookhub_back.dto.employee.response.EmployeeSignUpApprovalsReponseDto;
+import com.bookhub.bookhub_back.dto.employee.response.EmployeeSignUpApprovalsResponseDto;
 import com.bookhub.bookhub_back.service.EmployeeService;
 import com.bookhub.bookhub_back.service.MailService;
 import jakarta.validation.Valid;
@@ -42,8 +42,8 @@ public class EmployeeController {
 
     // 2. 직원 전체 조회
     @GetMapping("/approval")
-    public ResponseEntity<ResponseDto<List<EmployeeSignUpApprovalsReponseDto>>> getPendingEmployee() {
-        ResponseDto<List<EmployeeSignUpApprovalsReponseDto>> responseDto = employeeService.getPendingEmployee();
+    public ResponseEntity<ResponseDto<List<EmployeeSignUpApprovalsResponseDto>>> getPendingEmployee() {
+        ResponseDto<List<EmployeeSignUpApprovalsResponseDto>> responseDto = employeeService.getPendingEmployee();
         return ResponseDto.toResponseEntity(HttpStatus.OK, responseDto);
     }
 
@@ -56,12 +56,12 @@ public class EmployeeController {
 
     // 회원가입 승인
     @PutMapping("/{employeeId}/approve")
-    public ResponseEntity<ResponseDto<EmployeeSignUpApprovalsReponseDto>> updateApproval(
+    public ResponseEntity<ResponseDto<EmployeeSignUpApprovalsResponseDto>> updateApproval(
         @PathVariable Long employeeId,
         @Valid @RequestBody EmployeeSignUpApprovalRequestDto dto,
         @AuthenticationPrincipal String loginId
     ) {
-        ResponseDto<EmployeeSignUpApprovalsReponseDto> responseDto = employeeService.updateApproval(employeeId, dto, loginId);
+        ResponseDto<EmployeeSignUpApprovalsResponseDto> responseDto = employeeService.updateApproval(employeeId, dto, loginId);
         return ResponseDto.toResponseEntity(HttpStatus.OK, responseDto);
     }
 

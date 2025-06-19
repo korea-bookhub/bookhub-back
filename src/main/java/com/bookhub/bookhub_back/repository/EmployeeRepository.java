@@ -43,6 +43,5 @@ public interface EmployeeRepository extends JpaRepository<Employee, Long> {
         @Param("status") Status status
     );
 
-
     Optional<List<Employee>> findByIsApproved(IsApproved isApproved);
 }

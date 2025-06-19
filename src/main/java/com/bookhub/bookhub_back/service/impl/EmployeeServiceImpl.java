@@ -5,13 +5,14 @@ import com.bookhub.bookhub_back.common.constants.ResponseMessageKorean;
 import com.bookhub.bookhub_back.common.enums.ChangeType;
 import com.bookhub.bookhub_back.common.enums.IsApproved;
 import com.bookhub.bookhub_back.common.enums.Status;
+import com.bookhub.bookhub_back.common.util.DateUtils;
 import com.bookhub.bookhub_back.dto.ResponseDto;
 import com.bookhub.bookhub_back.dto.employee.request.EmployeeOrganizationUpdateRequestDto;
 import com.bookhub.bookhub_back.dto.employee.request.EmployeeSignUpApprovalRequestDto;
 import com.bookhub.bookhub_back.dto.employee.request.EmployeeStatusUpdateRequestDto;
-import com.bookhub.bookhub_back.dto.employee.response.EmployeeResponseDto;
 import com.bookhub.bookhub_back.dto.employee.response.EmployeeListResponseDto;
-import com.bookhub.bookhub_back.dto.employee.response.EmployeeSignUpApprovalsReponseDto;
+import com.bookhub.bookhub_back.dto.employee.response.EmployeeResponseDto;
+import com.bookhub.bookhub_back.dto.employee.response.EmployeeSignUpApprovalsResponseDto;
 import com.bookhub.bookhub_back.entity.Employee;
 import com.bookhub.bookhub_back.entity.EmployeeChangeLog;
 import com.bookhub.bookhub_back.entity.EmployeeExitLog;
@@ -69,15 +70,15 @@ public class EmployeeServiceImpl implements EmployeeService {
     }
 
     @Override
-    public ResponseDto<List<EmployeeSignUpApprovalsReponseDto>> getPendingEmployee() {
+    public ResponseDto<List<EmployeeSignUpApprovalsResponseDto>> getPendingEmployee() {
         List<EmployeeSignUpApproval> employees = null;
-        List<EmployeeSignUpApprovalsReponseDto> responseDtos = null;
+        List<EmployeeSignUpApprovalsResponseDto> responseDtos = null;
 
         employees = employeeSignUpApprovalRepository.findAll();
 
         responseDtos = employees.stream()
             .filter(employee -> employee.getIsApproved() == IsApproved.PENDING)
-            .map(employee -> EmployeeSignUpApprovalsReponseDto.builder()
+            .map(employee -> EmployeeSignUpApprovalsResponseDto.builder()
                 .approvalId(employee.getApprovalId())
                 .employeeId(employee.getEmployeeId().getEmployeeId())
                 .employeeNumber(employee.getEmployeeId().getEmployeeNumber())
@@ -85,7 +86,7 @@ public class EmployeeServiceImpl implements EmployeeService {
                 .branchName(employee.getEmployeeId().getBranchId().getBranchName())
                 .email(employee.getEmployeeId().getEmail())
                 .phoneNumber(employee.getEmployeeId().getPhoneNumber())
-                .appliedAt(employee.getEmployeeId().getCreatedAt())
+                .appliedAt(DateUtils.format(employee.getEmployeeId().getCreatedAt()))
                 .isApproved(employee.getIsApproved())
                 .build())
             .collect(Collectors.toList());
@@ -124,7 +125,7 @@ public class EmployeeServiceImpl implements EmployeeService {
 
     @Override
     @Transactional
-    public ResponseDto<EmployeeSignUpApprovalsReponseDto> updateApproval(Long EmployeeId, EmployeeSignUpApprovalRequestDto dto, String loginId) {
+    public ResponseDto<EmployeeSignUpApprovalsResponseDto> updateApproval(Long EmployeeId, EmployeeSignUpApprovalRequestDto dto, String loginId) {
         EmployeeListResponseDto responseDto = null;
         EmployeeSignUpApproval employeeSignUpApproval = null;
         Employee employee = null;
@@ -238,7 +239,7 @@ public class EmployeeServiceImpl implements EmployeeService {
 
         Status status = employee.getStatus();
 
-        if(status == Status.EXITED) {
+        if (status == Status.EXITED) {
             throw new IllegalArgumentException("이미 퇴사 처리되었습니다.");
         }
 
@@ -250,7 +251,7 @@ public class EmployeeServiceImpl implements EmployeeService {
                 .authorizerId(authorizer)
                 .exitReason(dto.getExitReason())
                 .build();
-        employeeExitLogRepository.save(employeeExitLog);
+            employeeExitLogRepository.save(employeeExitLog);
         }
 
         employeeRepository.save(employee);

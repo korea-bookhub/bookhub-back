@@ -3,14 +3,12 @@ package com.bookhub.bookhub_back.dto.employee.response;
 import com.bookhub.bookhub_back.common.enums.IsApproved;
 import lombok.*;
 
-import java.time.LocalDateTime;
-
 @Getter
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public class EmployeeSignUpApprovalsReponseDto {
+public class EmployeeSignUpApprovalsResponseDto {
     private Long approvalId;
     private Long employeeId;
     private Long employeeNumber;
@@ -19,9 +17,10 @@ public class EmployeeSignUpApprovalsReponseDto {
     private String email;
     private String phoneNumber;
     private Long authorizerId;
+    private Long authorizerNumber;
     private String authorizerName;
-    private LocalDateTime appliedAt;
+    private String appliedAt;
     private IsApproved isApproved;
     private String deniedReason;
-    private LocalDateTime updatedAt;
+    private String updatedAt;
 }
