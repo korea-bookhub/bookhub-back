@@ -1,6 +1,6 @@
 package com.bookhub.bookhub_back.dto.statistics.projection;
 
-public interface BookSalesProjection {
+public interface BestSellerProjection {
     String getIsbn();
     String getBookTitle();
     String getAuthorName();
