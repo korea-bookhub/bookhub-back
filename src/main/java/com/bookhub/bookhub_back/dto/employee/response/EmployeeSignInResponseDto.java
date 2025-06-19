@@ -10,4 +10,5 @@ import lombok.Getter;
 public class EmployeeSignInResponseDto {
     private String token;
     private int exprTime;
+    private EmployeeResponseDto employee;
 }

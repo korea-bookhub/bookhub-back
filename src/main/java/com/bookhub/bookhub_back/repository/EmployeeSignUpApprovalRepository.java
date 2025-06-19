@@ -37,6 +37,4 @@ public interface EmployeeSignUpApprovalRepository extends JpaRepository<Employee
         @Param("startUpdatedAt") LocalDateTime startUpdatedAt,
         @Param("endUpdatedAt") LocalDateTime endUpdatedAt
     );
-
-
 }
