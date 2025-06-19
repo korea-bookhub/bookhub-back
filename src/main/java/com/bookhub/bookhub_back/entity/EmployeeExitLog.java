@@ -26,6 +26,13 @@ public class EmployeeExitLog {
     @JoinColumn(name = "employee_id", nullable = false)
     private Employee employeeId;
 
+    @Column(name = "applied_at")
+    private LocalDateTime appliedAt;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "authorizer_id", nullable = false)
+    private Employee authorizerId;
+
     @Column(name = "exit_at")
     @CreatedDate
     private LocalDateTime exitAt;
@@ -33,4 +40,9 @@ public class EmployeeExitLog {
     @Enumerated(EnumType.STRING)
     @Column(name = "exit_reason", nullable = false)
     private ExitReason exitReason;
+
+    @PreUpdate
+    public void preUpdate() {
+        this.exitAt = LocalDateTime.now();
+    }
 }
