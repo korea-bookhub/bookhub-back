@@ -6,7 +6,7 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
-import java.time.LocalDateTime;
+import java.time.LocalDate;
 
 @Getter
 @AllArgsConstructor
@@ -14,11 +14,11 @@ import java.time.LocalDateTime;
 @Builder
 public class StockLogResponseDto {
     private Long stockLogId;
-    private StockActionType type;
+    private String type;
     private String employeeName;
     private String bookTitle;
     private String branchName;
     private Long amount;
-    private LocalDateTime actionDate;
+    private LocalDate actionDate;
 
 }

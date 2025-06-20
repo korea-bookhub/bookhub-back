@@ -1,8 +1,7 @@
 package com.bookhub.bookhub_back.dto.alert.response;
 
 import lombok.*;
-
-import java.time.LocalDateTime;
+import java.time.LocalDate;
 
 @Getter
 @Setter
@@ -17,5 +16,5 @@ public class AlertResponseDto {
     private Long targetPk;
     private String targetIsbn;
     private Boolean isRead;
-    private LocalDateTime createdAt;
+    private LocalDate createdAt;
 }

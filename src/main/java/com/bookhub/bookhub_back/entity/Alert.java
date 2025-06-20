@@ -2,12 +2,11 @@ package com.bookhub.bookhub_back.entity;
 
 import com.bookhub.bookhub_back.common.enums.AlertTargetTable;
 import com.bookhub.bookhub_back.common.enums.AlertType;
-import com.bookhub.bookhub_back.entity.datetime.BaseTimeEntity;
 import jakarta.persistence.*;
 import lombok.*;
 import org.springframework.data.annotation.CreatedDate;
 
-import java.time.LocalDateTime;
+import java.time.LocalDate;
 
 @Entity
 @Table(name = "alerts")
@@ -50,5 +49,5 @@ public class Alert {
 
     @CreatedDate
     @Column(name = "created_at", nullable = false)
-    private LocalDateTime createdAt;
+    private LocalDate createdAt;
 }

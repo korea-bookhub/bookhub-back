@@ -24,10 +24,10 @@ public class StockController {
 
     //책 재고 손실 시 수량 변경(Update)
     @PutMapping("/{stockId}")
-    public ResponseEntity<ResponseDto<StockUpdateResponseDto>> lossStock(
+    public ResponseEntity<ResponseDto<StockUpdateResponseDto>> updateStock(
             @PathVariable Long stockId,
             @Valid @RequestBody StockUpdateRequestDto dto){
-        ResponseDto<StockUpdateResponseDto> responseDto = stockService.lossStock(stockId,dto);
+        ResponseDto<StockUpdateResponseDto> responseDto = stockService.updateStock(stockId,dto);
         return ResponseEntity.status(HttpStatus.OK).body(responseDto);
     }
 

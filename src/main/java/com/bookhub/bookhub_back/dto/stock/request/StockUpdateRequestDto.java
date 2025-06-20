@@ -21,10 +21,10 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @Builder
 public class StockUpdateRequestDto {
-    private StockActionType type;
-    private Employee employeeId;
-    private Book bookIsbn;
-    private Branch branchId;
+    private String type;
+    private Long employeeId;
+    private String bookIsbn;
+    private Long branchId;
     private Long amount;
     private String description;
 }
