@@ -63,7 +63,7 @@ public class BookReceptionApprovalController {
     @GetMapping(ApiMappingPattern.ADMIN_API+"/reception/logs")
     public ResponseEntity<ResponseDto<List<ReceptionListResponseDto>>> getAdminConfirmedReceptions(
             @RequestParam(required = false) String branchName,
-            @RequestParam(required = false) String isbn
+            @RequestParam(value = "bookIsbn", required = false) String isbn
     ) {
         ResponseDto<List<ReceptionListResponseDto>> reception = bookReceptionApprovalService.getAdminConfirmedList(branchName, isbn);
         return ResponseEntity.status(HttpStatus.OK).body(reception);

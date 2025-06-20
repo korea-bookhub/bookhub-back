@@ -4,7 +4,6 @@ import com.bookhub.bookhub_back.common.constants.ResponseCode;
 import com.bookhub.bookhub_back.common.constants.ResponseMessageKorean;
 import com.bookhub.bookhub_back.dto.ResponseDto;
 import com.bookhub.bookhub_back.dto.reception.request.ReceptionCreateRequestDto;
-import com.bookhub.bookhub_back.dto.reception.response.BookReceptionAppprovalResponseDto;
 import com.bookhub.bookhub_back.dto.reception.response.ReceptionCreateResponseDto;
 import com.bookhub.bookhub_back.dto.reception.response.ReceptionListResponseDto;
 import com.bookhub.bookhub_back.entity.BookReceptionApproval;
