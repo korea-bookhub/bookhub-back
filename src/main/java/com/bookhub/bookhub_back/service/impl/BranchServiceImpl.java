@@ -53,9 +53,7 @@ public class BranchServiceImpl implements BranchService {
         List<BranchResponseDto> responseDtos = null;
         List<Branch> branches = null;
 
-        if (branchLocation == null || branchLocation.isBlank()) {
-            throw new IllegalArgumentException();
-        } else if (branchLocation.equals("전체")) {
+        if (branchLocation.isBlank()) {
             branches = branchRepository.findAll();
         } else {
             branches = branchRepository.findByBranchLocationContaining(branchLocation);

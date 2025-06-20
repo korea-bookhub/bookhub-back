@@ -27,7 +27,7 @@ public class BranchController {
     }
 
     @GetMapping("/auth/branches")
-    public ResponseEntity<ResponseDto<List<BranchResponseDto>>> getBranchesByLocation(@RequestParam String branchLocation) {
+    public ResponseEntity<ResponseDto<List<BranchResponseDto>>> getBranchesByLocation(@RequestParam(required = false) String branchLocation) {
         ResponseDto<List<BranchResponseDto>> responseDto = branchService.getBranchesByLocation(branchLocation);
         return ResponseDto.toResponseEntity(HttpStatus.OK, responseDto);
     }
