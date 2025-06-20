@@ -8,8 +8,10 @@ import lombok.Setter;
 @Getter
 @Builder
 @AllArgsConstructor
-@Setter
-public class WeekdayRevenueResponseDto {
-    private String weekday;
-    private Long total;
+public class BranchRevenueResponseDto {
+    private Long branchId;
+    private String branchName;
+    private String categoryName;
+    private Long totalRevenue;
+
 }
