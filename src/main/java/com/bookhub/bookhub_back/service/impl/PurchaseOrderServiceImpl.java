@@ -2,19 +2,22 @@ package com.bookhub.bookhub_back.service.impl;
 
 import com.bookhub.bookhub_back.common.constants.ResponseCode;
 import com.bookhub.bookhub_back.common.constants.ResponseMessage;
+import com.bookhub.bookhub_back.common.constants.ResponseMessageKorean;
+import com.bookhub.bookhub_back.common.enums.AlertType;
 import com.bookhub.bookhub_back.common.enums.PurchaseOrderStatus;
 import com.bookhub.bookhub_back.dto.ResponseDto;
+import com.bookhub.bookhub_back.dto.alert.request.AlertCreateRequestDto;
 import com.bookhub.bookhub_back.dto.purchaseOrder.request.PurchaseOrderApproveRequestDto;
 import com.bookhub.bookhub_back.dto.purchaseOrder.request.PurchaseOrderCreateRequestDto;
 import com.bookhub.bookhub_back.dto.purchaseOrder.request.PurchaseOrderRequestDto;
 import com.bookhub.bookhub_back.dto.purchaseOrder.response.PurchaseOrderResponseDto;
 import com.bookhub.bookhub_back.entity.*;
 import com.bookhub.bookhub_back.repository.*;
+import com.bookhub.bookhub_back.service.AlertService;
 import com.bookhub.bookhub_back.service.PurchaseOrderService;
 import jakarta.persistence.EntityNotFoundException;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
-import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -29,7 +32,9 @@ public class PurchaseOrderServiceImpl implements PurchaseOrderService {
     private final PurchaseOrderApprovalRepository purchaseOrderApprovalRepository;
     private final EmployeeRepository employeeRepository;
     private final BookRepository bookRepository;
+    private final AlertService alertService;
     private final BookReceptionApprovalRepository bookReceptionApprovalRepository;
+    private final AuthorityRepository authorityRepository;
 
     // 1) 발주 요청서 작성
     @Override
@@ -46,16 +51,35 @@ public class PurchaseOrderServiceImpl implements PurchaseOrderService {
 
         for(PurchaseOrderRequestDto requestDto: requestDtos) {
             purchaseOrders.add(PurchaseOrder.builder()
-                            .purchaseOrderAmount(requestDto.getPurchaseOrderAmount())
-                            .purchaseOrderStatus(PurchaseOrderStatus.REQUESTED)
-                            .employeeId(employee)
-                            .branchId(branch)
-                            .bookIsbn(bookRepository.findById(requestDto.getIsbn())
-                                    .orElseThrow(() -> new IllegalArgumentException("등록되지 않은 책입니다.")))
+                    .purchaseOrderAmount(requestDto.getPurchaseOrderAmount())
+                    .purchaseOrderStatus(PurchaseOrderStatus.REQUESTED)
+                    .employeeId(employee)
+                    .branchId(branch)
+                    .bookIsbn(bookRepository.findById(requestDto.getIsbn())
+                            .orElseThrow(() -> new IllegalArgumentException("등록되지 않은 책입니다.")))
                     .build());
         }
 
         List<PurchaseOrder> savedOrders = purchaseOrderRepository.saveAll(purchaseOrders);
+
+        Authority adminAuthority = authorityRepository.findByAuthorityName("ADMIN")
+                .orElseThrow(() -> new IllegalArgumentException(ResponseMessageKorean.USER_NOT_FOUND));
+
+        for (PurchaseOrder savedOrder : savedOrders) {
+            for (Employee admin : employeeRepository.findAll().stream()
+                    .filter(emp -> emp.getAuthorityId().equals(adminAuthority))
+                    .toList()) {
+
+                alertService.createAlert(AlertCreateRequestDto.builder()
+                        .employeeId(admin.getEmployeeId())
+                        .alertType("PURCHASE_REQUESTED")
+                        .alertTargetTable("PURCHASE_ORDERS")
+                        .targetPk(savedOrder.getPurchaseOrderId())
+                        .message("지점 " + savedOrder.getBranchId().getBranchName() +
+                                "에서 [" + savedOrder.getBookIsbn().getBookTitle() + "] 발주 요청이 있습니다.")
+                        .build());
+            }
+        }
 
         responseDtos = savedOrders.stream()
                 .map(order -> changeToPurchaseOrderResponseDto(order))
@@ -122,7 +146,7 @@ public class PurchaseOrderServiceImpl implements PurchaseOrderService {
             purchaseOrders = purchaseOrderRepository.findAll();
         } else if(bookTitle == null && purchaseOrderStatus == null) {
             Employee employee = employeeRepository.findByName(employeeName)
-                .orElseThrow(() -> new EntityNotFoundException(ResponseMessage.NO_EXIST_ID));
+                    .orElseThrow(() -> new EntityNotFoundException(ResponseMessage.NO_EXIST_ID));
             purchaseOrders = purchaseOrderRepository.findByEmployeeId(employee);
         } else if (employeeName == null && purchaseOrderStatus == null) {
             Book book = bookRepository.findByBookTitle(bookTitle)
@@ -132,7 +156,7 @@ public class PurchaseOrderServiceImpl implements PurchaseOrderService {
             purchaseOrders = purchaseOrderRepository.findByPurchaseOrderStatus(purchaseOrderStatus);
         } else if (purchaseOrderStatus == null) {
             Employee employee = employeeRepository.findByName(employeeName)
-                .orElseThrow(() -> new EntityNotFoundException(ResponseMessage.NO_EXIST_ID));
+                    .orElseThrow(() -> new EntityNotFoundException(ResponseMessage.NO_EXIST_ID));
             Book book = bookRepository.findByBookTitle(bookTitle)
                     .orElseThrow(() -> new EntityNotFoundException(ResponseMessage.NO_EXIST_ID));
             purchaseOrders = purchaseOrderRepository.findByEmployeeIdAndBookIsbn(employee, book);
@@ -220,6 +244,17 @@ public class PurchaseOrderServiceImpl implements PurchaseOrderService {
                 .purchaseOrderId(purchaseOrder)
                 .isApproved(purchaseOrder.getPurchaseOrderStatus() == PurchaseOrderStatus.APPROVED ? true : false)
                 .build();
+
+        purchaseOrderApprovalRepository.save(pOA);
+
+        alertService.createAlert(AlertCreateRequestDto.builder()
+                .employeeId(approvedPurchaseOrder.getEmployeeId().getEmployeeId()) // 발주 요청한 사람
+                .alertType(String.valueOf(AlertType.PURCHASE_APPROVED))
+                .alertTargetTable("PURCHASE_APPROVALS")
+                .targetPk(approvedPurchaseOrder.getPurchaseOrderId()) // 각 발주 ID
+                .message("["+approvedPurchaseOrder.getBookIsbn().getBookTitle()+"]에 대한 발주 요청이 승인되었습니다.")
+                .build());
+
 
         // 수령 확인 자동 생성 (승인됐을때 자동 생성)
         PurchaseOrderApproval savedApproval = purchaseOrderApprovalRepository.save(pOA);

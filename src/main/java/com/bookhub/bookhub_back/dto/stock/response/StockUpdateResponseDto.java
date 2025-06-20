@@ -13,7 +13,7 @@ import lombok.NoArgsConstructor;
 public class StockUpdateResponseDto {
     private Long stockId;
     private String branchName;
-    private StockActionType type;
+    private String type;
     private String bookTitle;
     private Long amount;
     private Long bookAmount;

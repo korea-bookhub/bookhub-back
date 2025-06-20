@@ -43,7 +43,7 @@ public class StockLogServiceImpl implements StockLogService {
         responseDtos = stockLogs.stream()
                 .map(stockLog -> StockLogResponseDto.builder()
                         .stockLogId(stockLog.getLogId())
-                        .type(stockLog.getStockActionType())
+                        .type(String.valueOf(stockLog.getStockActionType()))
                         .employeeName(stockLog.getEmployeeId().getName())
                         .bookTitle(stockLog.getBookIsbn().getBookTitle())
                         .branchName(stockLog.getBranchId().getBranchName())
@@ -77,7 +77,7 @@ public class StockLogServiceImpl implements StockLogService {
 
         responseDto = StockLogDetailResponseDto.builder()
                 .stockLogId(stockLog.getLogId())
-                .type(stockLog.getStockActionType())
+                .type(String.valueOf(stockLog.getStockActionType()))
                 .employeeName(stockLog.getEmployeeId().getName())
                 .bookTitle(stockLog.getBookIsbn().getBookTitle())
                 .branchName(stockLog.getBranchId().getBranchName())

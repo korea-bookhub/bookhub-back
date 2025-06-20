@@ -5,6 +5,7 @@ import com.bookhub.bookhub_back.common.constants.ResponseMessageKorean;
 import com.bookhub.bookhub_back.common.enums.IsApproved;
 import com.bookhub.bookhub_back.common.enums.Status;
 import com.bookhub.bookhub_back.dto.ResponseDto;
+import com.bookhub.bookhub_back.dto.alert.request.AlertCreateRequestDto;
 import com.bookhub.bookhub_back.dto.employee.request.EmployeeSignInRequestDto;
 import com.bookhub.bookhub_back.dto.employee.request.EmployeeSignUpRequestDto;
 import com.bookhub.bookhub_back.dto.employee.response.EmployeeResponseDto;
@@ -13,6 +14,7 @@ import com.bookhub.bookhub_back.dto.employee.response.EmployeeSignUpResponseDto;
 import com.bookhub.bookhub_back.entity.*;
 import com.bookhub.bookhub_back.provider.JwtProvider;
 import com.bookhub.bookhub_back.repository.*;
+import com.bookhub.bookhub_back.service.AlertService;
 import com.bookhub.bookhub_back.service.AuthService;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
@@ -22,6 +24,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
+import java.util.List;
 import java.util.Random;
 
 @Service
@@ -34,6 +37,8 @@ public class AuthServiceImpl implements AuthService {
     private final EmployeeSignUpApprovalRepository employeeSignupApprovalRepository;
     private final BCryptPasswordEncoder bCryptPasswordEncoder;
     private final JwtProvider jwtProvider;
+    private final AlertService alertService;
+
 
     @Override
     @Transactional
@@ -115,6 +120,26 @@ public class AuthServiceImpl implements AuthService {
             .build();
 
         employeeSignupApprovalRepository.save(employeeSignupApproval);
+
+        // 본사 관리자에게 알림 전송
+        Authority adminAuthority = authorityRepository.findByAuthorityName("ADMIN")
+                .orElseThrow(() -> new IllegalArgumentException(ResponseMessageKorean.USER_NOT_FOUND));
+
+        final Employee finalEmployee = newEmployee;
+
+        employeeRepository.findAll().stream()
+                .filter(emp -> emp.getAuthorityId().equals(adminAuthority))
+                .forEach(admin -> {
+                    AlertCreateRequestDto alertDto = AlertCreateRequestDto.builder()
+                            .employeeId(admin.getEmployeeId())
+                            .alertType("SIGNUP_APPROVAL")
+                            .alertTargetTable("EMPLOYEES")
+                            .targetPk(finalEmployee.getEmployeeId())
+                            .message(finalEmployee.getName() + " 님의 회원가입 승인 요청이 도착했습니다.")
+                            .build();
+
+                    alertService.createAlert(alertDto);
+                });
 
         return ResponseDto.success(ResponseCode.SUCCESS, ResponseMessageKorean.SUCCESS);
     }

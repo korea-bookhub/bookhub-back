@@ -4,10 +4,10 @@ import com.bookhub.bookhub_back.common.enums.StockActionType;
 import jakarta.persistence.*;
 import lombok.*;
 
-import java.time.LocalDateTime;
+import java.time.LocalDate;
 
 @Entity
-@Table(name = "stocks_logs")
+@Table(name = "stock_logs")
 @Getter
 @Setter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
@@ -43,7 +43,7 @@ public class StockLog {
     private Long bookAmount;
 
     @Column(name = "action_date", nullable = false)
-    private LocalDateTime actionDate;
+    private LocalDate actionDate;
 
     @Lob
     @Column(name = "description")

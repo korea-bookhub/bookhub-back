@@ -9,7 +9,7 @@ import jakarta.validation.Valid;
 import java.util.List;
 
 public interface StockService {
-    ResponseDto<StockUpdateResponseDto> lossStock(Long stockId, @Valid StockUpdateRequestDto dto);
+    ResponseDto<StockUpdateResponseDto> updateStock(Long stockId, @Valid StockUpdateRequestDto dto);
 
     ResponseDto<List<StockListResponseDto>> searchByBookIsbn(String bookIsbn);
 

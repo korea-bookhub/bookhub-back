@@ -17,7 +17,7 @@ import com.bookhub.bookhub_back.service.AlertService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
-import java.time.LocalDateTime;
+import java.time.LocalDate;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -41,7 +41,7 @@ public class AlertServiceImpl implements AlertService {
                 .targetPk(dto.getTargetPk())
                 .targetIsbn(dto.getTargetIsbn())
                 .isRead(false)
-                .createdAt(LocalDateTime.now())
+                .createdAt(LocalDate.now())
                 .build();
         Alert newAlert = alertRepository.save(alert);
 
