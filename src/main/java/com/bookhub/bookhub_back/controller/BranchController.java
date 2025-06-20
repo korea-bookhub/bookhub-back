@@ -46,10 +46,4 @@ public class BranchController {
         ResponseDto<BranchResponseDto> responseDto = branchService.updateBranch(branchId, dto);
         return ResponseDto.toResponseEntity(HttpStatus.OK, responseDto);
     }
-
-    @DeleteMapping(ApiMappingPattern.ADMIN_API+"/branches/{branchId}")
-    public ResponseEntity<ResponseDto<Void>> deleteBranch (@PathVariable Long branchId) {
-        ResponseDto<Void> responseDto = branchService.deleteBranch(branchId);
-        return ResponseDto.toResponseEntity(HttpStatus.OK, responseDto);
-    }
 }
