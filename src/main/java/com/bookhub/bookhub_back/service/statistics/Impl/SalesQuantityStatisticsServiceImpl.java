@@ -42,8 +42,8 @@ public class SalesQuantityStatisticsServiceImpl implements SalesQuantityStatisti
     }
 
     @Override
-    public ResponseDto<List<BestSellerProjection>> getBestSellersByCategory(String categoryName) {
-        List<BestSellerProjection> responseDtos = salesQuantityStatisticsRepository.findBestSellersByCategory(categoryName);
+    public ResponseDto<List<BestSellerProjection>> getBestSellersByCategory(Long categoryId) {
+        List<BestSellerProjection> responseDtos = salesQuantityStatisticsRepository.findBestSellersByCategory(categoryId);
         return ResponseDto.success(ResponseCode.SUCCESS, ResponseMessage.SUCCESS, responseDtos);
     }
 

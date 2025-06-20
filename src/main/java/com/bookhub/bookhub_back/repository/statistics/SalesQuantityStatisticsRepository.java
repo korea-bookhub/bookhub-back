@@ -112,12 +112,12 @@ public interface SalesQuantityStatisticsRepository extends JpaRepository<Custome
                          JOIN publishers p ON b.publisher_id = p.publisher_id
                          JOIN book_categories bc ON b.category_id = bc.category_id
                          WHERE co.customer_order_date_at >= DATE_SUB(NOW(), INTERVAL 7 DAY)
-                             AND bc.category_name = :categoryName
+                             AND ( bc.category_id = :categoryId OR bc.parent_category_id = :categoryId )
                          GROUP BY b.book_isbn
                          ORDER BY totalSales DESC
                          LIMIT 20;
         """, nativeQuery = true)
-    List<BestSellerProjection> findBestSellersByCategory(@Param("categoryName") String categoryName);
+    List<BestSellerProjection> findBestSellersByCategory(@Param("categoryId") Long categoryId);
 
     // 판매 수량 차트
     // 카테고리별
