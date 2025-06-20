@@ -111,16 +111,4 @@ public class BranchServiceImpl implements BranchService {
 
         return ResponseDto.success(ResponseCode.SUCCESS, ResponseMessageKorean.SUCCESS, responseDto);
     }
-
-    @Override
-    public ResponseDto<Void> deleteBranch(Long branchId) {
-        Branch branch = null;
-
-        branch = branchRepository.findById(branchId)
-            .orElseThrow(IllegalArgumentException::new);
-
-        branchRepository.delete(branch);
-
-        return ResponseDto.success(ResponseCode.SUCCESS, ResponseMessageKorean.SUCCESS, null);
-    }
 }
