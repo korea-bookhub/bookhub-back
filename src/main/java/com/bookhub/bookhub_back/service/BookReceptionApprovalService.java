@@ -3,7 +3,6 @@ package com.bookhub.bookhub_back.service;
 
 import com.bookhub.bookhub_back.dto.ResponseDto;
 import com.bookhub.bookhub_back.dto.reception.request.ReceptionCreateRequestDto;
-import com.bookhub.bookhub_back.dto.reception.response.BookReceptionAppprovalResponseDto;
 import com.bookhub.bookhub_back.dto.reception.response.ReceptionCreateResponseDto;
 import com.bookhub.bookhub_back.dto.reception.response.ReceptionListResponseDto;
 
