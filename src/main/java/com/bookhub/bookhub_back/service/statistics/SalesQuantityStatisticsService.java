@@ -15,7 +15,7 @@ public interface SalesQuantityStatisticsService {
 
     ResponseDto<List<BestSellerProjection>> getYearlyBestSellers();
 
-    ResponseDto<List<BestSellerProjection>> getBestSellersByCategory(String categoryName);
+    ResponseDto<List<BestSellerProjection>> getBestSellersByCategory(Long categoryId);
 
     ResponseDto<List<SalesQuantityStatisticsProjection>> getSalesQuantityByCategory();
 

@@ -17,7 +17,6 @@ import java.util.Optional;
 public interface PurchaseOrderApprovalRepository extends JpaRepository<PurchaseOrderApproval, Long> {
     List<PurchaseOrderApproval> findByEmployeeId(Employee employee);
 
-//    @Query(value = "SELECT * FROM purchase_order_approvals WHERE created_at BETWEEN :startDate AND :endDate", nativeQuery = true)
     List<PurchaseOrderApproval> findByCreatedAtBetween(LocalDateTime startDate, LocalDateTime endDate);
 
     List<PurchaseOrderApproval> findByIsApproved(boolean isApproved);

@@ -51,11 +51,11 @@ public class SalesQuantityStatisticsController {
     }
 
     // 카테고리별 (일주일간)
-    @GetMapping(BEST_SELLER_API + ("/category"))
+    @GetMapping(BEST_SELLER_API + ("/category/{categoryId}"))
     public ResponseEntity<ResponseDto<List<BestSellerProjection>>> getBestSellersByCategory(
-            @RequestParam String categoryName
+            @PathVariable Long categoryId
     ) {
-        ResponseDto<List<BestSellerProjection>> response = salesQuantityStatisticsService.getBestSellersByCategory(categoryName);
+        ResponseDto<List<BestSellerProjection>> response = salesQuantityStatisticsService.getBestSellersByCategory(categoryId);
         return ResponseEntity.status(HttpStatus.OK).body(response);
     }
 
