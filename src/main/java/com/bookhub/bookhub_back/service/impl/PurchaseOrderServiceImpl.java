@@ -221,8 +221,6 @@ public class PurchaseOrderServiceImpl implements PurchaseOrderService {
                 .isApproved(purchaseOrder.getPurchaseOrderStatus() == PurchaseOrderStatus.APPROVED ? true : false)
                 .build();
 
-        purchaseOrderApprovalRepository.save(pOA);
-
         // 수령 확인 자동 생성 (승인됐을때 자동 생성)
         PurchaseOrderApproval savedApproval = purchaseOrderApprovalRepository.save(pOA);
 
