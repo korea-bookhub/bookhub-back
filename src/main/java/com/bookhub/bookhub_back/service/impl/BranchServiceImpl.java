@@ -73,27 +73,33 @@ public class BranchServiceImpl implements BranchService {
     }
 
     @Override
+    public ResponseDto<BranchResponseDto> getBranchById(Long branchId) {
+        BranchResponseDto responseDto = null;
+        Branch branch = null;
+
+        branch = branchRepository.findById(branchId)
+            .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 지점 아이디입니다."));
+
+        responseDto = BranchResponseDto.builder()
+            .branchId(branch.getBranchId())
+            .branchName(branch.getBranchName())
+            .branchLocation(branch.getBranchLocation())
+            .createdAt(DateUtils.format(branch.getCreatedAt()))
+            .updatedAt(DateUtils.format(branch.getUpdatedAt()))
+            .build();
+
+        return ResponseDto.success(ResponseCode.SUCCESS, ResponseMessageKorean.SUCCESS, responseDto);
+    }
+
+    @Override
     public ResponseDto<BranchResponseDto> updateBranch(Long branchId, BranchUpdateRequestDto dto) {
         BranchResponseDto responseDto = null;
 
         Branch branch = branchRepository.findById(branchId)
             .orElseThrow(IllegalArgumentException::new);
 
-        if (dto.getBranchName().isBlank() && dto.getBranchLocation().isBlank()) {
-            throw new IllegalArgumentException();
-        }
-
-        if (dto.getBranchName().isBlank()) {
-            branch.setBranchLocation(dto.getBranchLocation());
-        }
-        if (dto.getBranchLocation().isBlank()) {
-            branch.setBranchName(dto.getBranchName());
-        }
-
-        if (!dto.getBranchName().isEmpty() && !dto.getBranchLocation().isEmpty()) {
-            branch.setBranchName(dto.getBranchName());
-            branch.setBranchLocation(dto.getBranchLocation());
-        }
+        branch.setBranchName(dto.getBranchName());
+        branch.setBranchLocation(dto.getBranchLocation());
 
 
         Branch updateBranch = branchRepository.save(branch);

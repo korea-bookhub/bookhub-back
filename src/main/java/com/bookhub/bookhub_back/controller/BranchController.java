@@ -32,6 +32,12 @@ public class BranchController {
         return ResponseDto.toResponseEntity(HttpStatus.OK, responseDto);
     }
 
+    @GetMapping(ApiMappingPattern.ADMIN_API + "/branches/{branchId}")
+    public ResponseEntity<ResponseDto<BranchResponseDto>> getBranchById(@PathVariable Long branchId) {
+        ResponseDto<BranchResponseDto> responseDto = branchService.getBranchById(branchId);
+        return ResponseDto.toResponseEntity(HttpStatus.OK, responseDto);
+    }
+
     @PutMapping(ApiMappingPattern.ADMIN_API+"/branches/{branchId}")
     public ResponseEntity<ResponseDto<BranchResponseDto>> updateBranch(
         @PathVariable Long branchId,
