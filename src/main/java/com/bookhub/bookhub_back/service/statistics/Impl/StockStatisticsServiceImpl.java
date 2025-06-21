@@ -4,6 +4,7 @@ import com.bookhub.bookhub_back.common.constants.ResponseCode;
 import com.bookhub.bookhub_back.common.constants.ResponseMessageKorean;
 import com.bookhub.bookhub_back.common.enums.StockActionType;
 import com.bookhub.bookhub_back.dto.ResponseDto;
+import com.bookhub.bookhub_back.dto.statistics.projection.CategoryStockProjection;
 import com.bookhub.bookhub_back.dto.statistics.response.stocks.BranchStockBarChartDto;
 import com.bookhub.bookhub_back.dto.statistics.response.stocks.CategoryStockResponseDto;
 import com.bookhub.bookhub_back.dto.statistics.response.stocks.TimeStockChartResponseDto;
@@ -76,7 +77,26 @@ public class StockStatisticsServiceImpl implements StocksStaticsService {
     }
 
     @Override
-    public ResponseDto<List<CategoryStockResponseDto>> getCategoryStocks() {
+    public ResponseDto<List<CategoryStockResponseDto>> getCategoryStocks(String branchName) {
+        List<CategoryStockProjection> projections = stocksStatisticsRepository.findCategoryStockByBranch(branchName);
 
+        List<CategoryStockResponseDto> top10 = new ArrayList<>();
+        long etcSum = 0L;
+
+        for (int i = 0; i < projections.size(); i++) {
+            CategoryStockProjection p = projections.get(i);
+            if (i < 9) {
+                top10.add(new CategoryStockResponseDto(p.getCategoryName(), p.getTotalAmount()));
+            } else {
+                etcSum += p.getTotalAmount();
+            }
+        }
+
+        if (etcSum > 0) {
+            top10.add(new CategoryStockResponseDto("기타", etcSum));
+        }
+        System.out.println(top10.get(1));
+        return ResponseDto.success(ResponseCode.SUCCESS, ResponseMessageKorean.SUCCESS, top10);
     }
+
 }
