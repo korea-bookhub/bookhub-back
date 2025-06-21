@@ -2,12 +2,10 @@ package com.bookhub.bookhub_back.controller.statistics;
 
 import com.bookhub.bookhub_back.common.constants.ApiMappingPattern;
 import com.bookhub.bookhub_back.dto.ResponseDto;
-import com.bookhub.bookhub_back.dto.statistics.response.revenue.WeekdayRevenueResponseDto;
 import com.bookhub.bookhub_back.dto.statistics.response.stocks.BranchStockBarChartDto;
 import com.bookhub.bookhub_back.dto.statistics.response.stocks.CategoryStockResponseDto;
 import com.bookhub.bookhub_back.dto.statistics.response.stocks.TimeStockChartResponseDto;
 import com.bookhub.bookhub_back.dto.statistics.response.stocks.ZeroStockResponseDto;
-import com.bookhub.bookhub_back.service.StockService;
 import com.bookhub.bookhub_back.service.statistics.StocksStaticsService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
