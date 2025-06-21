@@ -2,12 +2,10 @@ package com.bookhub.bookhub_back.controller.statistics;
 
 import com.bookhub.bookhub_back.common.constants.ApiMappingPattern;
 import com.bookhub.bookhub_back.dto.ResponseDto;
-import com.bookhub.bookhub_back.dto.statistics.response.revenue.WeekdayRevenueResponseDto;
 import com.bookhub.bookhub_back.dto.statistics.response.stocks.BranchStockBarChartDto;
 import com.bookhub.bookhub_back.dto.statistics.response.stocks.CategoryStockResponseDto;
 import com.bookhub.bookhub_back.dto.statistics.response.stocks.TimeStockChartResponseDto;
 import com.bookhub.bookhub_back.dto.statistics.response.stocks.ZeroStockResponseDto;
-import com.bookhub.bookhub_back.service.StockService;
 import com.bookhub.bookhub_back.service.statistics.StocksStaticsService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -75,8 +73,9 @@ public class StocksStatisticsController {
     //상위 10개의 카테고리만 보여주고 나머지는 기타로 표시
     @GetMapping("/category")
     public ResponseEntity<ResponseDto<List<CategoryStockResponseDto>>> getCategoryStocks(
+        @RequestParam String branchName
     ){
-        ResponseDto<List<CategoryStockResponseDto>> revenue = stocksStaticsService.getCategoryStocks();
+        ResponseDto<List<CategoryStockResponseDto>> revenue = stocksStaticsService.getCategoryStocks(branchName);
         return ResponseEntity.status(HttpStatus.OK).body(revenue);
     }
 }

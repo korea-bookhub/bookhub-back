@@ -10,4 +10,6 @@ import lombok.Setter;
 @AllArgsConstructor
 @Setter
 public class CategoryStockResponseDto {
+    private String categoryName;
+    private Long quantity;
 }

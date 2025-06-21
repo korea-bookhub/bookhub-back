@@ -15,5 +15,5 @@ public interface StocksStaticsService {
 
     ResponseDto<List<ZeroStockResponseDto>> getZeroStockBooks();
 
-    ResponseDto<List<CategoryStockResponseDto>> getCategoryStocks();
+    ResponseDto<List<CategoryStockResponseDto>> getCategoryStocks(String  branchName);
 }
