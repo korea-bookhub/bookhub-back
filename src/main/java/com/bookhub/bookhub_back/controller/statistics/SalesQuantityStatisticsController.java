@@ -4,6 +4,7 @@ import com.bookhub.bookhub_back.common.constants.ApiMappingPattern;
 import com.bookhub.bookhub_back.dto.ResponseDto;
 import com.bookhub.bookhub_back.dto.statistics.projection.BestSellerProjection;
 import com.bookhub.bookhub_back.dto.statistics.projection.SalesQuantityStatisticsProjection;
+import com.bookhub.bookhub_back.dto.statistics.projection.YearlySalesQuantityProjection;
 import com.bookhub.bookhub_back.service.statistics.SalesQuantityStatisticsService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -62,6 +63,30 @@ public class SalesQuantityStatisticsController {
     // 밀리언셀러 (100만부 이상 판매)
 
     /* 아래는 차트로 표현 - 판매 수량 반환 */
+    // 기간별
+    // 1) Daily
+    @GetMapping(SALES_QUANTITY_API + ("/daily"))
+    public ResponseEntity<ResponseDto<List<SalesQuantityStatisticsProjection>>> getDailySalesQuantity() {
+        ResponseDto<List<SalesQuantityStatisticsProjection>> response = salesQuantityStatisticsService.getDailySalesQuantity();
+        return ResponseEntity.status(HttpStatus.OK).body(response);
+    }
+
+    // 2) weekly
+    @GetMapping(SALES_QUANTITY_API + ("/weekly"))
+    public ResponseEntity<ResponseDto<List<SalesQuantityStatisticsProjection>>> getWeeklySalesQuantity() {
+        ResponseDto<List<SalesQuantityStatisticsProjection>> response = salesQuantityStatisticsService.getWeeklySalesQuantity();
+        return ResponseEntity.status(HttpStatus.OK).body(response);
+    }
+
+    // 3) monthly
+    @GetMapping(SALES_QUANTITY_API + ("/monthly"))
+    public ResponseEntity<ResponseDto<List<SalesQuantityStatisticsProjection>>> getMonthlySalesQuantity(
+            @RequestParam int year
+    ) {
+        ResponseDto<List<SalesQuantityStatisticsProjection>> response = salesQuantityStatisticsService.getMonthlySalesQuantity(year);
+        return ResponseEntity.status(HttpStatus.OK).body(response);
+    }
+
     // 카테고리별 (일주일간)
     @GetMapping(SALES_QUANTITY_API + ("/category"))
     public ResponseEntity<ResponseDto<List<SalesQuantityStatisticsProjection>>> getSalesQuantityByCategory() {
@@ -71,15 +96,21 @@ public class SalesQuantityStatisticsController {
 
     // 할인항목별 (일주일간)
     @GetMapping(SALES_QUANTITY_API + ("/discount-policy"))
-    public ResponseEntity<ResponseDto<List<SalesQuantityStatisticsProjection>>> getSalesQuantityByDiscountPolicy() {
-        ResponseDto<List<SalesQuantityStatisticsProjection>> response = salesQuantityStatisticsService.getSalesQuantityByDiscountPolicy();
+    public ResponseEntity<ResponseDto<List<SalesQuantityStatisticsProjection>>> getSalesQuantityByDiscountPolicy(
+            @RequestParam int year,
+            @RequestParam int quarter
+    ) {
+        ResponseDto<List<SalesQuantityStatisticsProjection>> response = salesQuantityStatisticsService.getSalesQuantityByDiscountPolicy(year, quarter);
         return ResponseEntity.status(HttpStatus.OK).body(response);
     }
 
     // 지점별
     @GetMapping(SALES_QUANTITY_API + ("/branch"))
-    public ResponseEntity<ResponseDto<List<SalesQuantityStatisticsProjection>>> getSalesQuantityByBranch() {
-        ResponseDto<List<SalesQuantityStatisticsProjection>> response = salesQuantityStatisticsService.getSalesQuantityByBranch();
+    public ResponseEntity<ResponseDto<List<SalesQuantityStatisticsProjection>>> getSalesQuantityByBranch(
+            @RequestParam int year,
+            @RequestParam int month
+    ) {
+        ResponseDto<List<SalesQuantityStatisticsProjection>> response = salesQuantityStatisticsService.getSalesQuantityByBranch(year, month);
         return ResponseEntity.status(HttpStatus.OK).body(response);
     }
 }

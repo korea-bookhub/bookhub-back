@@ -2,6 +2,7 @@ package com.bookhub.bookhub_back.repository.statistics;
 
 import com.bookhub.bookhub_back.dto.statistics.projection.BestSellerProjection;
 import com.bookhub.bookhub_back.dto.statistics.projection.SalesQuantityStatisticsProjection;
+import com.bookhub.bookhub_back.dto.statistics.projection.YearlySalesQuantityProjection;
 import com.bookhub.bookhub_back.entity.CustomerOrder;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
@@ -105,59 +106,104 @@ public interface SalesQuantityStatisticsRepository extends JpaRepository<Custome
                    bc.category_name AS categoryName, 
                    b.cover_url AS coverUrl,
                    SUM(cod.amount) AS totalSales
-                         FROM customer_orders_detail cod
-                         JOIN customer_orders co ON cod.customer_order_id = co.customer_order_id
-                         JOIN books b ON cod.book_isbn = b.book_isbn
-                         JOIN authors a ON b.author_id = a.author_id
-                         JOIN publishers p ON b.publisher_id = p.publisher_id
-                         JOIN book_categories bc ON b.category_id = bc.category_id
-                         WHERE co.customer_order_date_at >= DATE_SUB(NOW(), INTERVAL 7 DAY)
-                             AND ( bc.category_id = :categoryId OR bc.parent_category_id = :categoryId )
-                         GROUP BY b.book_isbn
-                         ORDER BY totalSales DESC
-                         LIMIT 20;
+                 FROM customer_orders_detail cod
+                 JOIN customer_orders co ON cod.customer_order_id = co.customer_order_id
+                 JOIN books b ON cod.book_isbn = b.book_isbn
+                 JOIN authors a ON b.author_id = a.author_id
+                 JOIN publishers p ON b.publisher_id = p.publisher_id
+                 JOIN book_categories bc ON b.category_id = bc.category_id
+                 WHERE co.customer_order_date_at >= DATE_SUB(NOW(), INTERVAL 7 DAY)
+                     AND ( bc.category_id = :categoryId OR bc.parent_category_id = :categoryId )
+                 GROUP BY b.book_isbn
+                 ORDER BY totalSales DESC
+                 LIMIT 20;
         """, nativeQuery = true)
     List<BestSellerProjection> findBestSellersByCategory(@Param("categoryId") Long categoryId);
 
     // 판매 수량 차트
+    // 기간별
+    // 1) Daily (15일간)
+    @Query(value = """
+            SELECT co.customer_order_date_at AS orderDate, 
+                   SUM(cod.amount) AS totalSales
+                 FROM customer_orders_detail cod
+                 JOIN customer_orders co ON cod.customer_order_id = co.customer_order_id
+                 JOIN books b ON cod.book_isbn = b.book_isbn
+                 WHERE co.customer_order_date_at >= DATE_SUB(NOW(), INTERVAL 15 DAY)
+                 GROUP BY co.customer_order_date_at
+                 ORDER BY co.customer_order_date_at ASC;
+        """, nativeQuery = true)
+    List<SalesQuantityStatisticsProjection> findDailySalesQuantity();
+
+    // 2) weekly
+    @Query(value = """
+            SELECT co.customer_order_date_at AS orderDate, 
+                   SUM(cod.amount) AS totalSales
+                 FROM customer_orders_detail cod
+                 JOIN customer_orders co ON cod.customer_order_id = co.customer_order_id
+                 JOIN books b ON cod.book_isbn = b.book_isbn
+                 WHERE co.customer_order_date_at >= DATE_FORMAT(CURDATE(), '%Y-%m-01')
+                    AND co.customer_order_date_at <  DATE_FORMAT(DATE_ADD(CURDATE(), INTERVAL 1 MONTH), '%Y-%m-01')
+                 GROUP BY co.customer_order_date_at
+                 ORDER BY co.customer_order_date_at ASC;
+        """, nativeQuery = true)
+    List<SalesQuantityStatisticsProjection> findWeeklySalesQuantity();
+
+    // 3) monthly
+    @Query(value = """
+            SELECT MONTH(co.customer_order_date_at) AS orderMonth, 
+                   SUM(cod.amount) AS totalSales
+                         FROM customer_orders_detail cod
+                         JOIN customer_orders co ON cod.customer_order_id = co.customer_order_id
+                         WHERE YEAR(co.customer_order_date_at) = :year
+                         GROUP BY MONTH(co.customer_order_date_at)
+                         ORDER BY MONTH(co.customer_order_date_at) ASC;
+        """, nativeQuery = true)
+    List<SalesQuantityStatisticsProjection> findMonthlySalesQuantity(@Param("year") int year);
+
     // 카테고리별
     @Query(value = """
             SELECT bc.category_name AS categoryName, 
                    SUM(cod.amount) AS totalSales
-                         FROM customer_orders_detail cod
-                         JOIN customer_orders co ON cod.customer_order_id = co.customer_order_id
-                         JOIN books b ON cod.book_isbn = b.book_isbn
-                         JOIN book_categories bc ON b.category_id = bc.category_id
-                         WHERE co.customer_order_date_at >= DATE_SUB(NOW(), INTERVAL 7 DAY)
-                         GROUP BY bc.category_name
-                         ORDER BY totalSales DESC;
+                 FROM customer_orders_detail cod
+                 JOIN customer_orders co ON cod.customer_order_id = co.customer_order_id
+                 JOIN books b ON cod.book_isbn = b.book_isbn
+                 JOIN book_categories bc ON b.category_id = bc.category_id
+                 WHERE co.customer_order_date_at >= DATE_SUB(NOW(), INTERVAL 7 DAY)
+                 GROUP BY bc.category_name
+                 ORDER BY totalSales DESC;
         """, nativeQuery = true)
     List<SalesQuantityStatisticsProjection> findSalesQuantityByCategory();
 
     // 할인항목별
     @Query(value = """
             SELECT dp.policy_title AS policyTitle, 
-                   SUM(cod.amount) AS totalSales
-                         FROM customer_orders_detail cod
-                         JOIN customer_orders co ON cod.customer_order_id = co.customer_order_id
-                         JOIN books b ON cod.book_isbn = b.book_isbn
-                         JOIN discount_policies dp ON b.discount_policy_id = dp.policy_id
-                         WHERE co.customer_order_date_at >= DATE_SUB(NOW(), INTERVAL 7 DAY)
-                         GROUP BY dp.policy_title
-                         ORDER BY totalSales DESC;
+                   COALESCE(SUM(cod.amount), 0) AS totalSales
+                 FROM discount_policies dp
+                 LEFT JOIN 
+                     customer_orders co 
+                      ON dp.policy_id = co.applied_policy_id
+                      AND YEAR(co.customer_order_date_at) = :year
+                      AND QUARTER(co.customer_order_date_at) = :quarter        
+                 LEFT JOIN
+                      customer_orders_detail cod
+                      ON cod.customer_order_id = co.customer_order_id
+                 GROUP BY dp.policy_title
+                 ORDER BY totalSales DESC;
         """, nativeQuery = true)
-    List<SalesQuantityStatisticsProjection> findSalesQuantityByDiscountPolicy();
+    List<SalesQuantityStatisticsProjection> findSalesQuantityByDiscountPolicy(@Param("year") int year, @Param("quarter") int quarter);
 
     // 지점별
     @Query(value = """
-            SELECT br.branch_name AS branchName, 
-                   SUM(co.customer_order_total_amount) AS totalSales
-                         FROM customer_orders co
-                         JOIN branches br ON co.branch_id = br.branch_id
-                         WHERE co.customer_order_date_at >= DATE_SUB(NOW(), INTERVAL 7 DAY)
-                         GROUP BY br.branch_name
-                         ORDER BY totalSales DESC;
-        """, nativeQuery = true)
-    List<SalesQuantityStatisticsProjection> findSalesQuantityByBranch();
-
+        SELECT br.branch_name AS branchName,
+               COALESCE(SUM(co.customer_order_total_amount), 0) AS totalSales
+            FROM branches br
+            LEFT JOIN customer_orders co
+              ON co.branch_id = br.branch_id
+              AND YEAR(co.customer_order_date_at) = :year
+              AND MONTH(co.customer_order_date_at) = :month
+            GROUP BY br.branch_name
+            ORDER BY totalSales DESC
+    """, nativeQuery = true)
+    List<SalesQuantityStatisticsProjection> findSalesQuantityByBranch(@Param("year") int year, @Param("month") int month);
 }

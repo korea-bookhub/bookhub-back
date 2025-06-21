@@ -3,6 +3,7 @@ package com.bookhub.bookhub_back.service.statistics;
 import com.bookhub.bookhub_back.dto.ResponseDto;
 import com.bookhub.bookhub_back.dto.statistics.projection.BestSellerProjection;
 import com.bookhub.bookhub_back.dto.statistics.projection.SalesQuantityStatisticsProjection;
+import com.bookhub.bookhub_back.dto.statistics.projection.YearlySalesQuantityProjection;
 
 import java.util.List;
 
@@ -19,7 +20,14 @@ public interface SalesQuantityStatisticsService {
 
     ResponseDto<List<SalesQuantityStatisticsProjection>> getSalesQuantityByCategory();
 
-    ResponseDto<List<SalesQuantityStatisticsProjection>> getSalesQuantityByDiscountPolicy();
+    ResponseDto<List<SalesQuantityStatisticsProjection>> getSalesQuantityByDiscountPolicy(int year, int quarter);
 
-    ResponseDto<List<SalesQuantityStatisticsProjection>> getSalesQuantityByBranch();
+    ResponseDto<List<SalesQuantityStatisticsProjection>> getSalesQuantityByBranch(int year, int month);
+
+    ResponseDto<List<SalesQuantityStatisticsProjection>> getDailySalesQuantity();
+
+    ResponseDto<List<SalesQuantityStatisticsProjection>> getWeeklySalesQuantity();
+
+
+    ResponseDto<List<SalesQuantityStatisticsProjection>> getMonthlySalesQuantity(int year);
 }
